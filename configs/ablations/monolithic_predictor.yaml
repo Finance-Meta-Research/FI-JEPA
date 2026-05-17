@@ -1,0 +1,4 @@
+# Monolithic Predictor ablation
+inherit: ../base.yaml
+ablation:
+  name: monolithic_predictor

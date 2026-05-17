@@ -1,0 +1,60 @@
+seed: 7
+device: auto
+
+data:
+  source: synthetic
+  csv_path: null
+  timestamp_col: timestamp
+  asset_col: asset_id
+  feature_cols: null
+  target_cols: null
+  context_length: 128
+  horizons: [1, 5, 20]
+  target_window: 8
+  train_frac: 0.7
+  val_frac: 0.15
+  normalize: true
+  synthetic:
+    num_assets: 8
+    num_steps: 5000
+    feature_dim: 12
+    regime_switch_prob: 0.002
+
+model:
+  d_model: 128
+  latent_dim: 64
+  num_assets: 8
+  num_layers: 4
+  num_heads: 4
+  dropout: 0.1
+  backbone: transformer
+  predictor_hidden: 128
+  stochastic: true
+  ema_decay: 0.996
+  stage_names: [macro, liquidity, volatility, residual]
+
+train:
+  batch_size: 64
+  num_workers: 0
+  lr: 0.0003
+  weight_decay: 0.01
+  max_epochs: 20
+  grad_clip_norm: 1.0
+  log_every: 20
+  validate_every: 1
+  amp: false
+
+loss:
+  multi_horizon_weights: [1.0, 0.7, 0.5]
+  lambda_nll: 0.25
+  lambda_noarb: 0.05
+  lambda_vol: 0.1
+  lambda_liq: 0.1
+  lambda_macro: 0.05
+  lambda_reg: 0.2
+  lambda_recon: 0.0
+
+experiment:
+  output_dir: runs/fijepa_base
+  save_best_metric: val_total_loss
+  mode: self_supervised

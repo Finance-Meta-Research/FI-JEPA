@@ -1,0 +1,4 @@
+# No Financial Regularizers ablation
+inherit: ../base.yaml
+ablation:
+  name: no_financial_regularizers

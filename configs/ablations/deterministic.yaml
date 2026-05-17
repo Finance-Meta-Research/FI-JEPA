@@ -1,0 +1,4 @@
+# Deterministic ablation
+inherit: ../base.yaml
+ablation:
+  name: deterministic

@@ -1,0 +1,154 @@
+{
+  "ablation": "no_financial_regularizers",
+  "seed": 7,
+  "history": [
+    {
+      "epoch": 1,
+      "train_pred": 1.556889533996582,
+      "train_nll": 0.0,
+      "train_reg": 0.766261100769043,
+      "train_gate": 0.9758782982826233,
+      "train_mem": 0.0,
+      "train_recon": 1.0978009700775146,
+      "train_noarb": 0.0,
+      "train_vol": 0.0,
+      "train_liq": 0.0,
+      "train_macro": 0.0,
+      "train_total": 1.784549355506897,
+      "val_pred": 1.4960293769836426,
+      "val_nll": 0.0,
+      "val_reg": 0.8968590497970581,
+      "val_gate": 1.0105512142181396,
+      "val_mem": 0.046875,
+      "val_recon": 4.199807167053223,
+      "val_noarb": 0.0,
+      "val_vol": 0.0,
+      "val_liq": 0.0,
+      "val_macro": 0.0,
+      "val_total": 1.9079463481903076
+    }
+  ],
+  "probe_regression": {
+    "mse": 0.5419148206710815,
+    "mae": 0.5057197213172913,
+    "directional_acc": 0.7037037037037037,
+    "pred_mean": -0.18969476222991943
+  },
+  "baseline_regression": {
+    "mse": 0.4419393539428711,
+    "mae": 0.5377758145332336,
+    "directional_acc": 0.6296296296296297,
+    "pred_mean": -0.3259965181350708
+  },
+  "probe_classification": {
+    "accuracy": 0.6666666666666666,
+    "auc": 0.5793650793650793,
+    "f1": 0.3076923076923077
+  },
+  "baseline_classification": {
+    "accuracy": 0.7777777777777778,
+    "auc": 0.6984126984126984,
+    "f1": 0.0
+  },
+  "latent_stats": {
+    "train_mean_norm": 2.1182148456573486,
+    "test_mean_norm": 2.138610601425171,
+    "train_std_mean": 0.2634652554988861,
+    "test_std_mean": 0.19525478780269623,
+    "test_cov_trace": 0.17103700096350866,
+    "memory_gate_mean": 0.5163187980651855,
+    "memory_occupancy_mean": 0.046875
+  },
+  "config": {
+    "seed": 7,
+    "model": {
+      "d_model": 8,
+      "latent_dim": 4,
+      "num_assets": 8,
+      "num_layers": 1,
+      "num_heads": 2,
+      "dropout": 0.1,
+      "backbone": "conv",
+      "predictor_hidden": 8,
+      "stochastic": false,
+      "ema_decay": 0.99,
+      "use_target_ema": true,
+      "predictor_mode": "split",
+      "stage_names": [
+        "macro"
+      ],
+      "use_memory": true,
+      "memory_size": 64,
+      "memory_topk": 4,
+      "memory_temperature": 0.2,
+      "memory_decay": 0.99,
+      "memory_write_threshold": 0.15,
+      "memory_merge_threshold": 0.9,
+      "use_reconstruction_head": true,
+      "use_operator_gate": true
+    },
+    "data": {
+      "source": "macrodata",
+      "csv_path": null,
+      "parquet_path": null,
+      "timestamp_col": "timestamp",
+      "asset_col": "asset_id",
+      "feature_cols": null,
+      "target_cols": [
+        "gdp_growth"
+      ],
+      "context_length": 4,
+      "horizons": [
+        1
+      ],
+      "target_window": 1,
+      "train_frac": 0.7,
+      "val_frac": 0.15,
+      "normalize": true,
+      "resample_freq": null,
+      "synthetic": {
+        "num_assets": 8,
+        "num_steps": 5000,
+        "feature_dim": 12,
+        "regime_switch_prob": 0.002
+      }
+    },
+    "train": {
+      "batch_size": 256,
+      "num_workers": 0,
+      "lr": 0.001,
+      "weight_decay": 0.01,
+      "max_epochs": 15,
+      "grad_clip_norm": 1.0,
+      "log_every": 1,
+      "validate_every": 1,
+      "amp": false,
+      "accumulate_grad_batches": 1,
+      "distributed": false,
+      "compile_model": false
+    },
+    "loss": {
+      "multi_horizon_weights": [
+        1.0,
+        0.7,
+        0.5
+      ],
+      "lambda_nll": 0.25,
+      "lambda_noarb": 0.05,
+      "lambda_vol": 0.1,
+      "lambda_liq": 0.1,
+      "lambda_macro": 0.05,
+      "lambda_reg": 0.2,
+      "lambda_recon": 0.05,
+      "lambda_gate": 0.02,
+      "lambda_mem": 0.05,
+      "use_financial_regularizers": false
+    },
+    "experiment": {
+      "output_dir": "runs/results_macro_noreg_seed7_current",
+      "save_best_metric": "val_total_loss",
+      "mode": "self_supervised",
+      "tracker": "json"
+    }
+  }
+}

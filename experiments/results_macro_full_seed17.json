@@ -1,0 +1,128 @@
+{
+  "ablation": "full",
+  "seed": 17,
+  "history": [
+    {
+      "epoch": 1,
+      "train_pred": 0.9668603539466858,
+      "train_nll": 0.0,
+      "train_reg": 0.7145160436630249,
+      "train_noarb": 0.02479271963238716,
+      "train_vol": 0.0,
+      "train_liq": 0.08756694942712784,
+      "train_macro": 0.25125762820243835,
+      "train_total": 1.1323227882385254,
+      "val_pred": 0.9627906680107117,
+      "val_nll": 0.0,
+      "val_reg": 0.8819019794464111,
+      "val_noarb": 0.02177407778799534,
+      "val_vol": 0.0,
+      "val_liq": 0.025164401158690453,
+      "val_macro": 0.024826044216752052,
+      "val_total": 1.1440175771713257
+    }
+  ],
+  "probe_regression": {
+    "mse": 1.0514346361160278,
+    "mae": 0.7746162414550781,
+    "directional_acc": 0.3076923076923077,
+    "pred_mean": 0.2655574679374695
+  },
+  "baseline_regression": {
+    "mse": 0.4629511535167694,
+    "mae": 0.5473954081535339,
+    "directional_acc": 0.6538461538461539,
+    "pred_mean": -0.36858585476875305
+  },
+  "probe_classification": {
+    "accuracy": 0.3076923076923077,
+    "auc": 0.42499999999999993,
+    "f1": 0.4
+  },
+  "baseline_classification": {
+    "accuracy": 0.7692307692307693,
+    "auc": 0.675,
+    "f1": 0.0
+  },
+  "latent_stats": {
+    "train_mean_norm": 1.8437609672546387,
+    "test_mean_norm": 1.9494619369506836,
+    "train_std_mean": 0.341599702835083,
+    "test_std_mean": 0.19680261611938477
+  },
+  "config": {
+    "seed": 17,
+    "model": {
+      "d_model": 8,
+      "latent_dim": 4,
+      "num_assets": 8,
+      "num_layers": 1,
+      "num_heads": 2,
+      "dropout": 0.1,
+      "backbone": "conv",
+      "predictor_hidden": 8,
+      "stochastic": false,
+      "ema_decay": 0.99,
+      "use_target_ema": true,
+      "predictor_mode": "split",
+      "stage_names": [
+        "macro"
+      ]
+    },
+    "data": {
+      "source": "macrodata",
+      "csv_path": null,
+      "timestamp_col": "timestamp",
+      "asset_col": "asset_id",
+      "feature_cols": null,
+      "target_cols": [
+        "gdp_growth"
+      ],
+      "context_length": 4,
+      "horizons": [
+        1
+      ],
+      "target_window": 1,
+      "train_frac": 0.7,
+      "val_frac": 0.15,
+      "normalize": true,
+      "synthetic": {
+        "num_assets": 8,
+        "num_steps": 5000,
+        "feature_dim": 12,
+        "regime_switch_prob": 0.002
+      }
+    },
+    "train": {
+      "batch_size": 256,
+      "num_workers": 0,
+      "lr": 0.001,
+      "weight_decay": 0.01,
+      "max_epochs": 1,
+      "grad_clip_norm": 1.0,
+      "log_every": 1,
+      "validate_every": 1,
+      "amp": false
+    },
+    "loss": {
+      "multi_horizon_weights": [
+        1.0,
+        0.7,
+        0.5
+      ],
+      "lambda_nll": 0.25,
+      "lambda_noarb": 0.05,
+      "lambda_vol": 0.1,
+      "lambda_liq": 0.1,
+      "lambda_macro": 0.05,
+      "lambda_reg": 0.2,
+      "lambda_recon": 0.0,
+      "use_financial_regularizers": true
+    },
+    "experiment": {
+      "output_dir": "runs/benchmark_macro",
+      "save_best_metric": "val_total_loss",
+      "mode": "self_supervised"
+    }
+  }
+}

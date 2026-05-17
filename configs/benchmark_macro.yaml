@@ -1,0 +1,34 @@
+seed: 7
+device: auto
+data:
+  source: macrodata
+  context_length: 4
+  horizons: [1]
+  target_window: 1
+  train_frac: 0.7
+  val_frac: 0.15
+  normalize: true
+  target_cols: [gdp_growth]
+model:
+  d_model: 8
+  latent_dim: 4
+  num_layers: 1
+  num_heads: 2
+  dropout: 0.1
+  backbone: conv
+  predictor_hidden: 8
+  stochastic: false
+  ema_decay: 0.99
+  stage_names: [macro]
+train:
+  batch_size: 256
+  num_workers: 0
+  lr: 0.001
+  weight_decay: 0.01
+  max_epochs: 15
+  grad_clip_norm: 1.0
+  log_every: 1
+  validate_every: 1
+  amp: false
+experiment:
+  output_dir: runs/benchmark_macro

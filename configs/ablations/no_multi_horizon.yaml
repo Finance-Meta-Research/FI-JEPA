@@ -1,0 +1,4 @@
+# No Multi Horizon ablation
+inherit: ../base.yaml
+ablation:
+  name: no_multi_horizon

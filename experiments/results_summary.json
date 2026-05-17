@@ -1,0 +1,92 @@
+{
+  "macro_full_seed7": {
+    "val_total": 1.7079511880874634,
+    "probe_regression": {
+      "mse": 0.5553562641143799,
+      "mae": 0.5059729814529419,
+      "directional_acc": 0.7307692307692307,
+      "pred_mean": -0.17647677659988403
+    },
+    "baseline_regression": {
+      "mse": 0.462939590215683,
+      "mae": 0.5473917126655579,
+      "directional_acc": 0.6538461538461539,
+      "pred_mean": -0.36866337060928345
+    },
+    "latent_stats": {
+      "train_mean_norm": 1.9314603805541992,
+      "test_mean_norm": 1.9736218452453613,
+      "train_std_mean": 0.25761595368385315,
+      "test_std_mean": 0.16123685240745544
+    }
+  },
+  "macro_full_seed17": {
+    "val_total": 1.1440175771713257,
+    "probe_regression": {
+      "mse": 1.0514346361160278,
+      "mae": 0.7746162414550781,
+      "directional_acc": 0.3076923076923077,
+      "pred_mean": 0.2655574679374695
+    },
+    "baseline_regression": {
+      "mse": 0.4629511535167694,
+      "mae": 0.5473954081535339,
+      "directional_acc": 0.6538461538461539,
+      "pred_mean": -0.36858585476875305
+    },
+    "latent_stats": {
+      "train_mean_norm": 1.8437609672546387,
+      "test_mean_norm": 1.9494619369506836,
+      "train_std_mean": 0.341599702835083,
+      "test_std_mean": 0.19680261611938477
+    }
+  },
+  "macro_noema_seed7": {
+    "val_total": 1.6904524564743042,
+    "probe_regression": {
+      "mse": 0.5553562641143799,
+      "mae": 0.5059729814529419,
+      "directional_acc": 0.7307692307692307,
+      "pred_mean": -0.17647677659988403
+    },
+    "baseline_regression": {
+      "mse": 0.462939590215683,
+      "mae": 0.5473917126655579,
+      "directional_acc": 0.6538461538461539,
+      "pred_mean": -0.36866337060928345
+    },
+    "latent_stats": {
+      "train_mean_norm": 1.9314603805541992,
+      "test_mean_norm": 1.9736218452453613,
+      "train_std_mean": 0.25761595368385315,
+      "test_std_mean": 0.16123685240745544
+    }
+  },
+  "macro_noema_seed17": {
+    "val_total": 1.1507723331451416
+  },
+  "macro_no_financial_regularizers_seed7": {
+    "val_total": 1.6695555448532104
+  },
+  "synthetic_sanity": {
+    "val_total": 1.2651739120483398,
+    "probe_regression": {
+      "mse": 1.7815152406692505,
+      "mae": 1.3102465867996216,
+      "directional_acc": 0.7333333333333333,
+      "pred_mean": 0.17125830054283142
+    },
+    "baseline_regression": {
+      "mse": 0.10057170689105988,
+      "mae": 0.315030038356781,
+      "directional_acc": 1.0,
+      "pred_mean": 1.1664750576019287
+    },
+    "latent_stats": {
+      "train_mean_norm": 2.4918694496154785,
+      "test_mean_norm": 2.784634828567505,
+      "train_std_mean": 0.4277401566505432,
+      "test_std_mean": 0.16849204897880554
+    }
+  }
+}

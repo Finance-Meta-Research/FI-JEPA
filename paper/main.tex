@@ -1,0 +1,373 @@
+\documentclass[11pt]{article}
+
+\usepackage{arxivrefined}
+\usepackage{amsmath,amssymb,amsthm,booktabs,multirow,array}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{microtype}
+
+\newcommand{\method}{FI-JEPA}
+\newcommand{\paperabbr}{FI-JEPA}
+
+\title{FI-JEPA: Financial-Informed Joint Embedding Predictive Architecture for Self-Supervised Market Dynamics Modeling}
+\author{
+Ryan Gomez\\
+\texttt{ryangomez.hs@gmail.com}
+}
+\date{May 16, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Financial markets are noisy, nonstationary, and multi-scale. Directly predicting raw prices or returns forces a model to learn the noise as well as the signal. \method{} instead learns a latent market representation by predicting future embeddings from past context, using an online encoder, an EMA target encoder, an operator-aligned predictor bank, and finance-aware regularization. The resulting representation is designed for regime detection, volatility forecasting, portfolio allocation, and execution-aware downstream tasks. This paper presents the architecture, objective, implementation details, and a reproducible benchmark suite on real macro-financial data and synthetic market panels.
+\end{abstract}
+
+\keywords{self-supervised learning \and financial time series \and joint embedding predictive architecture \and latent dynamics \and market representation learning}
+
+\section{Introduction}
+Financial forecasting is difficult for reasons that are structural, not just statistical. Prices move under the influence of regime shifts, liquidity shocks, volatility clustering, cross-asset dependence, and residual idiosyncratic effects. Those mechanisms operate on different time scales and are only partially visible in observed data. A model that predicts the next value in observation space is therefore forced to fit both the persistent structure and the transient noise that rides on top of it.
+
+\method{} reframes the problem. Rather than reconstructing or regressing raw market observations, the model learns to predict future latent states from context windows. This choice mirrors the joint-embedding predictive paradigm while adapting it to finance: the useful predictive object is not the next observed price, but the latent configuration of regime, liquidity, volatility, and cross-asset interaction that governs future evolution.
+
+The goal of the paper is twofold. First, it presents a clean financial-specific JEPA formulation with a stable EMA target encoder and an operator-split predictor bank. Second, it gives a complete open implementation, benchmark harness, and experiment protocol that can be reproduced from the repository alone. The code is structured so the same backbone can be used for self-supervised representation learning, multi-horizon forecasting, and lightweight downstream probes.
+
+\section{Related Work}
+The method sits at the intersection of financial time-series modeling, self-supervised representation learning, and latent dynamical systems.
+
+Classical finance established the baseline language of returns, volatility, and risk through autoregressive models, ARCH/GARCH, and efficient market formulations. Those tools remain useful, but they are typically parametric and weak at modeling nonlinear interactions and regime changes.
+
+Modern deep sequence models -- Transformers, structured state-space models, and selective state-space architectures -- improve expressivity, but most are still trained directly on raw observations. In finance, that often overfits noise and underemphasizes the latent factors that matter for decision making.
+
+Self-supervised learning offers a better inductive bias. BYOL, VICReg, and JEPA-style predictive methods learn representations without requiring label-heavy supervision, and latent-prediction objectives are especially attractive when exact reconstruction is not the right target. \method{} extends that logic to finance by adding market-structure regularizers and operator-aligned latent transition stages.
+
+\section{Problem Formulation}
+Let $\{x_t\}_{t=1}^T$ be a multivariate market sequence, where each observation may include returns, log-prices, volumes, spreads, realized volatility, imbalance, or macro covariates. We treat the observed process as a noisy projection of a latent market state:
+\begin{equation}
+x_t = g(s_t) + \epsilon_t,
+\end{equation}
+where $g$ is unknown and $\epsilon_t$ captures microstructure noise, venue effects, and exogenous shocks.
+
+Given a context window $X_t^c = \{x_{t-L+1}, \dots, x_t\}$ and future windows at horizons $H = \{h_1,\dots,h_M\}$, the learning objective is to predict latent target embeddings of the future windows rather than reconstruct the raw sequence. This is especially useful when raw one-step targets are weakly predictable but latent structure remains stable.
+
+\section{Method}
+\subsection{Architecture overview}
+\method{} has four components:
+\begin{enumerate}[leftmargin=1.4em]
+\item an online context encoder $f_\theta$,
+\item an EMA target encoder $\bar f_{\bar\theta}$,
+\item an operator-aligned stochastic predictor bank $\{p_k\}_{k=1}^K$,
+\item finance-aware regularizers.
+\end{enumerate}
+
+The context encoder maps the past market window to a latent state
+\begin{equation}
+h_t = f_\theta(X_t^c).
+\end{equation}
+The target encoder maps future windows to a stable target embedding
+\begin{equation}
+z^{tar}_{t+h} = \bar f_{\bar\theta}(X^u_{t+h}).
+\end{equation}
+
+The predictor bank produces latent distributions rather than a single point estimate. In the default split mode, the stages are ordered as macro, liquidity, volatility, and residual. Each stage predicts an update to the latent state, making the full transition a structured composition rather than a monolithic black box.
+
+\subsection{EMA target encoder}
+The target encoder is updated by exponential moving average:
+\begin{equation}
+\bar\theta \leftarrow \tau \bar\theta + (1-\tau)\theta, \qquad \tau \in [0.99, 0.999].
+\end{equation}
+This stabilizes the learning target and reduces representation collapse. In practice, the target encoder tracks a slowly moving latent market manifold while the online encoder is optimized against it.
+
+\subsection{Operator-aligned predictor bank}
+The predictor bank is designed to mirror the fact that market evolution is heterogeneous. Macro effects are slow, liquidity effects are local, volatility effects cluster, and residual effects are weak but persistent. Instead of forcing a single latent transition to explain all of that structure, \method{} factorizes the transition into a sequence of mechanism-aligned stages:
+\begin{equation}
+T_\tau \approx O_{res} \circ O_{vol} \circ O_{liq} \circ O_{macro}.
+\end{equation}
+Each stage outputs a mean and, when enabled, a log-variance head. This gives the model a compact uncertainty estimate in latent space.
+
+\subsection{Training objective}
+The training objective combines three parts.
+
+First, a multi-horizon latent prediction loss aligns the predicted latent trajectory with future target embeddings:
+\begin{equation}
+\mathcal{L}_{pred} = \sum_{h \in H} \alpha_h \| \mu_{t+h} - \text{sg}(z^{tar}_{t+h}) \|_2^2.
+\end{equation}
+
+Second, when stochastic heads are active, a Gaussian NLL term encourages calibrated latent uncertainty:
+\begin{equation}
+\mathcal{L}_{nll} = - \sum_{h \in H} \log q_\phi(z^{tar}_{t+h}\mid h_t).
+\end{equation}
+
+Third, finance-aware regularizers penalize implausible behavior. The codebase includes soft terms for approximate no-arbitrage, volatility persistence, liquidity impact, macro smoothness, and latent variance-covariance stabilization:
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{pred} + \lambda_{nll}\mathcal{L}_{nll} + \lambda_{noarb}\mathcal{L}_{noarb} + \lambda_{vol}\mathcal{L}_{vol} + \lambda_{liq}\mathcal{L}_{liq} + \lambda_{macro}\mathcal{L}_{macro} + \lambda_{reg}\mathcal{L}_{reg}.
+\end{equation}
+
+\subsection{Why this objective}
+Raw market observations are noisy, but structure persists. Direct reconstruction spends capacity on noise. Latent prediction instead asks the model to learn what survives through time. The finance-aware penalties then prevent the latent representation from drifting into a generic sequence embedding with no economic meaning.
+
+\section{Implementation}
+The repository is organized to be reproducible.
+
+The data module provides:
+\begin{itemize}[leftmargin=1.4em]
+\item a synthetic market generator with regime switches,
+\item a real macro-financial panel based on \texttt{statsmodels.datasets.macrodata},
+\item a chronological split with train/validation/test separation,
+\item windowed context/future sampling with no look-ahead leakage.
+\end{itemize}
+
+The model module provides:
+\begin{itemize}[leftmargin=1.4em]
+\item a Transformer or temporal-convolution backbone,
+\item an EMA target encoder,
+\item split or monolithic predictor modes,
+\item optional stochastic heads and latent rollout.
+\end{itemize}
+
+The benchmark module provides:
+\begin{itemize}[leftmargin=1.4em]
+\item ablations for no EMA, no financial regularizers, deterministic prediction, monolithic prediction, and reconstruction-style variants,
+\item ridge probes for latent quality,
+\item a compact suite runner that aggregates results across seeds.
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=1.2cm and 1.45cm,
+  box/.style={draw, rounded corners=2pt, minimum height=1.05cm, minimum width=2.5cm, align=center},
+  smallbox/.style={draw, rounded corners=2pt, minimum height=0.85cm, minimum width=2.0cm, align=center},
+  arrow/.style={-Latex, thick}
+]
+\node[box] (ctx) {Context window\\$X_t^c$};
+\node[box, right=of ctx] (enc) {Online encoder\\$f_\theta$};
+\node[box, right=of enc] (bank) {Operator bank\\macro $\rightarrow$ liq. $\rightarrow$ vol. $\rightarrow$ res.};
+\node[box, right=of bank] (pred) {Latent prediction\\$\mu, \log\sigma^2$};
+\node[smallbox, above=of bank] (targ) {EMA target\\$\bar f_{\bar\theta}$};
+\node[smallbox, below=of bank] (reg) {Finance-aware\\regularizers};
+
+\draw[arrow] (ctx) -- (enc);
+\draw[arrow] (enc) -- node[above]{latent state $h_t$} (bank);
+\draw[arrow] (bank) -- (pred);
+\draw[arrow] (ctx.north east) to[bend left=15] node[above]{future windows} (targ.west);
+\draw[arrow] (targ) -- node[right]{stable targets} (pred.north);
+\draw[arrow] (reg) -- (pred.south);
+\end{tikzpicture}
+\caption{FI-JEPA architecture. The encoder compresses context, the EMA target encoder stabilizes training, the predictor bank advances the latent state through operator-aligned stages, and finance-aware regularization constrains the latent dynamics.}
+\end{figure}
+
+\section{Experimental Setup}
+\subsection{Benchmarks}
+We evaluate on two benchmark families.
+
+The first is a real macro-financial panel built from the publicly available \texttt{macrodata} dataset in statsmodels. The task is to predict a GDP-growth proxy from a short quarterly context under strict chronological splits.
+
+The second is a synthetic market panel with explicit regime switches, realized volatility, volume, spread, imbalance, and macro covariates. This benchmark is useful for verifying that the full code path trains and that the latent objective remains stable on noisy multivariate data.
+
+\subsection{Ablations}
+We include the following ablations:
+\begin{itemize}[leftmargin=1.4em]
+\item \textbf{full}: the complete model,
+\item \textbf{no\_ema}: EMA target replaced by a direct copy,
+\item \textbf{no\_financial\_regularizers}: regularizers removed,
+\item \textbf{deterministic}: latent uncertainty heads removed,
+\item \textbf{monolithic\_predictor}: operator bank collapsed to one predictor.
+\end{itemize}
+
+\subsection{Metrics}
+For the macro benchmark we report validation total loss and downstream probe metrics. For the synthetic benchmark we report the same scalar diagnostics plus latent stability statistics. The repository also logs train history, best and last checkpoints, and per-run JSON outputs.
+
+\section{Results}
+\subsection{Compact real-data benchmark}
+We report a compact, fully reproducible benchmark on the quarterly macro panel using the same seed and protocol across the full model and two ablations. The objective is not to claim leaderboard-scale strength from a tiny CPU run; it is to show that the code path, loss decomposition, checkpointing, and diagnostics all work on a real dataset without hidden shortcuts.
+
+\begin{table}[t]
+\centering
+\caption{Fresh comparable seed-17 runs on the macro panel. Lower is better.}
+\label{tab:seed17_compact}
+\begin{tabular}{lcc}
+\toprule
+Model & Train total loss & Val total loss \\
+\midrule
+Full FI-JEPA & 1.1299 & 1.1442 \\
+No EMA target encoder & 1.1299 & 1.1521 \\
+No financial regularizers & 1.1035 & 1.1394 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The full model and the no-regularizer variant are close in validation loss, while removing the EMA target encoder is slightly worse in this compact run. That pattern is consistent with the role of the EMA target as a stabilizer rather than a direct source of predictive capacity.
+
+\subsection{Heatmap diagnostics}
+Scalar losses are useful, but they do not show how the model organizes information internally. Figure~\ref{fig:benchmark-heatmap} visualizes a normalized benchmark matrix over the saved runs in the repository. Rows correspond to runs and columns correspond to representative metrics: validation loss, probe regression quality, directional accuracy, probe classification accuracy, and latent dispersion. The figure is intentionally mixed-scale because the goal is diagnostic rather than leaderboard-style ranking. Darker cells indicate stronger normalized scores within each metric.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/benchmark_metric_heatmap.png}
+\caption{Normalized benchmark heatmap over saved FI-JEPA runs. The matrix compares validation loss, probe quality, directional accuracy, classification accuracy, and latent dispersion across ablations and seeds.}
+\label{fig:benchmark-heatmap}
+\end{figure}
+
+Figure~\ref{fig:latent-heatmap} shows a latent activation heatmap from the fresh full-model checkpoint on the macro test split. Test windows are sorted by the target growth proxy, and the columns are flattened hidden channels from the context backbone. The resulting banded structure indicates that the encoder is not collapsing to a constant representation and that the latent coordinates vary with regime-like changes in the data.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/latent_activation_heatmap.png}
+\caption{FI-JEPA latent activation heatmap on macro test windows. Rows are test windows sorted by the target growth proxy; columns are flattened backbone activations. The structured variation indicates non-collapsed latent organization.}
+\label{fig:latent-heatmap}
+\end{figure}
+
+The line plot in Figure~\ref{fig:macro-line} complements the heatmaps by showing how the validation loss moves across the saved macro runs. Together, the three figures show not just that the model trains, but that the saved runs are internally structured in a way that is readable at both the metric level and the latent level.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\linewidth]{figures/macro_val_total_line.png}
+\caption{Validation losses across saved macro benchmark runs.}
+\label{fig:macro-line}
+\end{figure}
+
+\subsection{Calibration and latent geometry}
+The figure set now also includes calibration curves, latent manifold projections, a latent covariance heatmap, and an operator-activation timeline extracted from the saved checkpoint and test split. These diagnostics show how the representation organizes market state beyond a single scalar loss.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/calibration_reliability.pdf}
+\caption{Reliability calibration.}
+\end{subfigure}
+\begin{subfigure}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/calibration_coverage.pdf}
+\caption{Coverage over horizon.}
+\end{subfigure}
+\caption{Calibration diagnostics from the saved checkpoint.}
+\label{fig:calibration_pair}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/latent_manifold_pca.pdf}
+\caption{PCA projection.}
+\end{subfigure}
+\begin{subfigure}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/latent_manifold_tsne.pdf}
+\caption{Spectral manifold projection.}
+\end{subfigure}
+\caption{Latent manifold projections from the frozen encoder.}
+\label{fig:latent_manifold_pair}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/latent_covariance_heatmap.pdf}
+\caption{Latent covariance.}
+\end{subfigure}
+\begin{subfigure}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/operator_activation_heatmap.pdf}
+\caption{Operator activation.}
+\end{subfigure}
+\caption{Additional latent diagnostics from the checkpointed model.}
+\label{fig:latent_extra}
+\end{figure}
+
+The repository also includes broader benchmark JSON logs with probe metrics, latent statistics, and a synthetic sanity benchmark. Those runs are kept in \texttt{experiments/} so the paper does not depend on hidden state in the training directory.
+
+\section{Discussion}
+\method{} should be understood as a representation-learning framework rather than a complete trading system. The point is to learn a reusable latent market state that can be adapted to forecasting, risk estimation, regime detection, allocation, and execution. The architecture is intentionally modular so the encoder, target stabilizer, predictor bank, and regularizers can be ablated or swapped independently.
+
+The current implementation is useful in three ways. First, it gives a concrete financial version of JEPA-style latent prediction. Second, it provides a benchmark harness with real and synthetic data sources. Third, it keeps the training objective explicit enough that the contribution of each inductive bias can be measured rather than assumed.
+
+\section{Limitations and Future Work}
+Several directions remain open. The predictor bank could be made adaptive with learned gating. Cross-sectional graph structure could be added to better model contagion and sector spillovers. Calibration losses could be introduced so uncertainty is statistically meaningful as well as useful. Finally, the model could be extended to event-driven data such as earnings, central-bank releases, and news shocks.
+
+\section{Conclusion}
+We presented FI-JEPA, a financial-informed joint embedding predictive architecture for self-supervised market dynamics modeling. The model predicts future latent embeddings instead of raw observations, stabilizes training with an EMA target encoder, decomposes the transition into operator-aligned stages, and regularizes the latent dynamics with soft financial constraints. The accompanying repository includes the code, benchmark harness, and LaTeX source needed to reproduce the paper structure and the compact real-data experiments.
+
+\begin{thebibliography}{99}
+
+\bibitem{assran2023ijepa}
+M.~Assran, Q.~Duval, I.~Misra, P.~Bojanowski, P.~Vincent, M.~Rabbat, Y.~LeCun, and N.~Ballas.
+\newblock Self-supervised learning from images with a joint-embedding predictive architecture.
+\newblock \emph{arXiv preprint arXiv:2301.08243}, 2023.
+
+\bibitem{grill2020byol}
+J.-B.~Grill, F.~Strub, C.~Altch'e, C.~Tallec, P.~Richemond, E.~Buchatskaya, C.~Doersch, B.~Avila Pires, Z.~Guo, M.~G. Azar, et~al.
+\newblock Bootstrap your own latent: A new approach to self-supervised learning.
+\newblock \emph{NeurIPS}, 2020.
+
+\bibitem{bardes2022vicreg}
+A.~Bardes, J.~Ponce, and Y.~LeCun.
+\newblock Vicreg: Variance-invariance-covariance regularization for self-supervised learning.
+\newblock \emph{ICLR}, 2022.
+
+\bibitem{vaswani2017attention}
+A.~Vaswani, N.~Shazeer, N.~Parmar, J.~Uszkoreit, L.~Jones, A.~N. Gomez, \L{}ukasz Kaiser, and I.~Polosukhin.
+\newblock Attention is all you need.
+\newblock \emph{NeurIPS}, 2017.
+
+\bibitem{gu2022s4}
+A.~Gu, K.~Goel, and C.~R\'e.
+\newblock Efficiently modeling long sequences with structured state spaces.
+\newblock \emph{ICLR}, 2022.
+
+\bibitem{dao2023mamba}
+T.~Dao and A.~Gu.
+\newblock Mamba: Linear-time sequence modeling with selective state spaces.
+\newblock \emph{arXiv preprint arXiv:2312.00752}, 2023.
+
+\bibitem{engle1982arch}
+R.~F. Engle.
+\newblock Autoregressive conditional heteroscedasticity with estimates of the variance of united kingdom inflation.
+\newblock \emph{Econometrica}, 1982.
+
+\bibitem{bollerslev1986garch}
+T.~Bollerslev.
+\newblock Generalized autoregressive conditional heteroskedasticity.
+\newblock \emph{Journal of Econometrics}, 1986.
+
+\bibitem{cont2001stylized}
+R.~Cont.
+\newblock Empirical properties of asset returns: Stylized facts and statistical issues.
+\newblock \emph{Quantitative Finance}, 2001.
+
+\bibitem{fama1970efficient}
+E.~F. Fama.
+\newblock Efficient capital markets: A review of theory and empirical work.
+\newblock \emph{Journal of Finance}, 1970.
+
+\bibitem{markowitz1952portfolio}
+H.~Markowitz.
+\newblock Portfolio selection.
+\newblock \emph{Journal of Finance}, 1952.
+
+\bibitem{lim2021tft}
+B.~Lim, S.~O. Arik, N.~Loeff, and T.~Pfister.
+\newblock Temporal fusion transformers for interpretable multi-horizon time series forecasting.
+\newblock \emph{International Journal of Forecasting}, 2021.
+
+\bibitem{zhang2019deeplob}
+Z.~Zhang, S.~Zohren, and S.~Roberts.
+\newblock DeepLOB: Deep convolutional neural networks for limit order books.
+\newblock \emph{IEEE Transactions on Signal Processing}, 2019.
+
+\bibitem{tsantekidis2017lob}
+A.~Tsantekidis, N.~Passalis, A.~Tefas, J.~Kanniainen, M.~Gabbouj, and A.~Iosifidis.
+\newblock Forecasting stock prices from the limit order book using convolutional neural networks.
+\newblock \emph{IEEE Business Informatics}, 2017.
+
+\end{thebibliography}
+
+\end{document}

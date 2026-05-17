@@ -1,0 +1,38 @@
+seed: 7
+device: auto
+data:
+  source: synthetic
+  context_length: 8
+  horizons: [1]
+  target_window: 1
+  train_frac: 0.7
+  val_frac: 0.15
+  normalize: true
+  synthetic:
+    num_assets: 1
+    num_steps: 160
+    feature_dim: 12
+    regime_switch_prob: 0.01
+model:
+  d_model: 16
+  latent_dim: 8
+  num_layers: 1
+  num_heads: 4
+  dropout: 0.1
+  backbone: conv
+  predictor_hidden: 16
+  stochastic: false
+  ema_decay: 0.99
+  stage_names: [macro]
+train:
+  batch_size: 512
+  num_workers: 0
+  lr: 0.001
+  weight_decay: 0.01
+  max_epochs: 1
+  grad_clip_norm: 1.0
+  log_every: 1
+  validate_every: 1
+  amp: false
+experiment:
+  output_dir: runs/benchmark_synthetic

@@ -1,0 +1,56 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Problem Formulation}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Method}{2}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Architecture overview}{2}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}EMA target encoder}{2}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Operator-aligned predictor bank}{2}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Training objective}{3}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Why this objective}{3}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Implementation}{3}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Experimental Setup}{3}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Benchmarks}{3}{subsection.6.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces FI-JEPA architecture. The encoder compresses context, the EMA target encoder stabilizes training, the predictor bank advances the latent state through operator-aligned stages, and finance-aware regularization constrains the latent dynamics.}}{4}{figure.caption.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Fresh comparable seed-17 runs on the macro panel. Lower is better.}}{4}{table.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:seed17_compact}{{1}{4}{Fresh comparable seed-17 runs on the macro panel. Lower is better}{table.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Ablations}{4}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Metrics}{4}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Results}{4}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Compact real-data benchmark}{4}{subsection.7.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Normalized benchmark heatmap over saved FI-JEPA runs. The matrix compares validation loss, probe quality, directional accuracy, classification accuracy, and latent dispersion across ablations and seeds.}}{5}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:benchmark-heatmap}{{2}{5}{Normalized benchmark heatmap over saved FI-JEPA runs. The matrix compares validation loss, probe quality, directional accuracy, classification accuracy, and latent dispersion across ablations and seeds}{figure.caption.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces FI-JEPA latent activation heatmap on macro test windows. Rows are test windows sorted by the target growth proxy; columns are flattened backbone activations. The structured variation indicates non-collapsed latent organization.}}{5}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:latent-heatmap}{{3}{5}{FI-JEPA latent activation heatmap on macro test windows. Rows are test windows sorted by the target growth proxy; columns are flattened backbone activations. The structured variation indicates non-collapsed latent organization}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Heatmap diagnostics}{5}{subsection.7.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Validation losses across saved macro benchmark runs.}}{6}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:macro-line}{{4}{6}{Validation losses across saved macro benchmark runs}{figure.caption.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Calibration diagnostics from the saved checkpoint.}}{6}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:calibration_pair}{{5}{6}{Calibration diagnostics from the saved checkpoint}{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Calibration and latent geometry}{6}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Discussion}{6}{section.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Latent manifold projections from the frozen encoder.}}{7}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:latent_manifold_pair}{{6}{7}{Latent manifold projections from the frozen encoder}{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Additional latent diagnostics from the checkpointed model.}}{7}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:latent_extra}{{7}{7}{Additional latent diagnostics from the checkpointed model}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Limitations and Future Work}{7}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{7}{section.10}\protected@file@percent }
+\bibcite{assran2023ijepa}{1}
+\bibcite{grill2020byol}{2}
+\bibcite{bardes2022vicreg}{3}
+\bibcite{vaswani2017attention}{4}
+\bibcite{gu2022s4}{5}
+\bibcite{dao2023mamba}{6}
+\bibcite{engle1982arch}{7}
+\bibcite{bollerslev1986garch}{8}
+\bibcite{cont2001stylized}{9}
+\bibcite{fama1970efficient}{10}
+\bibcite{markowitz1952portfolio}{11}
+\bibcite{lim2021tft}{12}
+\bibcite{zhang2019deeplob}{13}
+\bibcite{tsantekidis2017lob}{14}
+\gdef \@abspage@last{8}

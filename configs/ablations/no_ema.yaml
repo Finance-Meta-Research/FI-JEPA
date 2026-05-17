@@ -1,0 +1,4 @@
+# No Ema ablation
+inherit: ../base.yaml
+ablation:
+  name: no_ema

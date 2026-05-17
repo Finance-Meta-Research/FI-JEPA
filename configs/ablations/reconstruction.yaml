@@ -1,0 +1,4 @@
+# Reconstruction ablation
+inherit: ../base.yaml
+ablation:
+  name: reconstruction

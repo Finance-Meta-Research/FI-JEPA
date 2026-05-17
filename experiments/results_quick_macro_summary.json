@@ -1,0 +1,14 @@
+{
+  "full": {
+    "train_total": 1.7659245729446411,
+    "val_total": 1.7094660997390747
+  },
+  "no_ema": {
+    "train_total": 1.7659245729446411,
+    "val_total": 1.691872000694275
+  },
+  "no_financial_regularizers": {
+    "train_total": 1.7106584310531616,
+    "val_total": 1.671036958694458
+  }
+}
