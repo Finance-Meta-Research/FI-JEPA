@@ -7,10 +7,16 @@ This file is auto-generated from `experiments/paper_results.json`. Historical re
 | Full FI-JEPA | 0.920145 ± 0.074493 | 0.683738 ± 0.048334 | 0.259259 ± 0.064150 | 0.234568 ± 0.021383 |
 | No EMA | 0.872222 ± 0.033997 | 0.650183 ± 0.032533 | 0.259259 ± 0.064150 | 0.234568 ± 0.021383 |
 | No financial regularizers | 0.915821 ± 0.071222 | 0.681149 ± 0.045780 | 0.259259 ± 0.064150 | 0.234568 ± 0.021383 |
-| Monolithic predictor | 0.920145 ± 0.074493 | 0.683738 ± 0.048334 | 0.259259 ± 0.064150 | 0.234568 ± 0.021383 |
+| Monolithic predictor (non-identifying control) | 0.920145 ± 0.074493 | 0.683738 ± 0.048334 | 0.259259 ± 0.064150 | 0.234568 ± 0.021383 |
 | No uncertainty heads | 0.912092 ± 0.051924 | 0.682212 ± 0.043498 | 0.271605 ± 0.085533 | 0.234568 ± 0.021383 |
 | No memory | 0.895743 ± 0.044221 | 0.668672 ± 0.027983 | 0.271605 ± 0.085533 | 0.234568 ± 0.021383 |
 | Raw-context Ridge | 0.441924 ± 0.000000 | 0.537767 ± 0.000000 | 0.629630 ± 0.000000 | 0.777778 ± 0.000000 |
+
+## Post-run validity note
+
+- `no_operator_split` is **non-identifying in protocol v1**: the frozen full macro configuration contains one predictor stage, and monolithic mode also contains one predictor stage. Its retained downstream metrics are exactly identical to full across all three seeds.
+- Preserve that row for provenance, but do not use it as evidence for or against operator factorization.
+- The remaining paper-facing component removals (`no_ema`, `no_financial_regularizers`, `no_uncertainty_heads`, `no_memory`) alter executed computation.
 
 ## Paired seed-level comparisons
 
@@ -20,7 +26,7 @@ Deltas are `full - comparator`; for MSE, a negative value favors full FI-JEPA. T
 - `full_minus_no_ema_probe_mse`: mean delta 0.047923, descriptive 95% bootstrap interval [0.015231, 0.101932], n=3 paired seeds.
 - `full_minus_no_financial_regularizers_probe_mse`: mean delta 0.004324, descriptive 95% bootstrap interval [0.001249, 0.007858], n=3 paired seeds.
 - `full_minus_no_memory_probe_mse`: mean delta 0.024402, descriptive 95% bootstrap interval [0.000022, 0.058310], n=3 paired seeds.
-- `full_minus_no_operator_split_probe_mse`: mean delta 0.000000, descriptive 95% bootstrap interval [0.000000, 0.000000], n=3 paired seeds.
+- `full_minus_no_operator_split_probe_mse`: mean delta 0.000000, descriptive 95% bootstrap interval [0.000000, 0.000000], n=3 paired seeds. (non-identifying control; not inferential)
 - `full_minus_no_uncertainty_heads_probe_mse`: mean delta 0.008053, descriptive 95% bootstrap interval [-0.026530, 0.045108], n=3 paired seeds.
 
 ## Claim boundary
