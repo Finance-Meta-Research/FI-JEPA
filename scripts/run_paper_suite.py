@@ -13,8 +13,8 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from scripts.train import load_config
 from fijepa.benchmark import ablation_signature, benchmark_suite
+from fijepa.config import load_config
 
 PAPER_VARIANTS = [
     "full",
@@ -119,11 +119,6 @@ def main() -> None:
                 }
             )
 
-    # Matched downstream control: the exact same Ridge(alpha=1) estimator,
-    # target, train/test rows and normalization as the latent probe, but on raw
-    # flattened context windows. It is derived only from the full-model run so
-    # there is one explicit baseline record per seed rather than duplicated
-    # pseudo-replicates across ablations.
     for seed in args.seeds:
         r = by_cell[("full", seed)]
         runs.append(
@@ -144,16 +139,10 @@ def main() -> None:
     paired = {}
     full_mse = {seed: by_cell[("full", seed)]["probe_regression"]["mse"] for seed in args.seeds}
     for variant in PAPER_VARIANTS[1:]:
-        deltas = [
-            full_mse[seed] - by_cell[(variant, seed)]["probe_regression"]["mse"]
-            for seed in args.seeds
-        ]
+        deltas = [full_mse[seed] - by_cell[(variant, seed)]["probe_regression"]["mse"] for seed in args.seeds]
         paired[f"full_minus_{variant}_probe_mse"] = bootstrap_paired(deltas)
 
-    baseline_deltas = [
-        full_mse[seed] - by_cell[("full", seed)]["baseline_regression"]["mse"]
-        for seed in args.seeds
-    ]
+    baseline_deltas = [full_mse[seed] - by_cell[("full", seed)]["baseline_regression"]["mse"] for seed in args.seeds]
     paired["full_latent_minus_raw_context_ridge_mse"] = bootstrap_paired(baseline_deltas)
 
     payload = {
