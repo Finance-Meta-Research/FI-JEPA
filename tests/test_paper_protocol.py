@@ -1,5 +1,5 @@
-from scripts.train import load_config
 from fijepa.benchmark import ablation_signature
+from fijepa.config import load_config
 
 
 PAPER_VARIANTS = [
