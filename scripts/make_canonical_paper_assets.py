@@ -12,7 +12,7 @@ LABELS = {
     "full": "Full FI-JEPA",
     "no_ema": "No EMA",
     "no_financial_regularizers": "No financial regularizers",
-    "no_operator_split": "Monolithic predictor",
+    "no_operator_split": "Monolithic predictor (non-identifying control)",
     "no_uncertainty_heads": "No uncertainty heads",
     "no_memory": "No memory",
     "raw_context_ridge": "Raw-context Ridge",
@@ -21,6 +21,16 @@ LABELS = {
 
 def fmt(mean: float, std: float) -> str:
     return f"{mean:.6f} $\\pm$ {std:.6f}"
+
+
+def metric_vector(rows):
+    keys = (
+        "probe_regression_mse",
+        "probe_regression_mae",
+        "probe_directional_accuracy",
+        "probe_classification_accuracy",
+    )
+    return [[float(row["metrics"][key]) for key in keys] for row in rows]
 
 
 def main() -> None:
@@ -50,11 +60,13 @@ def main() -> None:
             "accuracy": (float(accuracy.mean()), float(accuracy.std(ddof=1))),
         }
 
+    operator_nonidentifying = metric_vector(grouped["full"]) == metric_vector(grouped["no_operator_split"])
+
     tex_lines = [
         "% AUTO-GENERATED from experiments/paper_results.json; do not hand edit.",
         "\\begin{table}[t]",
         "\\centering",
-        "\\caption{Canonical three-seed macrodata study. Mean $\\pm$ sample standard deviation across predeclared seeds. Regression MSE/MAE are lower-is-better; directional/classification accuracy are higher-is-better.}",
+        "\\caption{Canonical three-seed macrodata study. Mean $\\pm$ sample standard deviation across predeclared seeds. Regression MSE/MAE are lower-is-better; directional/classification accuracy are higher-is-better. The monolithic row is retained for provenance but is non-identifying because the frozen full macro configuration contains only one executed predictor stage.}",
         "\\label{tab:canonical_macro}",
         "\\begin{tabular}{lcccc}",
         "\\toprule",
@@ -90,6 +102,15 @@ def main() -> None:
 
     md += [
         "",
+        "## Post-run validity note",
+        "",
+        (
+            "- `no_operator_split` is **non-identifying in protocol v1**: the frozen full macro configuration contains one predictor stage, and monolithic mode also contains one predictor stage. "
+            + ("Its retained downstream metrics are exactly identical to full across all three seeds." if operator_nonidentifying else "Its structural non-identifiability remains regardless of observed metrics.")
+        ),
+        "- Preserve that row for provenance, but do not use it as evidence for or against operator factorization.",
+        "- The remaining paper-facing component removals (`no_ema`, `no_financial_regularizers`, `no_uncertainty_heads`, `no_memory`) alter executed computation.",
+        "",
         "## Paired seed-level comparisons",
         "",
         "Deltas are `full - comparator`; for MSE, a negative value favors full FI-JEPA. The bootstrap intervals are descriptive because the frozen study contains only three seeds.",
@@ -97,7 +118,8 @@ def main() -> None:
     ]
     for name, result in sorted(data["paired_seed_level_statistics"].items()):
         lo, hi = result["bootstrap_95ci"]
-        md.append(f"- `{name}`: mean delta {result['mean_delta']:.6f}, descriptive 95% bootstrap interval [{lo:.6f}, {hi:.6f}], n={result['n_seed_pairs']} paired seeds.")
+        suffix = " (non-identifying control; not inferential)" if "no_operator_split" in name else ""
+        md.append(f"- `{name}`: mean delta {result['mean_delta']:.6f}, descriptive 95% bootstrap interval [{lo:.6f}, {hi:.6f}], n={result['n_seed_pairs']} paired seeds.{suffix}")
 
     md += [
         "",
