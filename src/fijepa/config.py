@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Optional
 
+import yaml
+
 
 @dataclass
 class DataSyntheticConfig:
@@ -105,3 +107,30 @@ class FIJEPAConfig:
     train: TrainConfig = field(default_factory=TrainConfig)
     loss: LossConfig = field(default_factory=LossConfig)
     experiment: ExperimentConfig = field(default_factory=ExperimentConfig)
+
+
+def _apply_updates(obj, raw: dict) -> None:
+    for key, value in raw.items():
+        if not hasattr(obj, key):
+            continue
+        current = getattr(obj, key)
+        if isinstance(value, dict) and not isinstance(
+            current, (str, int, float, bool, list, tuple, type(None))
+        ):
+            _apply_updates(current, value)
+        else:
+            setattr(obj, key, value)
+
+
+def load_config(path: str) -> FIJEPAConfig:
+    """Load a YAML config through the installable package, not script-local imports."""
+    with open(path, "r", encoding="utf-8") as handle:
+        raw = yaml.safe_load(handle) or {}
+    cfg = FIJEPAConfig()
+    for scalar in ("seed", "device"):
+        if scalar in raw:
+            setattr(cfg, scalar, raw[scalar])
+    for section in ("data", "model", "train", "loss", "experiment"):
+        if section in raw:
+            _apply_updates(getattr(cfg, section), raw[section])
+    return cfg

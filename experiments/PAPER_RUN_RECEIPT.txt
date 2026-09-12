@@ -1,0 +1,9 @@
+git_sha=0057f325aec0e657bd30b89beb153a9c4c748903
+paper_results_sha256=525fe5f141bba765b3346c1aca3b327303703e5f98142b0f25d664211e10f7c8
+results_table_sha256=c9fefacea09b532667af800643c9c5a065d5abe9b7e01540ee2f5694c120f3ca
+results_summary_sha256=6d4d3dc41af182b747d59458e8a47f83b90dd6e3573a01483f1ffc70938e5d8b
+Python 3.11.16
+torch=2.14.0+cu130
+numpy=2.4.6
+scikit_learn=1.9.1
+statsmodels=0.15.0

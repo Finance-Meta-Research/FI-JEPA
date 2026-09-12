@@ -1,0 +1,91 @@
+name: Canonical FI-JEPA paper suite
+
+on:
+  push:
+    branches:
+      - research/fijepa-paper-evidence-20260909
+
+permissions:
+  contents: write
+
+jobs:
+  paper-suite:
+    if: ${{ !contains(github.event.head_commit.message, '[paper-suite-generated]') && !contains(github.event.head_commit.message, '[report-only]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+
+      - name: Compile and test
+        run: |
+          python -m compileall -q src scripts tests
+          pytest -q
+
+      - name: Run frozen canonical real-data suite
+        run: |
+          python scripts/run_paper_suite.py \
+            --config configs/benchmark_macro.yaml \
+            --seeds 7 17 27 \
+            --epochs 15 \
+            --out experiments/paper_results.json
+
+      - name: Verify paper evidence gate
+        run: python scripts/check_paper_evidence_gate.py
+
+      - name: Generate evidence-bound paper assets
+        run: python scripts/make_canonical_paper_assets.py
+
+      - name: Retain exact evidence receipt
+        run: |
+          mkdir -p experiments
+          {
+            echo "git_sha=$(git rev-parse HEAD)"
+            echo "paper_results_sha256=$(sha256sum experiments/paper_results.json | awk '{print $1}')"
+            echo "results_table_sha256=$(sha256sum paper/generated/canonical_results_table.tex | awk '{print $1}')"
+            echo "results_summary_sha256=$(sha256sum paper/generated/canonical_results_summary.md | awk '{print $1}')"
+            python --version
+            python - <<'PY'
+          import torch, numpy, sklearn, statsmodels
+          print('torch=' + torch.__version__)
+          print('numpy=' + numpy.__version__)
+          print('scikit_learn=' + sklearn.__version__)
+          print('statsmodels=' + statsmodels.__version__)
+          PY
+          } > experiments/PAPER_RUN_RECEIPT.txt
+
+      - name: Upload retained evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: fijepa-canonical-paper-evidence
+          path: |
+            experiments/paper_results.json
+            experiments/PAPER_RUN_RECEIPT.txt
+            paper/generated/canonical_results_table.tex
+            paper/generated/canonical_results_summary.md
+          if-no-files-found: error
+
+      - name: Commit canonical retained outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/paper_results.json experiments/PAPER_RUN_RECEIPT.txt paper/generated/canonical_results_table.tex paper/generated/canonical_results_summary.md
+          if git diff --cached --quiet; then
+            echo "No generated evidence changes to commit"
+            exit 0
+          fi
+          git commit -m "research: retain canonical FI-JEPA paper evidence [paper-suite-generated]"
+          git push
