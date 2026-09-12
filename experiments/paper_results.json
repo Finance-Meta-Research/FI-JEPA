@@ -24,13 +24,13 @@
     "numpy": "2.4.6",
     "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
     "python": "3.11.16",
-    "scikit_learn": "1.9.0",
+    "scikit_learn": "1.9.1",
     "statsmodels": "0.15.0",
     "torch": "2.14.0+cu130"
   },
   "epochs": 15,
-  "generated_utc": "2026-09-08T22:36:28.998379+00:00",
-  "git_sha": "680d51e48630946984e912d211760cf43753b5c8",
+  "generated_utc": "2026-09-12T16:07:39.201641+00:00",
+  "git_sha": "0057f325aec0e657bd30b89beb153a9c4c748903",
   "paired_seed_level_statistics": {
     "full_latent_minus_raw_context_ridge_mse": {
       "bootstrap_95ci": [
