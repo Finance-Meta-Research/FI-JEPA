@@ -29,6 +29,7 @@ class DataConfig:
     train_frac: float = 0.7
     val_frac: float = 0.15
     normalize: bool = True
+    causal_preprocessing: bool = False
     resample_freq: Optional[str] = None
     synthetic: DataSyntheticConfig = field(default_factory=DataSyntheticConfig)
 
