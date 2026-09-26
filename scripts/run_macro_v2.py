@@ -43,6 +43,12 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
+def git_blob_sha1(path: Path) -> str:
+    data = path.read_bytes()
+    header = f"blob {len(data)}\\0".encode("utf-8")
+    return hashlib.sha1(header + data).hexdigest()
+
+
 def canonical_macrodata_sha256() -> str:
     raw = sm.datasets.macrodata.load_pandas().data.copy()
     payload = raw.to_csv(
@@ -111,16 +117,16 @@ def assert_execution_authorized(
         )
     if freeze.get("raw_macrodata_sha256") != canonical_macrodata_sha256():
         raise MacroV2ProtocolError("statsmodels macrodata hash drift")
-    if freeze.get("config_sha256") != sha256_file(config_path):
-        raise MacroV2ProtocolError("v2 config hash drift")
 
-    source_hashes = freeze.get("source_sha256")
+    source_hashes = freeze.get("source_git_blob_sha1")
     if not isinstance(source_hashes, Mapping) or not source_hashes:
-        raise MacroV2ProtocolError("source hashes are not frozen")
+        raise MacroV2ProtocolError("source blob identities are not frozen")
+    if "configs/benchmark_macro_v2_candidate.yaml" not in source_hashes:
+        raise MacroV2ProtocolError("v2 config blob identity is not frozen")
     for raw_path, expected in source_hashes.items():
         path = Path(raw_path)
-        if not path.is_file() or sha256_file(path) != expected:
-            raise MacroV2ProtocolError(f"source hash drift: {raw_path}")
+        if not path.is_file() or git_blob_sha1(path) != expected:
+            raise MacroV2ProtocolError(f"source blob drift: {raw_path}")
 
 
 def _dataset_arrays(dataset, target_idx: int):
