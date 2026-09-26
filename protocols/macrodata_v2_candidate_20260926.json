@@ -53,25 +53,31 @@
     {
       "name": "raw_context_ridge",
       "role": "linear raw-context control",
-      "requirement": "regularization selected only on validation data"
+      "selection": "alpha in [0.01, 0.1, 1.0, 10.0, 100.0], selected by validation MSE only"
     },
     {
-      "name": "raw_context_nonlinear",
+      "name": "raw_context_hist_gradient_boosting",
       "role": "nonlinear raw-context control",
-      "requirement": "exact estimator and validation-only search grid must be frozen before authorization"
+      "selection": "validation-only 2 x 2 x 2 grid over max_leaf_nodes=[7,15], learning_rate=[0.03,0.1], l2_regularization=[0,1], max_iter=200, early_stopping=false"
     },
     {
-      "name": "capacity_matched_neural",
+      "name": "capacity_matched_direct_mlp",
       "role": "direct supervised neural control",
-      "requirement": "trainable parameter count within 10 percent of full FI-JEPA where feasible; same chronological splits, label access, seed list, and optimization/search budget"
+      "selection": "hidden width chosen analytically for closest trainable-parameter count; validation selects the best epoch checkpoint only",
+      "optimization": "same seed, epochs, batch size, AdamW learning rate, and weight decay as full FI-JEPA",
+      "capacity_rule": "relative trainable-parameter gap must be <= 0.10 or execution fails closed"
     }
   ],
   "primary_metric": {
     "name": "test_regression_mse",
-    "comparison": "full_fijepa_latent_probe minus strongest predeclared raw-context control",
+    "comparison": "full_fijepa_validation_selected_latent_ridge minus validation_selected_strongest_raw_context_control",
+    "delta_definition": "full_test_mse - selected_control_test_mse; negative favors FI-JEPA",
     "direction": "lower_is_better",
-    "practical_effect_threshold": "TBD_PRE_OUTCOME",
-    "uncertainty": "paired seed-level interval and exact rule must be frozen before authorization"
+    "minimum_relative_mse_improvement": 0.05,
+    "bootstrap_seed": 20260926,
+    "bootstrap_reps": 20000,
+    "success_rule": "Mean relative MSE improvement must be at least 5% AND the paired five-seed bootstrap 95% interval for the MSE delta must have upper endpoint below 0.",
+    "uncertainty_boundary": "With five seeds this interval is descriptive rather than definitive significance evidence."
   },
   "secondary_metrics": [
     "test_regression_mae",
@@ -82,14 +88,29 @@
     "memory_gate_mean"
   ],
   "authorization_blockers": [
-    "freeze exact statsmodels version and dataset-byte/content hash",
-    "freeze exact derived-column contract and verify causal preprocessing regression tests",
-    "implement and freeze nonlinear raw-context control",
-    "implement and freeze capacity-matched neural control",
-    "freeze matched optimization and hyperparameter-search budgets",
-    "freeze primary practical-effect threshold and paired uncertainty rule",
-    "bind exact source commit and config/protocol hashes",
-    "independent pre-outcome review"
+    "run the full repository test suite on this exact branch and resolve engineering failures without changing the frozen scientific decision rule",
+    "independent pre-outcome review of the protocol, causal preprocessing, controls, source identities, and claim boundary",
+    "if no_operator_split is to support an inferential mechanism claim, add a <=10% capacity-matched monolithic control; otherwise retain it as descriptive only",
+    "only after review, change status to FROZEN_PRE_OUTCOME_AUTHORIZED and execution_authorized=true in a dedicated authorization change before any test-outcome access"
   ],
-  "claim_boundary": "Any v2 result is limited to this small public macrodata benchmark. It does not establish trading alpha, profitability, broad financial-market generalization, causality, or state-of-the-art forecasting."
+  "claim_boundary": "Any v2 result is limited to this small public macrodata benchmark. It does not establish trading alpha, profitability, broad financial-market generalization, causality, or state-of-the-art forecasting.",
+  "control_family_selection": {
+    "rule": "For each seed, select the strongest raw-context control using validation MSE only, then expose that already-selected control exactly once to the test split.",
+    "test_metric_may_select_control": false
+  },
+  "freeze": {
+    "statsmodels_version": "0.14.6",
+    "raw_macrodata_canonicalization": "statsmodels.datasets.macrodata raw table serialized with pandas to_csv(index=False, lineterminator='\\n', float_format='%.17g')",
+    "raw_macrodata_rows": 203,
+    "raw_macrodata_columns": 14,
+    "raw_macrodata_sha256": "8b5b3b963ba136e01383c61c01f584312c511976a95ddb234cac6dafa60c4020",
+    "source_git_blob_sha1": {
+      "src/fijepa/config.py": "c8ca4d0708192c1ac3f0b33cf2cf1a87f9e24cf5",
+      "src/fijepa/data.py": "5bd27c244f14e9ed11e4fd25ff8b6dbf650cb42a",
+      "src/fijepa/controls.py": "d877e9db317fe9692f03e2a69c81ff60530c5a37",
+      "src/fijepa/benchmark.py": "f28306f6b88511b58f53e5717f4f6c1a329554d2",
+      "scripts/run_macro_v2.py": "24c638335ba0975d404fd1b2f3f195d0e0424477",
+      "configs/benchmark_macro_v2_candidate.yaml": "8b81cec96df73e546e6a1a4d73342bf126e66d08"
+    }
+  }
 }
