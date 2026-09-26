@@ -9,6 +9,7 @@ import numpy as np
 import torch
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+from .controls import regression_metrics, select_ridge_on_validation
 from .data import build_datasets, make_loader
 from .metrics import linear_probe_classification, linear_probe_regression, flatten_context_windows
 from .model import FIJEPA
@@ -107,6 +108,7 @@ def benchmark_fijepa(
     max_epochs: int = 3,
     ablation: str = "full",
     compute_probes: bool = True,
+    probe_validation_selection: bool = False,
 ) -> Dict:
     cfg = apply_ablation(config, ablation)
     cfg.seed = int(seed)
@@ -174,6 +176,10 @@ def benchmark_fijepa(
     if compute_probes:
         z_train, ctx_train, fut_train, _, _ = collect_embeddings(model, train_eval_loader, device)
         z_test, ctx_test, fut_test, gates, mems = collect_embeddings(model, test_loader, device)
+        if probe_validation_selection:
+            z_val, ctx_val, fut_val, _, _ = collect_embeddings(model, val_loader, device)
+        else:
+            z_val = ctx_val = fut_val = None
 
         target_name = cfg.data.target_cols[0] if cfg.data.target_cols else feature_cols[0]
         target_idx = feature_cols.index(target_name) if target_name in feature_cols else 0
@@ -184,8 +190,33 @@ def benchmark_fijepa(
         context_flat_train = flatten_context_windows(ctx_train)
         context_flat_test = flatten_context_windows(ctx_test)
 
-        probe_reg = linear_probe_regression(z_train_np, y_train, z_test_np, y_test)
-        base_reg = linear_probe_regression(context_flat_train, y_train, context_flat_test, y_test)
+        probe_reg_selection = {}
+        base_reg_selection = {}
+        if probe_validation_selection:
+            y_val = fut_val[:, 0, -1, target_idx].numpy()
+            z_val_np = z_val.numpy()
+            context_flat_val = flatten_context_windows(ctx_val)
+            probe_model, probe_reg_selection = select_ridge_on_validation(
+                z_train_np,
+                y_train,
+                z_val_np,
+                y_val,
+            )
+            base_model, base_reg_selection = select_ridge_on_validation(
+                context_flat_train,
+                y_train,
+                context_flat_val,
+                y_val,
+            )
+            probe_pred = probe_model.predict(z_test_np)
+            base_pred = base_model.predict(context_flat_test)
+            probe_reg = regression_metrics(y_test, probe_pred)
+            base_reg = regression_metrics(y_test, base_pred)
+            probe_reg["pred_mean"] = float(np.mean(probe_pred))
+            base_reg["pred_mean"] = float(np.mean(base_pred))
+        else:
+            probe_reg = linear_probe_regression(z_train_np, y_train, z_test_np, y_test)
+            base_reg = linear_probe_regression(context_flat_train, y_train, context_flat_test, y_test)
 
         median = np.median(y_train)
         y_bin_train = (y_train > median).astype(int)
@@ -204,6 +235,7 @@ def benchmark_fijepa(
         }
     else:
         probe_reg = base_reg = probe_cls = base_cls = {}
+        probe_reg_selection = base_reg_selection = {}
         latent_stats = {}
 
     val_totals = [float(row["val_total"]) for row in history if "val_total" in row]
@@ -217,7 +249,9 @@ def benchmark_fijepa(
         "best_val_total": float(min(val_totals)),
         "final_val_total": float(val_totals[-1]),
         "probe_regression": probe_reg,
+        "probe_regression_selection": probe_reg_selection,
         "baseline_regression": base_reg,
+        "baseline_regression_selection": base_reg_selection,
         "probe_classification": probe_cls,
         "baseline_classification": base_cls,
         "latent_stats": latent_stats,
@@ -240,6 +274,7 @@ def benchmark_suite(
     seeds: Sequence[int] = (7, 17, 27),
     ablations: Sequence[str] = ("full",),
     max_epochs: int = 1,
+    probe_validation_selection: bool = False,
 ):
     results = []
     for ablation in ablations:
@@ -250,6 +285,7 @@ def benchmark_suite(
                     seed=seed,
                     max_epochs=max_epochs,
                     ablation=ablation,
+                    probe_validation_selection=probe_validation_selection,
                 )
             )
     return results
