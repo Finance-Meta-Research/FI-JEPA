@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "protocol_id": "FIJEPA_MACRODATA_V2_CANDIDATE_20260926",
+  "status": "CANDIDATE_PRE_OUTCOME_NOT_AUTHORIZED",
+  "execution_authorized": false,
+  "predecessor_evidence": {
+    "protocol_id": "FIJEPA_MACRODATA_PAPER_V1_20260909",
+    "retained_commit": "ffa4010058825cb8c69e0e456b9b82ad8b0784d0",
+    "interpretation": "Historical negative/mixed v1 evidence remains unchanged. V2 is a new prospective study, not a rescue or retroactive modification of v1."
+  },
+  "primary_question": "Under strictly causal preprocessing and matched validation-only controls, does the FI-JEPA representation improve one-quarter-ahead GDP-growth proxy prediction relative to raw-context controls on the frozen statsmodels macrodata task?",
+  "config_path": "configs/benchmark_macro_v2_candidate.yaml",
+  "seeds_exact": [
+    101,
+    211,
+    307,
+    401,
+    503
+  ],
+  "preprocessing": {
+    "causal_preprocessing": true,
+    "timestamp_policy": "invalid timestamps fail closed; no forward/backward timestamp imputation",
+    "feature_policy": "numeric conversion followed by within-asset forward fill only; leading unfillable rows are dropped",
+    "resampling_policy": "past-only forward fill; bidirectional interpolation forbidden",
+    "normalization_policy": "fit mean/std on training rows only and reuse unchanged for validation/test",
+    "future_value_use": "forbidden"
+  },
+  "representation_design": {
+    "context_length_quarters": 8,
+    "horizons_quarters": [
+      1,
+      4
+    ],
+    "target_window_quarters": 1,
+    "predictor_mode": "split",
+    "stage_names_exact": [
+      "transition_1",
+      "transition_2"
+    ],
+    "ablation_identifiability_rule": "The full model must execute at least two sequential predictor stages. Any operator-split ablation must produce a mechanically distinct forward graph before outcome access.",
+    "interpretation_limit": "A one-stage monolithic ablation is not a pure mechanism test if capacity differs materially; capacity must be reported and the comparison kept descriptive unless a matched monolithic control is implemented."
+  },
+  "split_policy": {
+    "train_frac": 0.65,
+    "validation_frac": 0.2,
+    "test_frac": 0.15,
+    "ordering": "chronological within asset",
+    "checkpoint_selection": "validation loss only",
+    "hyperparameter_selection": "validation only",
+    "final_test_access": "single pass after all hashes, controls, seeds, metrics, and thresholds are frozen"
+  },
+  "required_controls": [
+    {
+      "name": "raw_context_ridge",
+      "role": "linear raw-context control",
+      "requirement": "regularization selected only on validation data"
+    },
+    {
+      "name": "raw_context_nonlinear",
+      "role": "nonlinear raw-context control",
+      "requirement": "exact estimator and validation-only search grid must be frozen before authorization"
+    },
+    {
+      "name": "capacity_matched_neural",
+      "role": "direct supervised neural control",
+      "requirement": "trainable parameter count within 10 percent of full FI-JEPA where feasible; same chronological splits, label access, seed list, and optimization/search budget"
+    }
+  ],
+  "primary_metric": {
+    "name": "test_regression_mse",
+    "comparison": "full_fijepa_latent_probe minus strongest predeclared raw-context control",
+    "direction": "lower_is_better",
+    "practical_effect_threshold": "TBD_PRE_OUTCOME",
+    "uncertainty": "paired seed-level interval and exact rule must be frozen before authorization"
+  },
+  "secondary_metrics": [
+    "test_regression_mae",
+    "directional_accuracy",
+    "classification_accuracy",
+    "best_validation_total",
+    "representation_dispersion",
+    "memory_gate_mean"
+  ],
+  "authorization_blockers": [
+    "freeze exact statsmodels version and dataset-byte/content hash",
+    "freeze exact derived-column contract and verify causal preprocessing regression tests",
+    "implement and freeze nonlinear raw-context control",
+    "implement and freeze capacity-matched neural control",
+    "freeze matched optimization and hyperparameter-search budgets",
+    "freeze primary practical-effect threshold and paired uncertainty rule",
+    "bind exact source commit and config/protocol hashes",
+    "independent pre-outcome review"
+  ],
+  "claim_boundary": "Any v2 result is limited to this small public macrodata benchmark. It does not establish trading alpha, profitability, broad financial-market generalization, causality, or state-of-the-art forecasting."
+}
