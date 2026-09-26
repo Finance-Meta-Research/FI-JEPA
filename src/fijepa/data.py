@@ -104,17 +104,58 @@ def load_parquet_panel(path: str) -> pd.DataFrame:
     return pd.read_parquet(path)
 
 
-def _coerce_frame(df: pd.DataFrame, timestamp_col: str, asset_col: str) -> pd.DataFrame:
+def _coerce_frame(
+    df: pd.DataFrame,
+    timestamp_col: str,
+    asset_col: str,
+    *,
+    causal_preprocessing: bool = False,
+) -> pd.DataFrame:
     df = df.copy()
     if timestamp_col in df.columns:
         ts = pd.to_datetime(df[timestamp_col], errors="coerce")
         if ts.isna().all():
             raise ValueError(f"Could not parse any timestamps from {timestamp_col}")
-        df[timestamp_col] = ts.ffill().bfill()
+        if causal_preprocessing and ts.isna().any():
+            raise ValueError(
+                "causal_preprocessing forbids filling an invalid timestamp from a later row"
+            )
+        df[timestamp_col] = ts if causal_preprocessing else ts.ffill().bfill()
     if asset_col not in df.columns:
         df[asset_col] = 0
     df[asset_col] = pd.factorize(df[asset_col])[0].astype(int)
     return df
+
+
+def _fill_feature_missing_values(
+    df: pd.DataFrame,
+    feature_cols: Sequence[str],
+    asset_col: str,
+    *,
+    causal_preprocessing: bool,
+) -> pd.DataFrame:
+    """Apply the legacy fill policy or a strictly causal per-asset alternative.
+
+    The v1 paper path remains reproducible with causal_preprocessing=False.
+    The v2 path forward-fills only within an asset and drops leading rows that
+    cannot be filled from information available at or before that timestamp.
+    """
+    out = df.copy()
+    if causal_preprocessing:
+        out.loc[:, feature_cols] = (
+            out.groupby(asset_col, sort=False)[list(feature_cols)].ffill()
+        )
+        out = out.dropna(subset=list(feature_cols)).reset_index(drop=True)
+        if out.empty:
+            raise ValueError(
+                "causal preprocessing removed every row; check leading missing values"
+            )
+    else:
+        out.loc[:, feature_cols] = (
+            out[list(feature_cols)].ffill().bfill().fillna(0.0)
+        )
+    out.loc[:, feature_cols] = out[list(feature_cols)].astype(np.float32)
+    return out
 
 
 def _infer_feature_cols(df: pd.DataFrame, timestamp_col: str, asset_col: str):
@@ -207,12 +248,21 @@ def build_datasets(config: FIJEPAConfig, df: Optional[pd.DataFrame] = None):
         else:
             raise ValueError("csv_path or parquet_path is required when source is not synthetic/macrodata and no dataframe is provided.")
 
-    df = _coerce_frame(df, config.data.timestamp_col, config.data.asset_col)
+    df = _coerce_frame(
+        df,
+        config.data.timestamp_col,
+        config.data.asset_col,
+        causal_preprocessing=config.data.causal_preprocessing,
+    )
     if config.data.resample_freq is not None and config.data.timestamp_col in df.columns:
         pieces = []
         for asset, grp in df.groupby(config.data.asset_col, sort=True):
             grp = grp.sort_values(config.data.timestamp_col).set_index(config.data.timestamp_col)
-            grp = grp.resample(config.data.resample_freq).mean(numeric_only=True).interpolate(limit_direction="both")
+            grp = grp.resample(config.data.resample_freq).mean(numeric_only=True)
+            if config.data.causal_preprocessing:
+                grp = grp.ffill()
+            else:
+                grp = grp.interpolate(limit_direction="both")
             grp[config.data.asset_col] = asset
             pieces.append(grp.reset_index())
         df = pd.concat(pieces, ignore_index=True)
@@ -225,7 +275,12 @@ def build_datasets(config: FIJEPAConfig, df: Optional[pd.DataFrame] = None):
     df = df.sort_values([config.data.asset_col, config.data.timestamp_col]).reset_index(drop=True)
     for c in feature_cols:
         df[c] = pd.to_numeric(df[c], errors="coerce")
-    df[feature_cols] = df[feature_cols].ffill().bfill().fillna(0.0).astype(np.float32)
+    df = _fill_feature_missing_values(
+        df,
+        feature_cols,
+        config.data.asset_col,
+        causal_preprocessing=config.data.causal_preprocessing,
+    )
 
     train_parts = []
     val_parts = []
