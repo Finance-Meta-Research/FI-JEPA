@@ -1,0 +1,84 @@
+name: Regenerate FI-JEPA evidence-bound preprint
+
+on:
+  push:
+    branches:
+      - research/fijepa-paper-evidence-20260909
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate-preprint:
+    if: ${{ contains(github.event.head_commit.message, '[report-only]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact reporting head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install reporting dependency only
+        run: python -m pip install numpy
+
+      - name: Verify retained result was not changed
+        run: |
+          expected=$(grep '^paper_results_sha256=' experiments/PAPER_RUN_RECEIPT.txt | cut -d= -f2)
+          actual=$(sha256sum experiments/paper_results.json | awk '{print $1}')
+          test -n "$expected"
+          test "$expected" = "$actual"
+          echo "retained result sha256=$actual"
+
+      - name: Regenerate table and summary from retained result only
+        run: python scripts/make_canonical_paper_assets.py
+
+      - name: Install LaTeX toolchain
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends latexmk texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+
+      - name: Build evidence-bound preprint
+        run: |
+          cd paper
+          latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+
+      - name: Write preprint provenance receipt
+        run: |
+          {
+            echo "reporting_git_sha=$(git rev-parse HEAD)"
+            echo "retained_paper_results_sha256=$(sha256sum experiments/paper_results.json | awk '{print $1}')"
+            echo "generated_table_sha256=$(sha256sum paper/generated/canonical_results_table.tex | awk '{print $1}')"
+            echo "generated_summary_sha256=$(sha256sum paper/generated/canonical_results_summary.md | awk '{print $1}')"
+            echo "preprint_pdf_sha256=$(sha256sum paper/main.pdf | awk '{print $1}')"
+          } > paper/PREPRINT_RECEIPT.txt
+
+      - name: Upload regenerated preprint package
+        uses: actions/upload-artifact@v4
+        with:
+          name: fijepa-evidence-bound-negative-preprint
+          path: |
+            experiments/paper_results.json
+            paper/main.tex
+            paper/main.pdf
+            paper/PREPRINT_RECEIPT.txt
+            paper/generated/canonical_results_table.tex
+            paper/generated/canonical_results_summary.md
+          if-no-files-found: error
+
+      - name: Retain generated reporting artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add paper/main.pdf paper/PREPRINT_RECEIPT.txt paper/generated/canonical_results_table.tex paper/generated/canonical_results_summary.md
+          if git diff --cached --quiet; then
+            echo "No report outputs changed"
+            exit 0
+          fi
+          git commit -m "paper: retain evidence-bound negative preprint [paper-suite-generated]"
+          git push

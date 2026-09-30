@@ -17,7 +17,7 @@ model:
   dropout: 0.1
   backbone: conv
   predictor_hidden: 8
-  stochastic: false
+  stochastic: true
   ema_decay: 0.99
   stage_names: [macro]
 train:

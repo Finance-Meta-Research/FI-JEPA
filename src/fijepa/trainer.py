@@ -4,7 +4,7 @@ import json
 import os
 from dataclasses import asdict
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 import torch
 from torch import nn
@@ -55,8 +55,16 @@ class Trainer:
             asset_id = asset_id.unsqueeze(-1)
         with autocast(enabled=self.scaler.is_enabled()):
             out = self.model(context=context, future=future, asset_id=asset_id)
-            breakdown = compute_fijepa_loss(out, context, future, self.config.loss, use_financial_regularizers=self.config.loss.use_financial_regularizers)
+            breakdown = compute_fijepa_loss(
+                out,
+                context,
+                future,
+                self.config.loss,
+                use_financial_regularizers=self.config.loss.use_financial_regularizers,
+            )
             loss = breakdown.total
+        if not torch.isfinite(loss):
+            raise FloatingPointError(f"non-finite training/evaluation loss at global_step={self.global_step}")
         return loss, breakdown.components, out, context, future
 
     def train_epoch(self, epoch: int):
@@ -67,29 +75,38 @@ class Trainer:
         for step, batch in enumerate(pbar):
             loss, comps, out, context, future = self._step(batch)
             self.scaler.scale(loss / max(1, self.config.train.accumulate_grad_batches)).backward()
-            do_step = ((step + 1) % max(1, self.config.train.accumulate_grad_batches) == 0) or (step + 1 == len(self.train_loader))
+            do_step = ((step + 1) % max(1, self.config.train.accumulate_grad_batches) == 0) or (
+                step + 1 == len(self.train_loader)
+            )
             if do_step:
                 if self.config.train.grad_clip_norm is not None:
                     self.scaler.unscale_(self.optim)
-                    nn.utils.clip_grad_norm_(self.model.parameters(), self.config.train.grad_clip_norm)
+                    grad_norm = nn.utils.clip_grad_norm_(self.model.parameters(), self.config.train.grad_clip_norm)
+                    if not torch.isfinite(grad_norm):
+                        raise FloatingPointError(
+                            f"non-finite gradient norm at epoch={epoch} step={step} global_step={self.global_step}"
+                        )
                 self.scaler.step(self.optim)
                 self.scaler.update()
                 self.optim.zero_grad(set_to_none=True)
                 self.model.update_target()
                 if hasattr(self.model, "update_memory"):
-                    try:
-                        z_ctx = out["z_context"].detach()
-                        z_tgt = out["z_targets"][:, -1, :].detach()
-                        self.model.update_memory(z_ctx, z_tgt)
-                    except Exception:
-                        pass
+                    z_ctx = out["z_context"].detach()
+                    z_tgt = out["z_targets"][:, -1, :].detach()
+                    self.model.update_memory(z_ctx, z_tgt)
             for k, v in comps.items():
+                if torch.is_tensor(v) and not torch.isfinite(v):
+                    raise FloatingPointError(
+                        f"non-finite component {k} at epoch={epoch} step={step} global_step={self.global_step}"
+                    )
                 avg[k] = avg.get(k, 0.0) + float(v.item())
             if step % self.config.train.log_every == 0 and is_rank0():
                 pbar.set_postfix({k: f"{float(v.item()):.4f}" for k, v in comps.items() if torch.is_tensor(v)})
             self.global_step += 1
+        if not avg:
+            raise RuntimeError("training loader produced zero batches")
         for k in avg:
-            avg[k] /= max(1, len(self.train_loader))
+            avg[k] /= len(self.train_loader)
         return avg
 
     @torch.no_grad()
@@ -97,11 +114,15 @@ class Trainer:
         self.model.eval()
         avg = {}
         for batch in tqdm(self.val_loader, desc="val", leave=False, disable=not is_rank0()):
-            loss, comps, out, _, _ = self._step(batch)
+            _, comps, _, _, _ = self._step(batch)
             for k, v in comps.items():
+                if torch.is_tensor(v) and not torch.isfinite(v):
+                    raise FloatingPointError(f"non-finite validation component {k}")
                 avg[k] = avg.get(k, 0.0) + float(v.item())
+        if not avg:
+            raise RuntimeError("validation loader produced zero batches")
         for k in avg:
-            avg[k] /= max(1, len(self.val_loader))
+            avg[k] /= len(self.val_loader)
         return avg
 
     def fit(self, max_epochs: Optional[int] = None):
@@ -110,16 +131,26 @@ class Trainer:
         for epoch in range(1, max_epochs + 1):
             train_metrics = self.train_epoch(epoch)
             val_metrics = self.evaluate()
-            record = {"epoch": epoch, **{f"train_{k}": v for k, v in train_metrics.items()}, **{f"val_{k}": v for k, v in val_metrics.items()}}
+            record = {
+                "epoch": epoch,
+                **{f"train_{k}": v for k, v in train_metrics.items()},
+                **{f"val_{k}": v for k, v in val_metrics.items()},
+            }
             history.append(record)
             metric = val_metrics.get("total", val_metrics.get("pred", float("inf")))
             if metric < self.best:
                 self.best = metric
                 if is_rank0():
-                    torch.save({"model": self.model.state_dict(), "config": asdict(self.config)}, self.run_dir / "best.pt")
+                    torch.save(
+                        {"model": self.model.state_dict(), "config": asdict(self.config), "epoch": epoch, "metric": metric},
+                        self.run_dir / "best.pt",
+                    )
             if is_rank0():
                 with open(self.run_dir / "history.jsonl", "a") as f:
                     f.write(json.dumps(record) + "\n")
         if is_rank0():
-            torch.save({"model": self.model.state_dict(), "config": asdict(self.config)}, self.run_dir / "last.pt")
+            torch.save(
+                {"model": self.model.state_dict(), "config": asdict(self.config), "epoch": max_epochs},
+                self.run_dir / "last.pt",
+            )
         return history

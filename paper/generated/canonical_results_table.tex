@@ -1,0 +1,19 @@
+% AUTO-GENERATED from experiments/paper_results.json; do not hand edit.
+\begin{table}[t]
+\centering
+\caption{Canonical three-seed macrodata study. Mean $\pm$ sample standard deviation across predeclared seeds. Regression MSE/MAE are lower-is-better; directional/classification accuracy are higher-is-better. The monolithic row is retained for provenance but is non-identifying because the frozen full macro configuration contains only one executed predictor stage.}
+\label{tab:canonical_macro}
+\begin{tabular}{lcccc}
+\toprule
+Condition & Regression MSE & Regression MAE & Directional acc. & Classification acc. \\
+\midrule
+Full FI-JEPA & 0.920145 $\pm$ 0.074493 & 0.683738 $\pm$ 0.048334 & 0.259259 $\pm$ 0.064150 & 0.234568 $\pm$ 0.021383 \\
+No EMA & 0.872222 $\pm$ 0.033997 & 0.650183 $\pm$ 0.032533 & 0.259259 $\pm$ 0.064150 & 0.234568 $\pm$ 0.021383 \\
+No financial regularizers & 0.915821 $\pm$ 0.071222 & 0.681149 $\pm$ 0.045780 & 0.259259 $\pm$ 0.064150 & 0.234568 $\pm$ 0.021383 \\
+Monolithic predictor (non-identifying control) & 0.920145 $\pm$ 0.074493 & 0.683738 $\pm$ 0.048334 & 0.259259 $\pm$ 0.064150 & 0.234568 $\pm$ 0.021383 \\
+No uncertainty heads & 0.912092 $\pm$ 0.051924 & 0.682212 $\pm$ 0.043498 & 0.271605 $\pm$ 0.085533 & 0.234568 $\pm$ 0.021383 \\
+No memory & 0.895743 $\pm$ 0.044221 & 0.668672 $\pm$ 0.027983 & 0.271605 $\pm$ 0.085533 & 0.234568 $\pm$ 0.021383 \\
+Raw-context Ridge & 0.441924 $\pm$ 0.000000 & 0.537767 $\pm$ 0.000000 & 0.629630 $\pm$ 0.000000 & 0.777778 $\pm$ 0.000000 \\
+\bottomrule
+\end{tabular}
+\end{table}
