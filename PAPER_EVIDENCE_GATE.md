@@ -2,7 +2,7 @@
 
 ## Current status: EXECUTED_NEGATIVE / ONE_NONIDENTIFYING_CONTROL
 
-The canonical v1 macrodata evidence run has executed and the retained artifact is frozen. Canonical workflow `34286562818` completed the predeclared 3-seed × 6-condition suite, evidence gate, asset generation, and retained-output commit. Reporting-only workflow `34287184603` regenerated the evidence-bound negative-result preprint from the unchanged retained result. Exact current head `969783021472a93b32e0df71cc71b94fec706edb` also passed the dedicated ablation-identifiability workflow `34287367098`.
+The canonical v1 macrodata evidence run has executed and the retained artifact is frozen. Canonical workflow `34286562818` completed the predeclared 3-seed × 6-condition suite, evidence gate, asset generation, and retained-output commit. Reporting-only workflow `34287184603` regenerated the evidence-bound negative-result preprint from the unchanged retained result. Historical source head `969783021472a93b32e0df71cc71b94fec706edb` also passed the dedicated ablation-identifiability workflow `34287367098`.
 
 The v1 result is adverse/negative on this compact macrodata task. The matched raw-context Ridge control outperforms the full FI-JEPA latent probe on the retained downstream metrics. `no_operator_split` is non-identifying under the frozen one-stage macro configuration, so that row remains retained for provenance but is excluded from mechanism inference. This status does not authorize post-outcome retrofit of v1, publication-strength superiority claims, or successor outcome access.
 
@@ -55,7 +55,13 @@ This is a matched downstream-evaluation control, not a claim of parameter-matche
 
 ## Gate behavior
 
-`scripts/check_paper_evidence_gate.py` fails closed when the canonical artifact is missing, under-seeded, contains duplicate/missing variant × seed cells, contains a no-op mechanism ablation, lacks the per-seed raw-context baseline, contains non-finite paper metrics, omits paired seed-level statistics, or has a mismatched protocol identity.
+`scripts/check_paper_evidence_gate.py` validates the frozen v1 saved evidence without importing model/training code. It requires the exact predeclared seeds, six-condition declaration, 15-epoch budget, explicit downstream-control flags, complete finite numeric paper metrics, and retained v1 configuration signatures. Missing/duplicate/extra run cells, booleans or numeric strings in metrics, duplicate JSON keys, and changes to those frozen declarations fail closed.
+
+It checks the 84 downstream report values against the corresponding retained raw rows, checks model validation totals, and recomputes all six full-minus-comparator paired summaries using the frozen 10,000-replicate bootstrap specification. A missing comparison, altered mean/standard deviation/interval, or changed bootstrap metadata fails. This is arithmetic verification of saved evidence, not independent model reproduction or authentication of the original execution. Full raw configuration/history, dataset provenance, and execution receipts are outside this reader validator; inspect their retained records separately. The four frozen claim-boundary statements are also required unchanged before rendering.
+
+`scripts/make_canonical_paper_assets.py` calls the same validator before writing either output, orders each condition by seed, and refuses to alias an output with its input or the other output. Focused saved-data regressions run with `python -m unittest discover -s tests -p 'test_paper_evidence_gate.py' -v` and require NumPy only.
+
+A distinct configuration signature is not proof of an identifying intervention. The gate retains all six model conditions and explicitly reports `no_operator_split` as non-identifying; it does not call them six real mechanism ablations or declare publication readiness.
 
 The post-run identifiability audit is additionally authoritative for interpretation: a retained row can exist in the frozen artifact without supporting a mechanism claim when the intervention does not change executed structure.
 
