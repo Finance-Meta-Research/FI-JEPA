@@ -18,7 +18,9 @@ def test_macro_full_enables_uncertainty_so_ablation_is_real():
     assert ablation_signature(cfg, "no_uncertainty_heads") != ablation_signature(cfg, "full")
 
 
-def test_all_paper_mechanism_ablations_change_execution_signature():
+def test_paper_conditions_have_distinct_configuration_signatures():
+    # Metadata distinction alone does not establish executed identifiability.
+    # no_operator_split is non-identifying in frozen v1; see the post-run audit.
     cfg = load_config("configs/benchmark_macro.yaml")
     full = ablation_signature(cfg, "full")
     for variant in PAPER_VARIANTS[1:]:

@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import argparse
-import json
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+
+if __package__:
+    from .check_paper_evidence_gate import load_artifact
+else:
+    from check_paper_evidence_gate import load_artifact
 
 LABELS = {
     "full": "Full FI-JEPA",
@@ -40,10 +44,18 @@ def main() -> None:
     p.add_argument("--md", default="paper/generated/canonical_results_summary.md")
     args = p.parse_args()
 
-    data = json.loads(Path(args.artifact).read_text(encoding="utf-8"))
+    # Validate every report input before touching either output file.
+    data = load_artifact(args.artifact)
+    paths = [Path(path).resolve() for path in (args.artifact, args.tex, args.md)]
+    aliases = any(left.exists() and right.exists() and left.samefile(right)
+                  for index, left in enumerate(paths) for right in paths[index + 1:])
+    if len(set(paths)) != 3 or aliases:
+        raise SystemExit("Report outputs must be distinct from each other and the retained artifact")
     grouped = defaultdict(list)
     for run in data["runs"]:
         grouped[run["variant"]].append(run)
+    for rows in grouped.values():
+        rows.sort(key=lambda row: row["seed"])
 
     order = list(data["required_variants"]) + [data["downstream_baseline"]]
     stats = {}
