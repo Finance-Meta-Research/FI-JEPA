@@ -117,8 +117,10 @@ def main() -> None:
     print(
         "PAPER_EVIDENCE_GATE_PASS: "
         f"protocol={EXPECTED_PROTOCOL}; {len(seeds)} seeds; "
-        f"{len(REQUIRED_VARIANTS)} real mechanism variants; matched downstream baseline present; "
-        "paired seed-level statistics retained."
+        f"{len(REQUIRED_VARIANTS)} retained model conditions; matched downstream baseline present; "
+        "paired seed-level statistics retained. "
+        "Interpretation: no_operator_split is non-identifying in the frozen one-stage v1; "
+        "configuration signatures do not establish an executed mechanism difference."
     )
 
 
