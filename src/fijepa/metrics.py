@@ -18,11 +18,37 @@ def latent_statistics(z: torch.Tensor) -> Dict[str, float]:
     }
 
 
+def _paired_targets(y_true, y_pred):
+    """Align scalar targets without allowing cross-observation broadcasting.
+
+    A vector and a one-column matrix describe the same scalar target. Multiple
+    outputs must have exactly matching (observations, outputs) shapes.
+    """
+    arrays = []
+    for name, values in (("y_true", y_true), ("y_pred", y_pred)):
+        values = np.asarray(values)
+        if values.ndim == 1:
+            values = values[:, None]
+        if values.ndim != 2 or 0 in values.shape:
+            raise ValueError(f"{name} must be a nonempty vector or matrix")
+        if values.dtype.kind not in "biuf" or not np.isfinite(values).all():
+            raise ValueError(f"{name} must contain finite real numbers")
+        arrays.append(values)
+    if arrays[0].shape != arrays[1].shape:
+        raise ValueError(
+            f"target and prediction shapes must match: "
+            f"{arrays[0].shape} != {arrays[1].shape}"
+        )
+    return arrays
+
+
 def directional_accuracy(y_true, y_pred) -> float:
-    return float(np.mean((np.asarray(y_true) >= 0) == (np.asarray(y_pred) >= 0)))
+    y_true, y_pred = _paired_targets(y_true, y_pred)
+    return float(np.mean((y_true >= 0) == (y_pred >= 0)))
 
 
 def regression_report(y_true, y_pred) -> Dict[str, float]:
+    y_true, y_pred = _paired_targets(y_true, y_pred)
     return {
         "mse": float(mean_squared_error(y_true, y_pred)),
         "mae": float(mean_absolute_error(y_true, y_pred)),

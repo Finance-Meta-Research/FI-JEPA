@@ -25,3 +25,25 @@ python scripts/make_paper_assets.py
 ## Notes
 
 The paper is written in LaTeX and is meant to compile directly from `paper/main.tex` without BibTeX.
+
+## Prospective evaluation
+
+`scripts/eval_v2.py` evaluates a supplied checkpoint with observation-weighted
+latent metrics, including a short final batch:
+
+```bash
+python scripts/eval_v2.py --config path/to/run.yaml --checkpoint path/to/best.pt --split validation
+```
+
+The checkpoint's saved model, data and seed configuration must match the supplied
+configuration. The report records its metric version, checkpoint and resolved
+configuration hashes, sample/batch counts, device and seed. For stochastic
+multi-stage predictors, retain the batch size as well: random draws can still
+depend on batching. The reducer is invariant to partitioning fixed predictions;
+it does not redefine the model's stochastic policy.
+
+The original evaluator, validation-based checkpoint selection, v1 artifacts and
+closed negative/boundary conclusion retain their historical meaning. This command
+does not authorize a successor experiment. See
+`research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md` for the numerical contract and
+generated-fixture verification.
