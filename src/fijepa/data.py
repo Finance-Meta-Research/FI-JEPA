@@ -22,15 +22,47 @@ class FitNormalizer:
         self.std = None
 
     def fit(self, arr: np.ndarray):
-        arr = np.asarray(arr, dtype=np.float32)
-        self.mean = arr.mean(axis=0)
-        self.std = arr.std(axis=0) + 1e-6
+        arr = self._matrix(arr)
+        with np.errstate(over="ignore", invalid="ignore"):
+            mean = arr.mean(axis=0)
+            std = arr.std(axis=0) + 1e-6
+        if not np.isfinite(mean).all() or not np.isfinite(std).all():
+            # Preserve the original float32 path whenever it is well-defined.
+            # Finite float32 observations fit safely in float64 reductions.
+            wide = arr.astype(np.float64)
+            mean = wide.mean(axis=0)
+            std = wide.std(axis=0) + 1e-6
+        if not np.isfinite(mean).all() or not np.isfinite(std).all() or np.any(std <= 0):
+            raise ValueError("Normalizer statistics must be finite with positive scale")
+        self.mean, self.std = mean, std
         return self
+
+    @staticmethod
+    def _matrix(arr, width=None):
+        raw = np.asarray(arr)
+        if (raw.ndim != 2 or raw.shape[1] == 0 or (width is None and raw.shape[0] == 0) or raw.dtype.kind not in "iuf"
+                or not np.isfinite(raw).all()):
+            raise ValueError("Features must be a nonempty finite real matrix")
+        if width is not None and raw.shape[1] != width:
+            raise ValueError("Feature count does not match the fitted normalizer")
+        with np.errstate(over="ignore", invalid="ignore"):
+            converted = raw.astype(np.float32)
+        if not np.isfinite(converted).all():
+            raise ValueError("Features must remain finite after float32 conversion")
+        return converted
 
     def transform(self, arr: np.ndarray):
         if self.mean is None or self.std is None:
             raise ValueError("Normalizer not fit.")
-        return (np.asarray(arr, dtype=np.float32) - self.mean) / self.std
+        arr = self._matrix(arr, len(self.mean))
+        with np.errstate(over="ignore", invalid="ignore"):
+            normalized = (arr - self.mean) / self.std
+            if not np.isfinite(normalized).all():
+                normalized = (arr.astype(np.float64) - self.mean.astype(np.float64)) / self.std.astype(np.float64)
+            normalized = normalized.astype(np.float32)
+        if not np.isfinite(normalized).all():
+            raise ValueError("Normalized features must be finite float32 values")
+        return normalized
 
 
 def _make_timestamp_index(n: int, freq: str = "Q"):

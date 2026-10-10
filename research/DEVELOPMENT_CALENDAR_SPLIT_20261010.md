@@ -88,3 +88,27 @@ function passed. The old function divided a five-row timestamp between splits;
 the corrected function retained all five rows together. PyTorch was unavailable
 locally, so whole-package/model integration is delegated to the PR's temporal
 CI job and must not be described as locally passed.
+
+## Second pass: finite normalization with transactional fitted state
+
+At reviewed head `1416cecbd79fc35b4c5df09b1a3da3682c36fc2e`, finite float32
+observations such as [-3e38, 3e38] or repeated 1e38 values overflowed the mean
+or variance reductions, producing zero/NaN normalized features. A failed refit
+could also overwrite valid statistics; mismatched feature counts could broadcast
+into an unintended matrix instead of failing.
+
+The normalizer now validates finite real matrices and float32 representability
+before updating fitted state. It preserves the existing float32 arithmetic
+bit-for-bit whenever those reductions are finite; only overflowing reductions
+use float64 statistics. Transform validates the fitted width and finite float32
+outputs, with a wider subtraction fallback when needed. Empty transform batches
+with a valid feature width remain admissible. Invalid refits leave prior fitted
+state intact. The model, losses, calendar split and existing memory-isolation
+follow-up are unchanged; retained v1 results are not recalculated.
+
+Fifteen independent numerical/admission cases produced **14 failures and 1 pass**
+on the reviewed source. The targeted suite combines these with 42 retained
+calendar/temporal tests. A float64 reference checks overflowing inputs, while
+ordinary random float32 data must match the historical rounding exactly. The
+bounded temporal workflow now checks out the exact PR revision and includes
+these tests. This repairs prospective execution; it is not a new scientific run.
