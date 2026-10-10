@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from numbers import Real
+from numbers import Integral, Real
 from typing import List, Mapping, Optional, Sequence
 
 import numpy as np
@@ -255,6 +255,35 @@ def _causal_resample(
     return pd.concat(pieces, ignore_index=True)
 
 
+def _validate_window_spec(context_length, horizons, target_window):
+    """Admit observation counts before casting or constructing any windows.
+
+    Horizon 1 begins immediately after the final context row. Zero or negative
+    horizons would expose context observations as supposedly future targets.
+    Fractional values must not be silently truncated to another experiment.
+    """
+    def positive_integer(name, value):
+        if (
+            not isinstance(value, Integral)
+            or isinstance(value, (bool, np.bool_))
+            or value <= 0
+        ):
+            raise ValueError(f"{name} must be a positive integer")
+        return int(value)
+
+    context_length = positive_integer("context_length", context_length)
+    target_window = positive_integer("target_window", target_window)
+    try:
+        declared_horizons = tuple(horizons)
+    except TypeError as exc:
+        raise ValueError("horizons must be a nonempty sequence of positive integers") from exc
+    if not declared_horizons:
+        raise ValueError("horizons must be a nonempty sequence of positive integers")
+    admitted_horizons = [positive_integer("horizon", h) for h in declared_horizons]
+    # Preserve the existing canonical ordering/deduplication for valid counts.
+    return context_length, sorted(set(admitted_horizons)), target_window
+
+
 class MarketWindowDataset(Dataset):
     def __init__(
         self,
@@ -269,11 +298,11 @@ class MarketWindowDataset(Dataset):
         normalizer: Optional[FitNormalizer] = None,
         asset_to_idx: Optional[Mapping] = None,
     ):
+        self.context_length, self.horizons, self.target_window = _validate_window_spec(
+            context_length, horizons, target_window
+        )
         self.frame = frame.copy()
         self.feature_cols = list(feature_cols)
-        self.context_length = int(context_length)
-        self.horizons = list(sorted(set(int(h) for h in horizons)))
-        self.target_window = int(target_window)
         self.timestamp_col = timestamp_col
         self.asset_col = asset_col
         self.normalize = normalize
@@ -403,6 +432,9 @@ def split_panel_by_time(
 def build_datasets(
     config: FIJEPAConfig, df: Optional[pd.DataFrame] = None
 ):
+    context_length, horizons, target_window = _validate_window_spec(
+        config.data.context_length, config.data.horizons, config.data.target_window
+    )
     if config.data.source == "synthetic":
         df = generate_synthetic_market(
             config.data.synthetic.num_assets,
@@ -487,9 +519,9 @@ def build_datasets(
     train_ds = MarketWindowDataset(
         train_df,
         feature_cols,
-        config.data.context_length,
-        config.data.horizons,
-        config.data.target_window,
+        context_length,
+        horizons,
+        target_window,
         timestamp_col=config.data.timestamp_col,
         asset_col=config.data.asset_col,
         normalize=config.data.normalize,
@@ -499,9 +531,9 @@ def build_datasets(
     val_ds = MarketWindowDataset(
         val_df,
         feature_cols,
-        config.data.context_length,
-        config.data.horizons,
-        config.data.target_window,
+        context_length,
+        horizons,
+        target_window,
         timestamp_col=config.data.timestamp_col,
         asset_col=config.data.asset_col,
         normalize=config.data.normalize,
@@ -511,9 +543,9 @@ def build_datasets(
     test_ds = MarketWindowDataset(
         test_df,
         feature_cols,
-        config.data.context_length,
-        config.data.horizons,
-        config.data.target_window,
+        context_length,
+        horizons,
+        target_window,
         timestamp_col=config.data.timestamp_col,
         asset_col=config.data.asset_col,
         normalize=config.data.normalize,

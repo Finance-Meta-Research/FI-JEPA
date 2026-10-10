@@ -5,6 +5,27 @@ macrodata result and every retained artifact remain unchanged. No training,
 protected evaluation, new research outcome, or trading claim is part of this
 change. The canonical disposition remains in `FINAL_STATUS_2026-09-30.md`.
 
+## Follow-up: reject context leakage from invalid window counts
+
+The previous constructor applied `int()` to every length and horizon without
+admission checks. A declared horizon of zero starts its target on the final
+context observation, and a negative horizon starts even earlier. Fractional
+counts silently selected a different experiment (for example, `0.9` became
+zero). Empty horizon lists failed later with an unrelated `max()` exception.
+
+Both the direct dataset API and `build_datasets` now require nonempty, strictly
+positive integer horizons and positive integer context/target lengths, rejecting
+booleans and lossy casts. The top-level builder validates before generating or
+loading observations. Valid integer configurations retain the same row indices,
+target convention, sorted/deduplicated horizons, and tensor values. NumPy integer
+counts remain accepted. No model, loss, trained parameter, seed, frozen protocol,
+retained result, or transaction-cost assumption is changed.
+
+Twenty additional generated-fixture regression cases exercise rejection,
+early failure before data generation, and exact multihorizon row membership.
+The local admission probe uses the exact source validation function; complete
+tensor integration is checked by the existing bounded Temporal Integrity CI job.
+
 ## Defects
 
 1. `build_datasets` split each asset's lifetime separately. For staggered

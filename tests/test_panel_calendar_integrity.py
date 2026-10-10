@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from fijepa.config import FIJEPAConfig
-from fijepa.data import build_datasets, split_panel_by_time
+from fijepa.data import MarketWindowDataset, build_datasets, split_panel_by_time
 
 
 def _config():
@@ -109,3 +109,52 @@ def test_direct_split_rejects_missing_timestamp():
     df.loc[0, "timestamp"] = pd.NaT
     with pytest.raises(ValueError, match="timestamp"):
         split_panel_by_time(df, "timestamp", 0.5, 0.25)
+
+
+@pytest.mark.parametrize("context_length,horizons,target_window", [
+    (2, [0], 1), (2, [-1], 1), (2, [0.9], 1), (2, [1.9], 1),
+    (2, [True], 1), (2, [np.bool_(True)], 1), (2, ["1"], 1),
+    (0, [1], 1), (-1, [1], 1), (2.9, [1], 1), (True, [1], 1),
+    (2, [1], 0), (2, [1], -1), (2, [1], 1.5), (2, [1], False),
+    (2, [], 1), (2, None, 1), (2, [float("nan")], 1),
+])
+def test_dataset_rejects_noncausal_or_lossy_window_spec(
+    context_length, horizons, target_window
+):
+    with pytest.raises(ValueError, match="positive integer"):
+        MarketWindowDataset(
+            _panel(), ["x"], context_length, horizons, target_window,
+            normalize=False,
+        )
+
+
+def test_invalid_window_spec_fails_before_synthetic_generation(monkeypatch):
+    cfg = FIJEPAConfig()
+    cfg.data.horizons = [0]
+
+    def unexpected_generation(*args, **kwargs):
+        pytest.fail("invalid window specification reached synthetic generation")
+
+    monkeypatch.setattr("fijepa.data.generate_synthetic_market", unexpected_generation)
+    with pytest.raises(ValueError, match="horizon must be a positive integer"):
+        build_datasets(cfg)
+
+
+def test_positive_horizons_preserve_exact_context_and_future_rows():
+    df = pd.DataFrame({
+        "timestamp": pd.date_range("2020-01-01", periods=8, freq="D"),
+        "asset_id": 0,
+        "x": np.arange(8.),
+    })
+    ds = MarketWindowDataset(
+        df, ["x"], np.int64(2), [np.int64(3), 1, 3], np.int64(2),
+        normalize=False,
+    )
+    assert len(ds) == 3
+    assert ds.horizons == [1, 3]
+    np.testing.assert_array_equal(ds[0]["context"].numpy().ravel(), [0, 1])
+    np.testing.assert_array_equal(ds[0]["futures"].numpy()[:, :, 0], [[2, 3], [4, 5]])
+    np.testing.assert_array_equal(ds[-1]["context"].numpy().ravel(), [2, 3])
+    np.testing.assert_array_equal(ds[-1]["futures"].numpy()[:, :, 0], [[4, 5], [6, 7]])
+    for _, _, context_end, future_windows in ds.windows:
+        assert all(future_start >= context_end for future_start, _ in future_windows)
