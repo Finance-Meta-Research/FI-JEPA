@@ -3,13 +3,15 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import asdict
+from itertools import islice
+from operator import index
 from pathlib import Path
 from typing import Optional
 
 import torch
 from torch import nn
+from torch.cuda.amp import GradScaler, autocast
 from torch.optim import AdamW
-from torch.cuda.amp import autocast, GradScaler
 from tqdm import tqdm
 
 from .losses import compute_fijepa_loss
@@ -21,6 +23,31 @@ def is_distributed():
 
 def is_rank0():
     return int(os.environ.get("RANK", "0")) == 0
+
+
+def _accumulation_groups(loader, accumulation_steps):
+    """Yield bounded groups with their actual sample count, including the tail.
+
+    Each microbatch loss is a mean. Its gradient therefore has weight
+    ``microbatch_size / group_sample_count``. Batch-dependent regularizers still
+    operate on their original microbatch; accumulation does not change that
+    scientific choice or pretend to reproduce a larger covariance batch.
+    """
+    if isinstance(accumulation_steps, bool):
+        raise ValueError("accumulate_grad_batches must be a positive integer")
+    try:
+        accumulation_steps = index(accumulation_steps)
+    except TypeError as exc:
+        raise ValueError("accumulate_grad_batches must be a positive integer") from exc
+    if accumulation_steps < 1:
+        raise ValueError("accumulate_grad_batches must be a positive integer")
+    batches = iter(loader)
+    while group := list(islice(batches, accumulation_steps)):
+        sizes = [len(batch["context"]) for batch in group]
+        if any(size < 1 for size in sizes):
+            raise ValueError("gradient accumulation received an empty microbatch")
+        total = sum(sizes)
+        yield [(batch, size / total) for batch, size in zip(group, sizes)]
 
 
 class Trainer:
@@ -69,16 +96,27 @@ class Trainer:
 
     def train_epoch(self, epoch: int):
         self.model.train()
-        pbar = tqdm(self.train_loader, desc=f"train {epoch}", leave=False, disable=not is_rank0())
+        groups = _accumulation_groups(self.train_loader, self.config.train.accumulate_grad_batches)
+        pbar = tqdm(total=len(self.train_loader), desc=f"train {epoch}", leave=False, disable=not is_rank0())
         avg = {}
         self.optim.zero_grad(set_to_none=True)
-        for step, batch in enumerate(pbar):
-            loss, comps, out, context, future = self._step(batch)
-            self.scaler.scale(loss / max(1, self.config.train.accumulate_grad_batches)).backward()
-            do_step = ((step + 1) % max(1, self.config.train.accumulate_grad_batches) == 0) or (
-                step + 1 == len(self.train_loader)
-            )
-            if do_step:
+        step = 0
+        try:
+            for group in groups:
+                for batch, loss_weight in group:
+                    loss, comps, out, _context, _future = self._step(batch)
+                    self.scaler.scale(loss * loss_weight).backward()
+                    for k, v in comps.items():
+                        if torch.is_tensor(v) and not torch.isfinite(v):
+                            raise FloatingPointError(
+                                f"non-finite component {k} at epoch={epoch} step={step} global_step={self.global_step}"
+                            )
+                        avg[k] = avg.get(k, 0.0) + float(v.item())
+                    if step % self.config.train.log_every == 0 and is_rank0():
+                        pbar.set_postfix({k: f"{float(v.item()):.4f}" for k, v in comps.items() if torch.is_tensor(v)})
+                    self.global_step += 1
+                    step += 1
+                    pbar.update(1)
                 if self.config.train.grad_clip_norm is not None:
                     self.scaler.unscale_(self.optim)
                     grad_norm = nn.utils.clip_grad_norm_(self.model.parameters(), self.config.train.grad_clip_norm)
@@ -94,15 +132,8 @@ class Trainer:
                     z_ctx = out["z_context"].detach()
                     z_tgt = out["z_targets"][:, -1, :].detach()
                     self.model.update_memory(z_ctx, z_tgt)
-            for k, v in comps.items():
-                if torch.is_tensor(v) and not torch.isfinite(v):
-                    raise FloatingPointError(
-                        f"non-finite component {k} at epoch={epoch} step={step} global_step={self.global_step}"
-                    )
-                avg[k] = avg.get(k, 0.0) + float(v.item())
-            if step % self.config.train.log_every == 0 and is_rank0():
-                pbar.set_postfix({k: f"{float(v.item()):.4f}" for k, v in comps.items() if torch.is_tensor(v)})
-            self.global_step += 1
+        finally:
+            pbar.close()
         if not avg:
             raise RuntimeError("training loader produced zero batches")
         for k in avg:
