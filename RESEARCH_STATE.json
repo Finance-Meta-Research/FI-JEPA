@@ -75,6 +75,22 @@
       "scientific_outcomes_created": false
     }
   ],
+  "active_development_revision": "recorded-training-20261010",
+  "development_revisions": [
+    {
+      "id": "recorded-training-20261010",
+      "phase": "SPECIFIED_BEFORE_IMPLEMENTATION",
+      "specification": "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md",
+      "dependency_commits": [
+        "578cabafb02368985f73765c741bce46aedf11d7",
+        "fb3f950414cc1c965702a4b83001dbc91624b44e"
+      ],
+      "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+      "development_budget": "Generated local fixtures and CPU correctness checks only; bounded child processes, no scientific campaign",
+      "protected_evaluation_opened": false,
+      "planned_change": "Integrate the existing data, optimizer and evaluation corrections; add explicit attempt directories, finite runtime budgets, retained inputs and logs, and terminal execution receipts around the unchanged training command."
+    }
+  ],
   "verification": {
     "local_full_suite": {
       "passed": 86,
