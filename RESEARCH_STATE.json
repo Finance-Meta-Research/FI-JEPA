@@ -203,6 +203,21 @@
       "additional_execution_commands": 0,
       "budget_remains_closed": true,
       "prior_gates_and_demo_are_historical_source_bound_receipts": true
+    },
+    {
+      "event": "reviewed_development_draft_published",
+      "session_id": "20261010-0945-active-prototype-writes",
+      "pull_request": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/14",
+      "implementation_commit": "99f711fd2987563e30c6ce052e442e3790099554",
+      "implementation_tree": "0255fe0d2f21c8c3487cb97f266f2aa0567100af",
+      "ordered_parents": [
+        "be41043d041e61ce54d7e75c66165e9dd21407c0"
+      ],
+      "all_tree_leaves_verified": 170,
+      "changed_files_verified": 36,
+      "metadata_only_closure": true,
+      "execution_budget_stays_closed": true,
+      "scientific_completion": false
     }
   ],
   "active_development_revision": "20261010-0945-active-prototype-writes",
@@ -370,7 +385,7 @@
     "opened_before_implementation": true,
     "recorded_utc": "2026-10-10 09:57:23 UTC",
     "parent_commit": "950bbed595e750498e7f8360720eff0ec703aa78",
-    "status": "ENGINEERING_CLOSED_VERIFIED_PENDING_DRAFT_PUBLICATION",
+    "status": "ENGINEERING_CLOSED_PUBLISHED_DRAFT",
     "contract": "research/DEVELOPMENT_ACTIVE_PROTOTYPE_WRITES_20261010.md",
     "budget": {
       "local_test_or_probe_commands": 5,
@@ -434,9 +449,14 @@
     "publication": {
       "branch": "codex/active-prototype-writes-20261010-0945",
       "base_branch": "codex/fijepa-recorded-training-20261010",
-      "status": "PREPARED_AFTER_INDEPENDENT_REVIEW",
-      "hosted_verification": "Not yet observed; no hosted pass asserted by this state.",
-      "parent_metadata_refresh": "be41043d041e61ce54d7e75c66165e9dd21407c0"
+      "status": "PUBLISHED_DRAFT",
+      "hosted_verification": "Pending at this metadata-only closure; current-head observations are recorded in the PR body and coordinator receipt.",
+      "parent_metadata_refresh": "be41043d041e61ce54d7e75c66165e9dd21407c0",
+      "pull_request": 14,
+      "url": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/14",
+      "implementation_commit": "99f711fd2987563e30c6ce052e442e3790099554",
+      "implementation_tree": "0255fe0d2f21c8c3487cb97f266f2aa0567100af",
+      "head_reference": "refs/heads/codex/active-prototype-writes-20261010-0945"
     },
     "integration_verification": "research/verification/active_prototype_writes_20261010/integration_parent.json"
   }
