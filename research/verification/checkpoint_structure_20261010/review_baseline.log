@@ -1,0 +1,128 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______________ test_zero_layer_inferred_mlp_state_is_admissible _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-467/test_zero_layer_inferred_mlp_s0')
+
+    def test_zero_layer_inferred_mlp_state_is_admissible(tmp_path):
+        config = fixture_run(
+            tmp_path, "mlp", infer_features=True, input_width=8, num_layers=0,
+        )
+        rng = torch.get_rng_state().clone()
+>       assert _validate_outputs(tmp_path, config)["epochs_completed"] == 1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_recorded_checkpoint_structure.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+run_dir = PosixPath('/tmp/pytest-of-root/pytest-467/test_zero_layer_inferred_mlp_s0')
+config = {'seed': 7, 'device': 'cpu', 'data': {'source': 'synthetic', 'csv_path': None, 'parquet_path': None, 'timestamp_col': 'timestamp', ...}, 'model': {'d_model': 8, 'latent_dim': 4, 'num_assets': 8, 'num_layers': 0, ...}, ...}
+
+    def _validate_outputs(run_dir: Path, config: dict) -> dict:
+        def canonical(value):
+            return json.dumps(value, sort_keys=True, allow_nan=False, separators=(",", ":"))
+    
+        snapshots = {}
+    
+        def read_snapshot(name):
+            with _regular_reader(run_dir / name, allow_symlinks=False) as handle:
+                raw = handle.read()
+            snapshots[f"training/{name}"] = {
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "bytes": len(raw),
+            }
+            return raw
+    
+        expected_config = canonical(config)
+        if canonical(_strict_json(read_snapshot("config.json"))) != expected_config:
+            raise ValueError(
+                "trainer output configuration differs from the retained configuration"
+            )
+        history = [
+            _strict_json(line)
+            for line in read_snapshot("history.jsonl").splitlines()
+            if line.strip()
+        ]
+        epochs = config["train"]["max_epochs"]
+        if len(history) != epochs or any(
+            not isinstance(row, dict)
+            or type(row.get("epoch")) is not int
+            or row["epoch"] != index
+            for index, row in enumerate(history, start=1)
+        ):
+            raise ValueError(
+                "trainer history does not contain exactly the requested epochs"
+            )
+        for row in history:
+            for name in ("train_total", "val_total"):
+                value = row.get(name)
+                if (
+                    isinstance(value, bool)
+                    or not isinstance(value, (int, float))
+                    or not math.isfinite(value)
+                ):
+                    raise ValueError(f"history contains an invalid {name}")
+        expected_best = min(history, key=lambda row: row["val_total"])
+        expected_state = None
+        for name in ("best.pt", "last.pt"):
+            checkpoint = torch.load(
+                io.BytesIO(read_snapshot(name)),
+                map_location="cpu",
+                weights_only=True,
+            )
+            if (
+                not isinstance(checkpoint, dict)
+                or canonical(checkpoint.get("config")) != expected_config
+            ):
+                raise ValueError(f"{name} is not bound to the retained configuration")
+            expected_epoch = expected_best["epoch"] if name == "best.pt" else epochs
+            if (
+                type(checkpoint.get("epoch")) is not int
+                or checkpoint["epoch"] != expected_epoch
+            ):
+                raise ValueError(f"{name} has an inconsistent epoch")
+            if name == "best.pt":
+                metric = checkpoint.get("metric")
+                if (
+                    isinstance(metric, bool)
+                    or not isinstance(metric, (int, float))
+                    or metric != expected_best["val_total"]
+                ):
+                    raise ValueError(
+                        "best.pt does not match the validation-selected history row"
+                    )
+            state = checkpoint.get("model")
+            if (
+                not isinstance(state, dict)
+                or not state
+                or any(
+                    not isinstance(value, torch.Tensor) or not torch.isfinite(value).all()
+                    for value in state.values()
+                )
+            ):
+                raise ValueError(f"{name} has missing or non-finite model tensors")
+            if expected_state is None:
+                feature_cols = config["data"].get("feature_cols")
+                if feature_cols is not None:
+                    input_dim = len(feature_cols)
+                else:
+                    backbone = config["model"]["backbone"]
+                    input_key = (
+                        "online_encoder.backbone.input_proj.weight"
+                        if backbone == "transformer"
+                        else "online_encoder.backbone.net.0.weight"
+                    )
+                    projection = state.get(input_key)
+                    expected_rank = 3 if backbone == "conv" else 2
+                    if (
+                        projection is None
+                        or projection.ndim != expected_rank
+                        or projection.shape[1] < 1
+                    ):
+>                       raise ValueError(f"{name} has invalid model structure at input")
+E                       ValueError: best.pt has invalid model structure at input
+
+src/fijepa/recorded_training.py:226: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_recorded_checkpoint_structure.py::test_zero_layer_inferred_mlp_state_is_admissible
+1 failed in 11.83s

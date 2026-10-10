@@ -73,9 +73,16 @@
       "source_commit": "f873f1f50740ff49f6b4eb252bcef7cb953e581f",
       "status": "exact-commit hosted evaluation: 86 passed and isolated lint passed; temporal-integrity and ablation-identifiability workflows passed; draft PR #12 remains pending integration",
       "scientific_outcomes_created": false
+    },
+    {
+      "date": "2026-10-10",
+      "kind": "engineering_checkpoint_structure",
+      "record": "research/DEVELOPMENT_CHECKPOINT_STRUCTURE_20261010.md",
+      "status": "17 pre-fix fixture failures plus 1 review-discovered compatibility failure retained. Final193 local tests pass (24 new), with 13 warnings; first interrupted full run retained and not counted as a pass. Hosted exact-source checks pending.",
+      "scientific_outcomes_created": false
     }
   ],
-  "active_development_revision": "recorded-training-20261010-hosted",
+  "active_development_revision": "checkpoint-structure-20261010-verified",
   "development_revisions": [
     {
       "id": "recorded-training-20261010",
@@ -130,6 +137,35 @@
       "pending_gates": [
         "Review and integration of the draft development branch.",
         "Any scientific successor requires its own prospective frozen study and empirical evidence."
+      ]
+    },
+    {
+      "id": "checkpoint-structure-20261010",
+      "parent_revision": "recorded-training-20261010-hosted",
+      "phase": "SPECIFIED_BEFORE_IMPLEMENTATION",
+      "parent_commit": "950bbed595e750498e7f8360720eff0ec703aa78",
+      "specification": "research/DEVELOPMENT_CHECKPOINT_STRUCTURE_20261010.md",
+      "planned_change": "Require complete model keys, tensor shapes and dtypes before completing a recorded attempt, using configured meta-device model structure; preserve training and scientific history.",
+      "protected_evaluation_opened": false,
+      "scientific_outcomes_created": false,
+      "new_fixture_budget": 24,
+      "full_suite_budget": 2
+    },
+    {
+      "id": "checkpoint-structure-20261010-verified",
+      "parent_revision": "checkpoint-structure-20261010",
+      "phase": "LOCALLY_VERIFIED_PENDING_HOSTED_REVIEW",
+      "verification": "research/verification/checkpoint_structure_20261010/receipt.json",
+      "local_full_suite_passed": 193,
+      "new_regression_tests": 24,
+      "independent_source_review": "passed after empty-backbone compatibility correction; no independent rerun",
+      "scientific_outcomes_created": false,
+      "protected_evaluation_opened": false,
+      "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+      "pending_gates": [
+        "Exact published-source hosted full correctness suite",
+        "Review and default-branch integration",
+        "Any scientific successor requires its own prospective frozen study"
       ]
     }
   ],

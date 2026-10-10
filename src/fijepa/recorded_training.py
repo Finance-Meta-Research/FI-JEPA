@@ -20,7 +20,8 @@ from pathlib import Path
 import torch
 import yaml
 
-from .config import load_config
+from .config import ModelConfig, load_config
+from .model import FIJEPA
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = "fijepa_recorded_training_v1"
@@ -166,6 +167,7 @@ def _validate_outputs(run_dir: Path, config: dict) -> dict:
             ):
                 raise ValueError(f"history contains an invalid {name}")
     expected_best = min(history, key=lambda row: row["val_total"])
+    expected_state = None
     for name in ("best.pt", "last.pt"):
         checkpoint = torch.load(
             io.BytesIO(read_snapshot(name)),
@@ -203,6 +205,49 @@ def _validate_outputs(run_dir: Path, config: dict) -> dict:
             )
         ):
             raise ValueError(f"{name} has missing or non-finite model tensors")
+        if expected_state is None:
+            feature_cols = config["data"].get("feature_cols")
+            if feature_cols is not None:
+                input_dim = len(feature_cols)
+            elif (
+                config["model"]["backbone"] in ("mlp", "conv")
+                and config["model"]["num_layers"] == 0
+            ):
+                # An empty backbone is supported when the original input width
+                # already equals its downstream projection/normalization width.
+                input_dim = config["model"]["d_model"]
+            else:
+                backbone = config["model"]["backbone"]
+                input_key = (
+                    "online_encoder.backbone.input_proj.weight"
+                    if backbone == "transformer"
+                    else "online_encoder.backbone.net.0.weight"
+                )
+                projection = state.get(input_key)
+                expected_rank = 3 if backbone == "conv" else 2
+                if (
+                    projection is None
+                    or projection.ndim != expected_rank
+                    or projection.shape[1] < 1
+                ):
+                    raise ValueError(f"{name} has invalid model structure at input")
+                input_dim = projection.shape[1]
+            if input_dim < 1:
+                raise ValueError(f"{name} has invalid model structure at input")
+            # Meta construction validates structure without allocating weights
+            # or consuming the caller's RNG. The trainer owns float32 state.
+            with torch.device("meta"):
+                expected_state = FIJEPA(
+                    input_dim=input_dim, config=ModelConfig(**config["model"])
+                ).float().state_dict()
+        if state.keys() != expected_state.keys():
+            raise ValueError(f"{name} model keys differ from configured FI-JEPA")
+        for key, value in state.items():
+            expected = expected_state[key]
+            if value.shape != expected.shape or value.dtype != expected.dtype:
+                raise ValueError(
+                    f"{name} model structure differs from configured FI-JEPA: {key}"
+                )
     return {
         "epochs_completed": epochs,
         "last_metrics": history[-1],
