@@ -79,3 +79,21 @@ an adversarially fabricated history represents actual training. This repair
 checks checkpoint structure. The closed negative v1 result is preserved; no
 protected outcome or scientific campaign was opened. Exact-source hosted
 verification and review remain required for the published change.
+
+## Completed hosted verification
+
+Exact source `18f96ad4849b7e7dbc1593513ab64c0e733b284f` passed
+[evaluation correctness](https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38044282075):
+**193 passed, 10 warnings in 44.82 seconds** on Python 3.11.17, plus both lint
+checks. [Temporal integrity](https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38044282072)
+passed its overlapping subset of **57 tests, 3 warnings in 3.72 seconds**.
+Both workflows checked out and asserted the exact PR source SHA. The hosted
+receipt records job IDs and source-tree identity; this follow-up changes no
+implementation or tests.
+
+The first manually interrupted local full command did not enforce an external
+timeout, and its duration was not retained. Compliance with the planned
+120-second bound cannot be asserted for that incomplete attempt. The final
+complete command enforced its 120-second timeout and passed. This execution
+record limitation is preserved explicitly; no incomplete run is promoted to a
+successful verification.
