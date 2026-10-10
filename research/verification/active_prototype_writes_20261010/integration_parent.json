@@ -1,0 +1,24 @@
+{
+  "schema": "fijepa.concurrent_parent_integration.v1",
+  "recorded_before_integration_execution_utc": "2026-10-10T10:19:12.908437+00:00",
+  "initial_parent": "950bbed595e750498e7f8360720eff0ec703aa78",
+  "new_publication_parent": "18f96ad4849b7e7dbc1593513ab64c0e733b284f",
+  "parent_recorded_training_sha256": "38fb9b088c3831aea7c42950b3990790cff40ba669b632d1c50b9ec46b05d11d",
+  "parent_test_sha256": "5cfc318f293e7433e8bcab305965cf0225bdd85fa8b2dbab0d60b9a9d418862a",
+  "preserved_demo_source_sha256": {
+    "scripts/demo_active_prototype_writes.py": "25da891df304132bf134935f990f483624e26bf2baf95c63aa829a793dec91bf",
+    "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+    "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+    "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+    "src/fijepa/config.py": "ee905a35def32ee38c596a4e16d95f75b01bce61a42e13ff0eda4c9a6e38a211",
+    "src/fijepa/__init__.py": "6a10bbefb82fcc1e25fcc5e2033b5eadb6d20d541fef8a40171584e9a969b079",
+    "src/fijepa/trainer.py": "86d8a29e1cce2e6989d9489280e345922d1e6e00af715d2f479ec8f116fd2708"
+  },
+  "state_merge": "Preserve both histories byte-for-byte as parsed JSON entries; retain all parent development revisions; current active revision is this separately contracted descendant.",
+  "parent_active_development_revision": "checkpoint-structure-20261010-verified",
+  "prior_gate": "research/verification/active_prototype_writes_20261010/attempt_02_candidate/receipt.json",
+  "prior_gate_count": 58,
+  "integration_gate_count": 82,
+  "integration_gate_scope": "Prior58 plus all24 new parent checkpoint-structure cases; no scientific data or demo rerun.",
+  "demo_applies_to": "The unchanged model/memory/loss/config/trainer/demo execution path only; the prior unrelated recorded_training hash remains historical."
+}

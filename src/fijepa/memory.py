@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Tuple
 
 import torch
@@ -69,40 +70,120 @@ class PrototypeMemory(nn.Module):
 
     @torch.no_grad()
     def update(self, key: torch.Tensor, value: torch.Tensor, salience: torch.Tensor):
+        """Apply one owned, validated batch or leave every live buffer unchanged.
+
+        Matching is against active prototypes only. All arithmetic is staged in
+        candidate buffers so a malformed later row cannot partially write memory.
+        This does not provide isolation from concurrent calls or process failure.
+        """
+        for name, lower, upper in (
+            ("decay", 0.0, 1.0),
+            ("merge_threshold", -1.0, 1.0),
+            ("write_threshold", 0.0, math.inf),
+        ):
+            setting = getattr(self, name)
+            if isinstance(setting, bool) or not isinstance(setting, (int, float)):
+                raise ValueError(f"{name} must be a finite real number")
+            if not math.isfinite(setting) or not lower <= setting <= upper:
+                raise ValueError(f"{name} is outside its valid range")
+        shapes = {
+            "keys": (self.memory_size, self.key_dim),
+            "values": (self.memory_size, self.value_dim),
+            "salience": (self.memory_size,),
+            "age": (self.memory_size,),
+            "filled": (1,),
+        }
+        if self.memory_size < 1:
+            raise ValueError("Memory capacity must be positive")
+        for name, shape in shapes.items():
+            tensor = getattr(self, name)
+            if (
+                tensor.layout != torch.strided
+                or tensor.shape != shape
+                or not tensor.is_floating_point()
+                or tensor.device != self.keys.device
+                or not torch.isfinite(tensor).all()
+            ):
+                raise ValueError(f"Invalid {name} memory buffer")
+        filled = float(self.filled.item())
+        if not filled.is_integer() or not 0 <= filled <= self.memory_size:
+            raise ValueError("filled must be an exact count within memory capacity")
+        if not all(isinstance(tensor, torch.Tensor) for tensor in (key, value, salience)):
+            raise TypeError("Memory writes require tensor inputs")
         if key.ndim == 1:
             key = key.unsqueeze(0)
             value = value.unsqueeze(0)
-            salience = salience.unsqueeze(0)
-        key = key.detach()
-        value = value.detach()
-        salience = salience.detach().flatten()
-        if key.shape[-1] != self.key_dim or value.shape[-1] != self.value_dim:
-            raise ValueError("Memory dimensions do not match.")
+        if key.ndim != 2 or key.shape[1] != self.key_dim:
+            raise ValueError("Expected keys with shape [B, key_dim]")
+        if value.ndim != 2 or value.shape != (key.shape[0], self.value_dim):
+            raise ValueError("Expected values with shape [B, value_dim]")
+        for name, tensor, buffer in (("key", key, self.keys), ("value", value, self.values)):
+            if (
+                tensor.layout != torch.strided
+                or not tensor.is_floating_point()
+                or tensor.dtype != buffer.dtype
+                or tensor.device != buffer.device
+                or not torch.isfinite(tensor).all()
+            ):
+                raise ValueError(f"{name} must be finite and match its memory dtype/device")
+        if (
+            salience.layout != torch.strided
+            or salience.is_complex()
+            or salience.dtype == torch.bool
+            or salience.numel() != key.shape[0]
+            or not torch.isfinite(salience).all()
+            or (salience < 0).any()
+        ):
+            raise ValueError("Expected one finite nonnegative salience per row")
+        # Own inputs before writes, including views into this bank or each other.
+        key = key.detach().clone()
+        value = value.detach().clone()
+        input_salience = salience.detach().flatten().clone()
+        salience = input_salience.to(self.salience).clone()
+        if not torch.isfinite(salience).all():
+            raise ValueError("Salience cannot be represented in the memory dtype")
+        candidate = {name: getattr(self, name).clone() for name in shapes}
+        keys, values = candidate["keys"], candidate["values"]
+        scores, ages = candidate["salience"], candidate["age"]
         for i in range(key.shape[0]):
-            s = float(salience[i].item())
+            s = float(input_salience[i].item())
             if s < self.write_threshold:
                 continue
             q = key[i]
             v = value[i]
-            if self._active_mask().any():
-                sims = F.cosine_similarity(self.keys, q.unsqueeze(0), dim=-1)
-                best = int(torch.argmax(sims).item())
-                if float(sims[best].item()) >= self.merge_threshold:
-                    self.keys[best].mul_(self.decay).add_(q, alpha=1.0 - self.decay)
-                    self.values[best].mul_(self.decay).add_(v, alpha=1.0 - self.decay)
-                    self.salience[best].mul_(self.decay).add_(torch.tensor(s, device=self.salience.device), alpha=1.0 - self.decay)
-                    self.age[best] = 0.0
+            active = torch.nonzero(scores > 0, as_tuple=False).flatten()
+            if active.numel():
+                active_keys = keys[active]
+                # Refuse overflow in the existing cosine normalization rather
+                # than interpreting a finite zero from an infinite norm as data.
+                if not torch.isfinite(active_keys.norm(dim=-1)).all() or not torch.isfinite(q.norm()):
+                    raise ValueError("Cosine normalization exceeds the memory dtype")
+                sims = F.cosine_similarity(active_keys, q.unsqueeze(0), dim=-1)
+                if not torch.isfinite(sims).all():
+                    raise ValueError("Nonfinite prototype similarity")
+                best_active = int(torch.argmax(sims).item())
+                best = int(active[best_active].item())
+                if float(sims[best_active].item()) >= self.merge_threshold:
+                    keys[best].mul_(self.decay).add_(q, alpha=1.0 - self.decay)
+                    values[best].mul_(self.decay).add_(v, alpha=1.0 - self.decay)
+                    scores[best].mul_(self.decay).add_(salience[i], alpha=1.0 - self.decay)
+                    ages[best] = 0.0
                     continue
-            if int(self.filled.item()) < self.memory_size:
-                slot = int(self.filled.item())
-                self.filled += 1
+            if filled < self.memory_size:
+                slot = int(filled)
+                filled += 1
             else:
-                slot = int(torch.argmin(self.salience).item())
-            self.keys[slot].copy_(q)
-            self.values[slot].copy_(v)
-            self.salience[slot].copy_(torch.tensor(s, device=self.salience.device))
-            self.age[slot] = 0.0
-        self.age.add_(1.0)
+                slot = int(torch.argmin(scores).item())
+            keys[slot].copy_(q)
+            values[slot].copy_(v)
+            scores[slot].copy_(salience[i])
+            ages[slot] = 0.0
+        ages.add_(1.0)
+        candidate["filled"].fill_(filled)
+        if not all(torch.isfinite(tensor).all() for tensor in candidate.values()):
+            raise ValueError("Prototype update exceeds the finite memory dtype")
+        for name, tensor in candidate.items():
+            getattr(self, name).copy_(tensor)
 
     def diversity_penalty(self):
         active = self._active_mask()
