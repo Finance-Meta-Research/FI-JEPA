@@ -117,8 +117,21 @@ class Trainer:
                     self.global_step += 1
                     step += 1
                     pbar.update(1)
+                # A finite loss can have an infinite derivative (for example
+                # sqrt at zero). Validate before *any* optimizer/EMA mutation,
+                # including when optional clipping is disabled.
+                self.scaler.unscale_(self.optim)
+                for name, parameter in self.model.named_parameters():
+                    gradient = parameter.grad
+                    if gradient is None:
+                        continue
+                    values = gradient.coalesce().values() if gradient.is_sparse else gradient
+                    if not torch.isfinite(values).all():
+                        raise FloatingPointError(
+                            f"non-finite gradient for {name} at epoch={epoch} "
+                            f"step={step} global_step={self.global_step}"
+                        )
                 if self.config.train.grad_clip_norm is not None:
-                    self.scaler.unscale_(self.optim)
                     grad_norm = nn.utils.clip_grad_norm_(self.model.parameters(), self.config.train.grad_clip_norm)
                     if not torch.isfinite(grad_norm):
                         raise FloatingPointError(

@@ -15,12 +15,13 @@
     "training_campaigns": 0,
     "protected_runs": 0
   },
-  "current_change": "Correct sample weights for actual gradient-accumulation groups, including incomplete groups. The non-accumulating path retains a unit multiplier. Batch-local scientific regularizers and historical metric aggregation remain unchanged.",
+  "current_change": "Unscale once, inspect every dense/sparse gradient before the optimizer step, and reject invalid gradients before parameter or target updates. Add the regression to optimizer CI.",
   "required_session_reads": [
     "FINAL_STATUS_2026-09-30.md",
     "research/PAPER_PROTOCOL_V1.md",
     "audit/FIJEPA_V1_POSTRUN_VALIDITY_AUDIT.md",
-    "research/DEVELOPMENT_GRADIENT_ACCUMULATION_20261010.md"
+    "research/DEVELOPMENT_GRADIENT_ACCUMULATION_20261010.md",
+    "research/ENGINEERING_NUMERICAL_INTEGRITY_20261010.json"
   ],
   "preserved_history_index": [
     "experiments/paper_results.json",
@@ -40,6 +41,13 @@
       "kind": "engineering_revision",
       "record": "research/DEVELOPMENT_GRADIENT_ACCUMULATION_20261010.md",
       "status": "implemented; 23 tests passed; independent source review passed; integration pending",
+      "scientific_outcomes_created": false
+    },
+    {
+      "date": "2026-10-10",
+      "kind": "engineering_revision",
+      "record": "research/ENGINEERING_NUMERICAL_INTEGRITY_20261010.json",
+      "status": "implemented; 25 bounded tests passed; integration pending",
       "scientific_outcomes_created": false
     }
   ]
