@@ -158,3 +158,26 @@ that separate change.
 The failed hosted run and its environment are retained here. No scientific
 dataset, protected outcome, retained paper evidence or training campaign was
 used to diagnose this compatibility failure.
+
+## Completed hosted verification
+
+The compatibility source commit
+`f873f1f50740ff49f6b4eb252bcef7cb953e581f`, with tree
+`73f0db485e0be94fd69aa5f7541a2ff0bbe9eccd`, passed all three applicable
+hosted workflows:
+
+- [Evaluation correctness](https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38026420985):
+  **86 tests passed**, with the seven retained warnings described above;
+  isolated lint passed. The workflow checks out and asserts the exact PR source.
+- [Temporal integrity](https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38026420848):
+  passed.
+- [Ablation identifiability](https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38026420850):
+  passed, with the existing non-identifying operator-split classification retained.
+
+The source was independently reviewed, and the parent PR #11 was rechecked at
+`20a1fc3f533b484e6ed88f7180c38b340378755f` after verification. This appended
+receipt changes only development records. Historical failures and intermediate
+pending statuses above remain as the record of those stages. Draft
+[PR #12](https://github.com/Finance-Meta-Research/FI-JEPA/pull/12) remains open
+for integration. Scientific disposition, evidence and prospective-run gates are
+unchanged; software correctness checks do not establish a research result.
