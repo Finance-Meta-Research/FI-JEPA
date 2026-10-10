@@ -75,7 +75,7 @@
       "scientific_outcomes_created": false
     }
   ],
-  "active_development_revision": "recorded-training-20261010-verification",
+  "active_development_revision": "recorded-training-20261010-hosted",
   "development_revisions": [
     {
       "id": "recorded-training-20261010",
@@ -111,6 +111,25 @@
         "Hosted verification of the published exact commit.",
         "Review and integration of the draft development branch.",
         "A scientific successor still requires its own prospective protocol, frozen evaluations and empirical evidence."
+      ]
+    },
+    {
+      "id": "recorded-training-20261010-hosted",
+      "parent_revision": "recorded-training-20261010-verification",
+      "phase": "LOCALLY_AND_HOSTED_VERIFIED_PENDING_INTEGRATION",
+      "source_commit": "b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+      "pull_request": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/13",
+      "hosted_record": "research/verification/recorded_training_20261010/hosted_verification.json",
+      "local_full_tests_passed": 169,
+      "hosted_full_tests_passed": 169,
+      "hosted_temporal_subset_passed": 57,
+      "independent_source_and_publication_review": "passed within declared development scope",
+      "scientific_outcomes_created": false,
+      "protected_evaluation_opened": false,
+      "preserved_scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+      "pending_gates": [
+        "Review and integration of the draft development branch.",
+        "Any scientific successor requires its own prospective frozen study and empirical evidence."
       ]
     }
   ],
@@ -151,6 +170,7 @@
   "development_required_session_reads": [
     "research/DEVELOPMENT_CALENDAR_SPLIT_20261010.md",
     "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md",
-    "research/verification/recorded_training_20261010/receipt.json"
+    "research/verification/recorded_training_20261010/receipt.json",
+    "research/verification/recorded_training_20261010/hosted_verification.json"
   ]
 }
