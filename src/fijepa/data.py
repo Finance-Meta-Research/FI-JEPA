@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Optional, Sequence
+from numbers import Real
+from typing import List, Mapping, Optional, Sequence
 
 import numpy as np
 import pandas as pd
@@ -266,6 +267,7 @@ class MarketWindowDataset(Dataset):
         asset_col: str = "asset_id",
         normalize: bool = True,
         normalizer: Optional[FitNormalizer] = None,
+        asset_to_idx: Optional[Mapping] = None,
     ):
         self.frame = frame.copy()
         self.feature_cols = list(feature_cols)
@@ -277,7 +279,12 @@ class MarketWindowDataset(Dataset):
         self.normalize = normalize
         self.normalizer = normalizer
         self.assets = sorted(self.frame[self.asset_col].unique())
-        self.asset_to_idx = {a: i for i, a in enumerate(self.assets)}
+        self.asset_to_idx = (
+            {a: i for i, a in enumerate(self.assets)}
+            if asset_to_idx is None else dict(asset_to_idx)
+        )
+        if any(a not in self.asset_to_idx for a in self.assets):
+            raise ValueError("asset_to_idx must include every asset in the dataset")
         if self.normalize and self.normalizer is not None:
             self.frame.loc[:, self.feature_cols] = self.normalizer.transform(
                 self.frame[self.feature_cols].to_numpy()
@@ -356,14 +363,40 @@ def split_panel_by_time(
     train_frac: float,
     val_frac: float,
 ):
-    df = df.sort_values(timestamp_col).reset_index(drop=True)
-    n = len(df)
-    n_train = int(n * train_frac)
-    n_val = int(n * val_frac)
+    """Partition complete timestamps using one calendar shared by all assets.
+
+    Fractions apply to unique observed timestamps, not row counts or each
+    asset's separate lifetime. This prevents training on a late-listed asset's
+    future while another asset at an earlier date is already in validation.
+    Windows are constructed inside each returned split and never cross it.
+    """
+    fractions = (train_frac, val_frac)
+    if (
+        any(not isinstance(v, Real) or isinstance(v, (bool, np.bool_))
+            or not np.isfinite(v) for v in fractions)
+        or not 0 < train_frac < 1
+        or val_frac < 0
+        or train_frac + val_frac >= 1
+    ):
+        raise ValueError(
+            "Split fractions must be finite numbers with 0 < train_frac < 1, "
+            "0 <= val_frac, and train_frac + val_frac < 1"
+        )
+    if timestamp_col not in df or df[timestamp_col].isna().any():
+        raise ValueError("Every row must have an explicit nonmissing timestamp")
+    df = df.sort_values(timestamp_col, kind="stable").reset_index(drop=True)
+    times = df[timestamp_col].drop_duplicates().to_numpy()
+    n_train = int(len(times) * train_frac)
+    n_val = int(len(times) * val_frac)
+    if n_train == 0:
+        raise ValueError("Split fractions leave no training timestamps")
+    train_times = times[:n_train]
+    val_times = times[n_train:n_train + n_val]
+    test_times = times[n_train + n_val:]
     return (
-        df.iloc[:n_train],
-        df.iloc[n_train : n_train + n_val],
-        df.iloc[n_train + n_val :],
+        df.loc[df[timestamp_col].isin(train_times)].copy(),
+        df.loc[df[timestamp_col].isin(val_times)].copy(),
+        df.loc[df[timestamp_col].isin(test_times)].copy(),
     )
 
 
@@ -437,20 +470,14 @@ def build_datasets(
     # Causal only: never use a future observation to populate an earlier row.
     df = _causal_fill_features(df, feature_cols, config.data.asset_col)
 
-    train_parts = []
-    val_parts = []
-    test_parts = []
-    for asset, grp in df.groupby(config.data.asset_col, sort=True):
-        n = len(grp)
-        n_train = int(n * config.data.train_frac)
-        n_val = int(n * config.data.val_frac)
-        train_parts.append(grp.iloc[:n_train])
-        val_parts.append(grp.iloc[n_train : n_train + n_val])
-        test_parts.append(grp.iloc[n_train + n_val :])
-
-    train_df = pd.concat(train_parts, ignore_index=True)
-    val_df = pd.concat(val_parts, ignore_index=True)
-    test_df = pd.concat(test_parts, ignore_index=True)
+    train_df, val_df, test_df = split_panel_by_time(
+        df, config.data.timestamp_col, config.data.train_frac, config.data.val_frac
+    )
+    # A missing/delisted asset in one split must not renumber a survivor's
+    # embedding ID. This is identifier metadata, not a statistic fit on returns.
+    asset_to_idx = {
+        asset: i for i, asset in enumerate(sorted(df[config.data.asset_col].unique()))
+    }
 
     normalizer = FitNormalizer() if config.data.normalize else None
     if normalizer is not None:
@@ -467,6 +494,7 @@ def build_datasets(
         asset_col=config.data.asset_col,
         normalize=config.data.normalize,
         normalizer=normalizer,
+        asset_to_idx=asset_to_idx,
     )
     val_ds = MarketWindowDataset(
         val_df,
@@ -478,6 +506,7 @@ def build_datasets(
         asset_col=config.data.asset_col,
         normalize=config.data.normalize,
         normalizer=normalizer,
+        asset_to_idx=asset_to_idx,
     )
     test_ds = MarketWindowDataset(
         test_df,
@@ -489,6 +518,7 @@ def build_datasets(
         asset_col=config.data.asset_col,
         normalize=config.data.normalize,
         normalizer=normalizer,
+        asset_to_idx=asset_to_idx,
     )
     return train_ds, val_ds, test_ds, feature_cols, normalizer
 
