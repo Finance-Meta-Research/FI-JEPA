@@ -1,0 +1,34 @@
+{
+  "reviewer": "/root/wave3_methods",
+  "date_utc": "2026-10-10",
+  "source_sha256": "b2793d0e5b39da3b59fbe880a1824175b54fce666305a87cdccb11f4477b75d9",
+  "scope": "Independent offline development review; no scientific outcome run",
+  "findings": [
+    {
+      "id": "FIFO_PREPARATION_BLOCKS_BEFORE_DEADLINE_CHECK",
+      "method": "Import the helper before using multiprocessing's POSIX fork context. Pass a named FIFO as config_path with max_seconds=0.05. Watchdog joins for 1 second, then terminates the still-live child.",
+      "observed": {
+        "attempt_budget_seconds": 0.05,
+        "watchdog_seconds": 1,
+        "still_running_at_watchdog": true,
+        "started_receipts": 1,
+        "finished_receipts": 0
+      },
+      "raw_output": "loaded-source-hash b2793d0e5b39da3b59fbe880a1824175b54fce666305a87cdccb11f4477b75d9\nstill blocked after1sec at50ms budget\nstarted 1 finished 0\n",
+      "limitation": "An earlier subprocess version of the probe was inconclusive because its 3-second watchdog expired during Torch import and no attempt had started. Only the subsequent fork probe establishes this finding."
+    },
+    {
+      "id": "COMPLETED_RECEIPT_CAN_HASH_UNVALIDATED_REPLACEMENT",
+      "method": "A controlled zero-exit child fixture writes minimal valid trainer outputs. A wrapper calls the actual output validator and then replaces training/config.json with the two bytes {} before returning. The terminal inventory subsequently hashes the replacement.",
+      "observed": {
+        "status": "COMPLETED",
+        "replacement_bytes_utf8": "{}",
+        "terminal_config_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "terminal_config_bytes": 2
+      },
+      "raw_output": "validation/hash replacement witness COMPLETED {} {'sha256': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', 'bytes': 2}\n",
+      "limitation": "This fixture exercises validation and finalization sequencing; it is not an actual training run or a scientific result."
+    }
+  ],
+  "retention": "This record preserves the initial failures after the author corrects the candidate; it does not describe the amended implementation's outcome."
+}

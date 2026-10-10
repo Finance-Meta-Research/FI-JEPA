@@ -1,0 +1,25 @@
+........................................................................ [ 42%]
+........................................................................ [ 85%]
+.........................                                                [100%]
+=============================== warnings summary ===============================
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes0-3]
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes1-4]
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes2-3]
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes3-1]
+tests/test_gradient_failure_atomicity.py::test_nonfinite_gradient_never_changes_parameters_or_target[None]
+tests/test_gradient_failure_atomicity.py::test_nonfinite_gradient_never_changes_parameters_or_target[1.0]
+tests/test_recorded_training.py::test_legacy_constructor_reproduces_original_config_replacement
+  /workspace/scratch/686cff45990b/work/wave3-fi-jepa/src/fijepa/trainer.py:65: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+    self.scaler = GradScaler(enabled=config.train.amp and self.device.type == "cuda")
+
+tests/test_recorded_process_group.py::test_timeout_stops_sigterm_ignoring_worker_after_leader_exits
+  /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=5) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/test_recorded_training.py::test_fifo_input_is_rejected_before_any_blocking_read[config]
+tests/test_recorded_training.py::test_fifo_input_is_rejected_before_any_blocking_read[csv]
+  /workspace/scratch/686cff45990b/work/wave3-fi-jepa/tests/test_recorded_training.py:457: DeprecationWarning: This process (pid=5) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+169 passed, 10 warnings in 171.42s (0:02:51)

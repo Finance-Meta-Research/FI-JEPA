@@ -1,0 +1,11 @@
+{
+  "kind": "CONTROLLED_DEVELOPMENT_PROCESS_FIXTURE",
+  "leader_exit_code": -15,
+  "leader_pid": 6,
+  "reviewer_reaped_worker": true,
+  "source_sha256": "23c081812fda96afa3100a6d1fd7e8080b1754ad22151afba726897e6f5fdab3",
+  "status": "TIMED_OUT",
+  "worker_alive_after_terminal_receipt": true,
+  "worker_pid": 7,
+  "worker_state": "S"
+}

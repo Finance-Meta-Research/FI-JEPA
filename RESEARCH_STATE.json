@@ -75,7 +75,7 @@
       "scientific_outcomes_created": false
     }
   ],
-  "active_development_revision": "recorded-training-20261010",
+  "active_development_revision": "recorded-training-20261010-verification",
   "development_revisions": [
     {
       "id": "recorded-training-20261010",
@@ -89,6 +89,29 @@
       "development_budget": "Generated local fixtures and CPU correctness checks only; bounded child processes, no scientific campaign",
       "protected_evaluation_opened": false,
       "planned_change": "Integrate the existing data, optimizer and evaluation corrections; add explicit attempt directories, finite runtime budgets, retained inputs and logs, and terminal execution receipts around the unchanged training command."
+    },
+    {
+      "id": "recorded-training-20261010-verification",
+      "parent_revision": "recorded-training-20261010",
+      "phase": "VERIFIED_PENDING_INTEGRATION",
+      "specification": "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md",
+      "verification": "research/verification/recorded_training_20261010/receipt.json",
+      "change": "Integrate calendar, finite normalization, accumulated training and paired evaluation repairs; add explicitly selected retained bounded training attempts around the unchanged trainer.",
+      "local_tests": {
+        "passed": 169,
+        "inherited": 137,
+        "new": 32,
+        "warnings": 10
+      },
+      "independent_review": "passed within declared development scope",
+      "preserved_scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+      "protected_evaluation_opened": false,
+      "scientific_outcomes_created": false,
+      "pending_gates": [
+        "Hosted verification of the published exact commit.",
+        "Review and integration of the draft development branch.",
+        "A scientific successor still requires its own prospective protocol, frozen evaluations and empirical evidence."
+      ]
     }
   ],
   "verification": {
@@ -124,5 +147,10 @@
       }
     },
     "scientific_runs": 0
-  }
+  },
+  "development_required_session_reads": [
+    "research/DEVELOPMENT_CALENDAR_SPLIT_20261010.md",
+    "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md",
+    "research/verification/recorded_training_20261010/receipt.json"
+  ]
 }
