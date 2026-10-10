@@ -26,6 +26,25 @@ early failure before data generation, and exact multihorizon row membership.
 The local admission probe uses the exact source validation function; complete
 tensor integration is checked by the existing bounded Temporal Integrity CI job.
 
+## Follow-up: sample tensors must own their observation buffers
+
+Hosted testing exposed PyTorch's warning about wrapping read-only NumPy arrays.
+The risk was reproduced with float32 observations and pandas copy-on-write:
+mutating a returned context tensor changed the stored observations and a later
+overlapping sample. Such augmentation could contaminate subsequent batches.
+
+Context and future arrays now request an explicit copy before conversion to
+Torch. Returned values and window membership are unchanged, and writes to a
+sample cannot affect retained dataset observations. A regression mutates both
+returned tensors and verifies the backing series, repeated sample, and next
+overlapping sample. This is a storage-ownership fix; it does not change the
+model, loss, normalization statistics, or historical evidence.
+
+After CPU PyTorch became available, the full focused local temporal suite ran
+successfully. The earlier strict-count commit also passed 41 hosted tests in
+Temporal Integrity run `38020634205`. Verification of this ownership follow-up
+is recorded on the current PR head; no historical result was regenerated.
+
 ## Defects
 
 1. `build_datasets` split each asset's lifetime separately. For staggered

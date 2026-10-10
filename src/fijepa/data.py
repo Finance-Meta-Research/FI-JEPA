@@ -359,13 +359,13 @@ class MarketWindowDataset(Dataset):
         asset, ctx_start, ctx_end, future_windows = self.windows[idx]
         df_a = self.series[asset]
         ctx = df_a.iloc[ctx_start:ctx_end][self.feature_cols].to_numpy(
-            dtype=np.float32
+            dtype=np.float32, copy=True
         )
         futures = []
         for fut_start, fut_end in future_windows:
             fut = df_a.iloc[fut_start:fut_end][
                 self.feature_cols
-            ].to_numpy(dtype=np.float32)
+            ].to_numpy(dtype=np.float32, copy=True)
             futures.append(torch.from_numpy(fut))
         ts = np.array(
             [

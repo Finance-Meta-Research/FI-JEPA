@@ -158,3 +158,23 @@ def test_positive_horizons_preserve_exact_context_and_future_rows():
     np.testing.assert_array_equal(ds[-1]["futures"].numpy()[:, :, 0], [[4, 5], [6, 7]])
     for _, _, context_end, future_windows in ds.windows:
         assert all(future_start >= context_end for future_start, _ in future_windows)
+
+
+def test_tensor_augmentation_cannot_mutate_shared_observations():
+    # Float32 matches build_datasets' preprocessed storage. With pandas copy-on-
+    # write, to_numpy(copy=False) can expose read-only views that Torch can still
+    # mutate, bypassing pandas and changing later overlapping samples.
+    with pd.option_context("mode.copy_on_write", True):
+        df = pd.DataFrame({
+            "timestamp": pd.date_range("2020-01-01", periods=8, freq="D"),
+            "asset_id": 0,
+            "x": np.arange(8, dtype=np.float32),
+        })
+        ds = MarketWindowDataset(df, ["x"], 2, [1], 2, normalize=False)
+        sample = ds[0]
+        sample["context"].fill_(-99)
+        sample["futures"].fill_(-88)
+        np.testing.assert_array_equal(ds.series[0].x.to_numpy(), np.arange(8))
+        np.testing.assert_array_equal(ds[0]["context"].numpy().ravel(), [0, 1])
+        np.testing.assert_array_equal(ds[1]["context"].numpy().ravel(), [1, 2])
+        np.testing.assert_array_equal(ds[0]["futures"].numpy().ravel(), [2, 3])
