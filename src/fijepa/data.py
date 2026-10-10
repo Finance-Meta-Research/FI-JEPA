@@ -208,7 +208,9 @@ def _causal_fill_features(
     affected rows removed upstream.
     """
     out = df.copy()
-    out.loc[:, feature_cols] = (
+    # Replace the columns to apply their explicit float32 dtype. In-place .loc
+    # assignment retains integer dtypes and pandas 3 rejects these conversions.
+    out[list(feature_cols)] = (
         out.groupby(asset_col, sort=False, group_keys=False)[list(feature_cols)]
         .ffill()
         .astype(np.float32)

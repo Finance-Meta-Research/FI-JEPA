@@ -120,3 +120,41 @@ recorded in the canonical state and PR as they complete. Existing scientific
 workflows and their activation branches are unchanged.
 
 After integrating the concurrent parent at `20a1fc3f533b484e6ed88f7180c38b340378755f`, all **25** of its optimizer/model/temporal/protocol tests passed locally, including both new derivative-failure cases. Together with the unchanged 60 new tests this verifies **85 cases**. Six existing AMP deprecation warnings occur in this expanded parent suite.
+
+## Hosted failure and pandas compatibility correction
+
+The first exact-commit evaluation workflow at
+https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38025913766
+ran 80 tests successfully and failed five generated-checkpoint setup cases.
+It installed pandas 3.0.6 and NumPy 2.4.6. The unchanged feature loader attempted
+to assign float32 data in place into integer columns; pandas 3 rejects that dtype
+conversion. The same failure was reproduced locally using an isolated pandas
+3.0.6 installation. The initial ablation audit succeeded.
+
+The follow-up replaces whole feature columns with the existing grouped,
+forward-filled, float32 values. This allows the explicit dtype conversion to
+take effect instead of assigning into an incompatible retained dtype. It changes
+neither per-asset carry-forward, index alignment, temporal splitting nor the
+training population. FitNormalizer already converts inputs to float32, so its
+arithmetic and downstream tensor values remain the same. The new regression
+checks mixed integer/nullable/float columns, interleaved assets, nonsequential
+indexes, input and metadata immutability, exact float32 values and normalization.
+
+This follows pandas' documented ban on incompatible in-place dtype changes:
+https://pandas.pydata.org/docs/whatsnew/v3.0.0.html#removal-of-prior-version-deprecations-changes
+
+After the repair, the complete local suite passes **86 tests** on pandas 3.0.6.
+The new dtype regression and existing temporal suite also pass **7 tests** on
+the prior pandas environment. These runs do not lower dependency requirements or
+remove any test. Independent review approved the two-line production change
+and regression contract.
+
+Six inherited AMP deprecation warnings remain. Pandas 3 also exposes an existing
+non-writable NumPy-to-Torch view warning in MarketWindowDataset; the separate
+calendar/asset-vocabulary PR #10 already includes copied sample tensors. This
+evaluation revision neither performs in-place input mutation nor duplicates
+that separate change.
+
+The failed hosted run and its environment are retained here. No scientific
+dataset, protected outcome, retained paper evidence or training campaign was
+used to diagnose this compatibility failure.

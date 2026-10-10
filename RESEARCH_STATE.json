@@ -15,7 +15,7 @@
     "training_campaigns": 0,
     "protected_runs": 0
   },
-  "current_change": "Preserve observation pairing in regression metrics and add the explicit sample-mean latent evaluator v2 with real checkpoint/configuration validation and traceable output. The legacy evaluator, training/validation checkpoint selection, accumulated optimizer change and frozen v1 evidence remain unchanged.",
+  "current_change": "Preserve observation pairing in regression metrics and add the explicit sample-mean latent evaluator v2 with real checkpoint/configuration validation and traceable output. The legacy evaluator, training/validation checkpoint selection, accumulated optimizer change and frozen v1 evidence remain unchanged. The hosted pandas 3 dtype-assignment failure is repaired by installing the already-converted feature columns; causal fill and float32 normalization semantics remain unchanged.",
   "required_session_reads": [
     "FINAL_STATUS_2026-09-30.md",
     "research/PAPER_PROTOCOL_V1.md",
@@ -59,6 +59,28 @@
       "record": "research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md",
       "status": "implemented; 60 new tests and all 25 newest-parent tests passed locally (85 total); independent source review and unchanged ablation audit passed; hosted checks pending",
       "scientific_outcomes_created": false
+    },
+    {
+      "date": "2026-10-10",
+      "kind": "engineering_compatibility_revision",
+      "record": "research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md#hosted-failure-and-pandas-compatibility-correction",
+      "status": "first hosted run retained: 80 pass / 5 setup failures; dtype repair independently reviewed; full local pandas 3 suite 86 passed, prior-pandas temporal/dtype subset 7 passed; hosted follow-up pending",
+      "scientific_outcomes_created": false
     }
-  ]
+  ],
+  "verification": {
+    "local_full_suite": {
+      "passed": 86,
+      "python": "3.12.14",
+      "pandas": "3.0.6",
+      "torch": "2.14.1+cpu"
+    },
+    "prior_pandas_temporal_and_dtype_tests": {
+      "passed": 7
+    },
+    "independent_source_review": "passed for paired metrics/evaluator and subsequent dtype compatibility fix",
+    "initial_hosted_failure": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38025913766",
+    "initial_ablation_pass": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38025913625",
+    "scientific_runs": 0
+  }
 }
