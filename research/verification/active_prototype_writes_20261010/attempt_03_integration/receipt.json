@@ -1,0 +1,56 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_active_prototype_writes.py",
+    "tests/test_gradient_accumulation.py",
+    "tests/test_gradient_failure_atomicity.py",
+    "tests/test_model_smoke.py",
+    "tests/test_recorded_checkpoint_structure.py"
+  ],
+  "cwd": "/workspace/scratch/2a0c1e6ddd92/finance-worktrees-20261010-0945/FI-JEPA",
+  "timeout_seconds": 90.0,
+  "python": "3.12.14",
+  "started_utc": "2026-10-10T10:19:13Z",
+  "environment": {
+    "PYTHONPATH": "/workspace/scratch/2a0c1e6ddd92/torch-deps:src",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "source_sha256_before": {
+    "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+    "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+    "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+    "src/fijepa/recorded_training.py": "38fb9b088c3831aea7c42950b3990790cff40ba669b632d1c50b9ec46b05d11d",
+    "tests/test_active_prototype_writes.py": "cdc7a3baf0f36b8a08adf2ecb47b1b754af177dc7475dae649655744934f3bd4",
+    "tests/test_recorded_checkpoint_structure.py": "5cfc318f293e7433e8bcab305965cf0225bdd85fa8b2dbab0d60b9a9d418862a",
+    "tests/test_gradient_accumulation.py": "1ea10264e9ccb3b00a54b1e00bc7d12970312d75c00296ebe483a048bb31d483",
+    "tests/test_gradient_failure_atomicity.py": "081587094ddd3459bd187851c687eac5f676b7decaa292b94481dd60a3c6cbf5",
+    "tests/test_model_smoke.py": "38a7b30aed4e59bbcf0ecf8be64564474c04a5b0a3268c56cc36cab1f1b997a7"
+  },
+  "scientific_outcomes": false,
+  "wall_seconds": 26.442344993003644,
+  "exit_code": 0,
+  "timed_out": false,
+  "source_sha256_after": {
+    "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+    "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+    "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+    "src/fijepa/recorded_training.py": "38fb9b088c3831aea7c42950b3990790cff40ba669b632d1c50b9ec46b05d11d",
+    "tests/test_active_prototype_writes.py": "cdc7a3baf0f36b8a08adf2ecb47b1b754af177dc7475dae649655744934f3bd4",
+    "tests/test_recorded_checkpoint_structure.py": "5cfc318f293e7433e8bcab305965cf0225bdd85fa8b2dbab0d60b9a9d418862a",
+    "tests/test_gradient_accumulation.py": "1ea10264e9ccb3b00a54b1e00bc7d12970312d75c00296ebe483a048bb31d483",
+    "tests/test_gradient_failure_atomicity.py": "081587094ddd3459bd187851c687eac5f676b7decaa292b94481dd60a3c6cbf5",
+    "tests/test_model_smoke.py": "38a7b30aed4e59bbcf0ecf8be64564474c04a5b0a3268c56cc36cab1f1b997a7"
+  },
+  "child_peak_rss_bytes": 470142976,
+  "source_unchanged": true,
+  "output_sha256": {
+    "stdout.log": "fe72380cea2485e6f224d7c4aaefb5f86bf403b64e9174f0ded84d11a2680dd5",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root",
+  "outcome": "PASS_NO_BLOCKER",
+  "scope": "Source-only review of runtime, tests, prospective contract, legacy boundary; no independent execution.",
+  "reviewed_source_sha256": {
+    "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+    "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+    "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+    "tests/test_active_prototype_writes.py": "cdc7a3baf0f36b8a08adf2ecb47b1b754af177dc7475dae649655744934f3bd4",
+    "tests/test_gradient_accumulation.py": "1ea10264e9ccb3b00a54b1e00bc7d12970312d75c00296ebe483a048bb31d483",
+    "tests/test_gradient_failure_atomicity.py": "081587094ddd3459bd187851c687eac5f676b7decaa292b94481dd60a3c6cbf5",
+    "tests/test_model_smoke.py": "38a7b30aed4e59bbcf0ecf8be64564474c04a5b0a3268c56cc36cab1f1b997a7"
+  },
+  "execution_commands": 0,
+  "repair_cycles": 0,
+  "session_id": "20261010-0945-active-prototype-writes",
+  "recorder_sha256": "4890dca1e6c0d2d79992c0a70601850eb653c553708073e544d9078a95eacdde",
+  "scope_limit": "Engineering review only; source hashes identify checkout files, not secure execution attestation."
+}

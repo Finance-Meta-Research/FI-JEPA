@@ -47,3 +47,39 @@ closed negative/boundary conclusion retain their historical meaning. This comman
 does not authorize a successor experiment. See
 `research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md` for the numerical contract and
 generated-fixture verification.
+
+## Recorded development training
+
+Use the explicit recorded command when a development run needs retained inputs,
+logs and a terminal execution receipt:
+
+```bash
+python scripts/train_recorded.py --config path/to/dev.yaml --attempt-root path/to/attempts --max-seconds 120
+```
+
+Run this from a repository checkout with the package's dependencies installed.
+Each invocation creates a new `attempt-*` directory and runs the existing trainer
+against copied configuration and local CSV/parquet inputs. The configured output
+directory is replaced in the effective configuration with that attempt's own
+`training/` directory. Retries allocate another directory and retain the earlier
+attempt. The optional `--source synthetic` or `--source macrodata` override is
+recorded in the receipt.
+
+`started.json` records the request. `finished.json` records `COMPLETED`, `FAILED`,
+`TIMED_OUT` or `CANCELLED`, along with input/output identities and retained logs.
+Completion also requires the requested epoch history and finite, matching
+checkpoints; the bytes validated must match the final artifact inventory. A
+started receipt without a terminal receipt marks an interrupted/incomplete
+attempt. Ordinary errors return exit status 2; cancellation retains its receipt
+and propagates the interruption.
+
+The time budget covers attempt preparation and the training child. Child cleanup
+allows a five-second termination grace; output validation and hashing follow
+termination. POSIX cleanup signals the inherited process group and reaps the
+direct child; other platforms terminate the direct child only. Regular local
+files are required for configuration and tabular input.
+This command does not provide exact checkpoint resumption, authenticate input
+provenance, or protect against hostile filesystem changes or machine failure.
+Its execution status always keeps `scientific_result: NOT_EVALUATED`. The closed
+v1 negative/boundary finding and the requirements for a prospective successor
+remain in force. See `research/DEVELOPMENT_RECORDED_TRAINING_20261010.md`.

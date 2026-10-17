@@ -1,0 +1,84 @@
+{
+  "schema": "fijepa.checkpoint-structure-receipt.v1",
+  "date": "2026-10-10",
+  "parent_commit": "950bbed595e750498e7f8360720eff0ec703aa78",
+  "source_sha256": {
+    "src/fijepa/recorded_training.py": "38fb9b088c3831aea7c42950b3990790cff40ba669b632d1c50b9ec46b05d11d",
+    "tests/test_recorded_checkpoint_structure.py": "5cfc318f293e7433e8bcab305965cf0225bdd85fa8b2dbab0d60b9a9d418862a"
+  },
+  "baseline": {
+    "new_cases": 23,
+    "failed": 17,
+    "passed": 6
+  },
+  "first_targeted": {
+    "passed": 23,
+    "seconds": 11.23
+  },
+  "review_finding": {
+    "description": "A valid empty MLP/conv backbone has no input weight; auto-width admission must use the downstream d_model.",
+    "additional_regression_cases": 1,
+    "failed_before_followup": 1,
+    "seconds": 11.83
+  },
+  "first_full_suite": {
+    "status": "interrupted",
+    "exit_code": 130,
+    "complete_result": false,
+    "reason": "Prolonged execution during inherited subprocess-heavy checks; retained partial output and reran with explicit timeout and verbose progress. Exact duration not recorded."
+  },
+  "final_full_suite": {
+    "status": "passed",
+    "tests_passed": 193,
+    "new_tests": 24,
+    "inherited_tests": 169,
+    "warnings": 13,
+    "seconds": 112.59,
+    "timeout_seconds": 120,
+    "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 timeout --signal=INT --kill-after=10s 120s python -m pytest -vv --durations=10 tests"
+  },
+  "ruff": "passed: isolated E4,E7,E9,F,I on changed implementation and test",
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.1+cpu",
+    "pandas": "3.0.6",
+    "device": "cpu"
+  },
+  "independent_review": {
+    "reviewer": "dynamics_research",
+    "kind": "source-only",
+    "initial_status": "one valid empty-backbone compatibility defect",
+    "final_status": "no scoped blocker after correction",
+    "test_rerun": false
+  },
+  "limitations": [
+    "A structural check does not prove actual training or scientific efficacy.",
+    "Automatic feature inference attests common checkpoint structure, not original feature names/order/data semantics.",
+    "Prior source-specific hosted receipts remain historical until the newly published revision passes."
+  ],
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "scientific_outcomes_created": false,
+  "protected_evaluation_opened": false,
+  "logs": {
+    "review_baseline.log": {
+      "sha256": "31143d9ca9f6e57a120820a8d02677966c56bdd95a697bf6ed3587a4a568bcc8",
+      "bytes": 5880
+    },
+    "baseline.log": {
+      "sha256": "800de50afd46498602d78f7dfc8b055930886f11f592c018f07d83467cabf4cd",
+      "bytes": 23960
+    },
+    "full_final.log": {
+      "sha256": "7e2883ec75d66b064759fa364a91d05615cf535c17e96c2e2be60b6088e011fc",
+      "bytes": 27736
+    },
+    "full_interrupted.log": {
+      "sha256": "29b7aa1faf949a25a2749928b4a3c7206bc4fece7800c2cda7ebb18b4238cc46",
+      "bytes": 147
+    },
+    "targeted_initial.log": {
+      "sha256": "5ebc5ca5d5d84f1f6b9950fbfb030bc633cc5c139705ac135e5d7b6e2352d564",
+      "bytes": 100
+    }
+  }
+}

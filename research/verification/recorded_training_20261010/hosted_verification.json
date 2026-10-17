@@ -1,0 +1,74 @@
+{
+  "count_scope": "The57 temporal cases are included in the169-case full suite, not additional cases.",
+  "environment": {
+    "numpy": "2.4.6",
+    "pandas": "3.0.6",
+    "pytest": "9.1.1",
+    "python": "3.11.17",
+    "torch": "2.14.1+cpu"
+  },
+  "independent_remote_verification": {
+    "both_integration_parents_verified": true,
+    "deletions_from_parent": 0,
+    "extra_or_missing_paths": 0,
+    "inherited_canonical_fields_preserved": 18,
+    "matched_remote_blob_count": 126,
+    "mode_mismatches": 0,
+    "reviewer": "/root/wave3_methods"
+  },
+  "metadata_commit_scope": "This receipt and a canonical-state append follow the tested code commit; runtime, test, documentation and workflow blobs remain unchanged.",
+  "protected_evaluation_opened": false,
+  "publication_guard": "The initial export normalized the inherited README executable mode; the exact-tree guard rejected that unreferenced tree before branch creation. The published tree preserves README mode100755 and matches all local blob modes.",
+  "pull_request": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/13",
+  "schema": "fijepa_recorded_training_hosted_verification_v1",
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "scientific_outcomes_created": false,
+  "source_commit": "b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+  "source_tree": "2881a3c16845e379113d8db8607615d7ce0b0e65",
+  "status": "EXACT_CODE_HEAD_HOSTED_VERIFICATION_PASSED",
+  "verified_utc": "2026-10-10T06:31:17Z",
+  "workflows": {
+    "evaluation": {
+      "decoded_log_utf8_sha256": "a61c866c33e8a9bc22aa05287db21a94114e84f621c392fbcc88175df1e9b729",
+      "excerpt": [
+        "2026-10-10T06:28:58.1033453Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:28:58.8127863Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:28:58.8368600Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:29:00.7476290Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:29:21.1878582Z Successfully installed MarkupSafe-3.0.3 filelock-3.32.3 fsspec-2026.7.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.6.1 sympy-1.14.0 torch-2.14.1+cpu typing-extensions-4.16.0",
+        "2026-10-10T06:29:45.0763733Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:30:26.4570367Z 169 passed, 10 warnings in 40.64s",
+        "2026-10-10T06:30:27.2127181Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:30:27.2424694Z All checks passed!",
+        "2026-10-10T06:30:27.2515944Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:30:27.2814265Z All checks passed!"
+      ],
+      "job": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38031076620/job/114151968531",
+      "passed": 169,
+      "run": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38031076620",
+      "seconds": 40.64,
+      "source_commit": "b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+      "status": "passed",
+      "warnings": 10
+    },
+    "temporal": {
+      "decoded_log_utf8_sha256": "9e06a5ad6bfc577d6f3b243e7d31549a36f2e3122573ea6f1f4e3c205ae85fd2",
+      "excerpt": [
+        "2026-10-10T06:28:59.3799745Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:29:00.2644640Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:29:00.2994937Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:29:01.1334723Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:29:22.4156290Z Successfully installed MarkupSafe-3.0.3 filelock-3.32.3 fsspec-2026.7.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.6.1 sympy-1.14.0 torch-2.14.1+cpu typing-extensions-4.16.0",
+        "2026-10-10T06:29:48.0754707Z   EXPECTED_SHA: b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+        "2026-10-10T06:29:52.4134196Z 57 passed, 3 warnings in 3.67s"
+      ],
+      "job": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38031076668/job/114151968692",
+      "passed": 57,
+      "run": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38031076668",
+      "seconds": 3.67,
+      "source_commit": "b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+      "status": "passed",
+      "warnings": 3
+    }
+  }
+}
