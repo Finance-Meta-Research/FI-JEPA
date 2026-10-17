@@ -11,6 +11,7 @@ on:
       - src/fijepa/config.py
       - src/fijepa/model.py
       - scripts/check_ablation_identifiability.py
+      - tests/test_paper_protocol.py
       - .github/workflows/ablation-identifiability.yml
 
 permissions:
@@ -47,10 +48,13 @@ jobs:
           cache: pip
 
       - name: Install package
-        run: python -m pip install -e .
+        run: python -m pip install -e '.[dev]'
 
       - name: Compile audit
         run: python -m py_compile scripts/check_ablation_identifiability.py
 
       - name: Verify executed mechanism distinctions
         run: python scripts/check_ablation_identifiability.py
+
+      - name: Paper ablation test contract (no model training)
+        run: python -m pytest tests/test_paper_protocol.py -q
