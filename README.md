@@ -1,8 +1,14 @@
 # FI-JEPA
 
+## Current research status
+
+The current v1 study is **closed as negative / boundary**, as recorded in [the final status](FINAL_STATUS_2026-09-30.md). The full learned representation performed worse than the matched raw-context Ridge control on the retained compact macrodata study. The one-stage `no_operator_split` condition is non-identifying and cannot support an operator-factorization claim.
+
+Use [the canonical evidence gate](PAPER_EVIDENCE_GATE.md) and [post-run validity audit](audit/FIJEPA_V1_POSTRUN_VALIDITY_AUDIT.md) to interpret the retained evidence. This repository does not establish trading alpha or broad forecasting superiority. Any v2 outcome generation is a separate prospective study; the commands below are historical usage examples, not authorization to rerun the frozen v1 or access successor outcomes.
+
 Financial-Informed Joint Embedding Predictive Architecture.
 
-This repository contains the code, configs, benchmark harness, figures, and LaTeX source for a publishable FI-JEPA preprint.
+This repository contains the code, configs, benchmark harness, figures, and LaTeX source for an evidence-bounded FI-JEPA negative-result preprint.
 
 ## What is included
 
