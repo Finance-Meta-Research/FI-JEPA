@@ -1,0 +1,158 @@
+{
+  "development_behavior_checked": [
+    "Two distinct actual recorded one-epoch runs preserve prior artifacts and exactly match every ordinary-trainer checkpoint tensor and history metric.",
+    "Actual CSV training completes from retained inputs after original CSV and YAML deletion.",
+    "Failed configurations, failed loaders, zero-exit missing artifacts, nonfinite or inconsistent checkpoints, malformed history, timeouts, API cancellation and CLI SIGTERM retain failure evidence.",
+    "Named FIFO input is rejected before blocking; output replacement fails exact validation/inventory binding; a SIGTERM-ignoring worker is killed with its inherited POSIX process group."
+  ],
+  "environment": {
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "device": "cpu",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "pytest": "9.1.1",
+    "python": "3.12.14",
+    "torch": "2.5.1+cpu"
+  },
+  "evidence_files": {
+    "corrected_31_tests.log": {
+      "bytes": 663,
+      "sha256": "6708c8d08b058a65be6f0a5749be4522ebd0bc7392b031a0c3f2034a9ba3bb7b"
+    },
+    "final_full_tests.log": {
+      "bytes": 2211,
+      "sha256": "7e85a2a6ed0ec246a95b4ce3ae92fa9b54259dba4d70b1d8c889bb69a48ddbee"
+    },
+    "independent_affected_tests.log": {
+      "bytes": 114,
+      "sha256": "3596b616fe3d2e05b910bb34d6471728916bdb85845f83cbfdf041093ecf3959"
+    },
+    "independent_descendant_failure.json": {
+      "bytes": 336,
+      "sha256": "9fb9902d2bb7058f35060c3409e7586f1311f634df2401d73a7b7384630e932a"
+    },
+    "independent_final_review.json": {
+      "bytes": 4454,
+      "sha256": "ea47a7b94fdfadf0a4290a3af7a113c4e0c792204f610444e012741e7a664e2f"
+    },
+    "independent_first_corrections.json": {
+      "bytes": 472,
+      "sha256": "4645a469122f8b48b141d5c92de7676be1ced50471330aaa8e91e82f79ef4da5"
+    },
+    "independent_initial_review.json": {
+      "bytes": 2201,
+      "sha256": "bc47e6c6b9a1495c8eb0b64fb47005139db566968fc8d2527664991d55b7aa14"
+    },
+    "independent_scope_review.json": {
+      "bytes": 3226,
+      "sha256": "b06c564e3bfb0ccf2036666ddc20124dcc31b7a6a8f826b870eab587038743eb"
+    },
+    "inherited_combined_tests.log": {
+      "bytes": 1278,
+      "sha256": "448a45331fde1d61250523dcfe14123dc6e7985be5263549ab465c2680a03af2"
+    },
+    "initial_26_tests.log": {
+      "bytes": 653,
+      "sha256": "2b2be667cf2195719bda54f5b919af47a50131b4127ceb694f730cbc47128c2e"
+    },
+    "review_fix_initial_watchdog_failure.log": {
+      "bytes": 4652,
+      "sha256": "f2c1b3cdac31fd90654c73fb9b52bbca419187a57054a65ef820d45c0a72fe1a"
+    }
+  },
+  "final_full_suite": {
+    "command": "PYTHONPATH=/workspace/scratch/686cff45990b/deps/torch-cpu:src OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest -q tests",
+    "failed": 0,
+    "inherited_cases": 137,
+    "new_cases": 32,
+    "passed": 169,
+    "raw_log": "final_full_tests.log",
+    "seconds": 171.42,
+    "skipped": 0,
+    "warning_scope": "Seven inherited GradScaler deprecations; three fork-fixture deprecations.",
+    "warnings": 10
+  },
+  "history": {
+    "integration_commit": "0b943d5b4f53aff6e503e94b629980209c5c4157",
+    "integration_tree": "c92d472f874235d464a05cbc92b700e6011e9d96",
+    "parent_commits": [
+      "578cabafb02368985f73765c741bce46aedf11d7",
+      "fb3f950414cc1c965702a4b83001dbc91624b44e"
+    ],
+    "prospective_commit": "5cfb7c13395e49fe54d80b5b8acf1928310ab886",
+    "prospective_tree": "a5a722c0ba9ac5a70ac1200c503c0edf6d25c203"
+  },
+  "hosted_verification": {
+    "status": "PENDING_PUBLICATION"
+  },
+  "independent_review": {
+    "count_scope": "The affected subset overlaps six of the earlier31 and includes the one new descendant case;32 distinct added cases in total.",
+    "decision": "passed within declared development scope",
+    "final_affected_subset": 7,
+    "initial_corrected_suite": 31,
+    "record": "independent_final_review.json",
+    "scope_record": "independent_scope_review.json"
+  },
+  "limits": [
+    "Generated local development fixtures only; no new scientific study outcome.",
+    "The budget excludes interpreter imports, termination grace, post-child validation and hashing.",
+    "Source observations and hashes are not provenance authentication or hostile filesystem isolation.",
+    "POSIX group signaling and direct-child reaping; direct-child cleanup elsewhere; no guarantee for descendants leaving their group.",
+    "Repository checkout required; no exact training resume or uncatchable-termination recovery."
+  ],
+  "prospective_history_scope": "The exact locally prepared pre-implementation contract tree is retained as the separate remote prospective commit; GitHub publication timestamps follow local implementation and testing.",
+  "prospective_local_commit": "6899266b7e3e8a5293e4cb4c29c39ac4ef283ccf",
+  "protected_evaluation_opened": false,
+  "schema": "fijepa_recorded_training_development_verification_v1",
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "scientific_result_created": false,
+  "source_files": {
+    ".github/workflows/evaluation-correctness.yml": {
+      "bytes": 2232,
+      "sha256": "b092007fe1502ee916e456f98ddd61f24c3383f88bc37b57549c2a284e009aaf"
+    },
+    ".github/workflows/temporal-integrity.yml": {
+      "bytes": 1623,
+      "sha256": "5f872bfbcf395794352c09ed12c12efc89637bb475e78a54f8499c570e437e6e"
+    },
+    "README.md": {
+      "bytes": 4274,
+      "sha256": "b4a86ab875c1e6fdf218804b6f56a209ddfc29f7d4c52585d64335b38f2c3bce"
+    },
+    "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md": {
+      "bytes": 8578,
+      "sha256": "00cf9581eab13165c51dc43ad81d34610eafbe0b3698380b2155234e42e7907d"
+    },
+    "scripts/train_recorded.py": {
+      "bytes": 1269,
+      "sha256": "e7a809c8c5ec7c2e241c5015a03da4f42723347e1230f19431302e8a1ee06873"
+    },
+    "src/fijepa/data.py": {
+      "bytes": 22078,
+      "sha256": "98a6dff99effa31ce7d58c75117d92394927604a6f6d95676526d452801fdfce"
+    },
+    "src/fijepa/recorded_training.py": {
+      "bytes": 14712,
+      "sha256": "f4d7820a08871be89a852d675b69629d782b99b1fdf6a9347c18ba141468d1aa"
+    },
+    "tests/test_recorded_process_group.py": {
+      "bytes": 5725,
+      "sha256": "f3d365a51b9f6ba4f80b434a54b78b60a69773491654d798630b46d79a5c3476"
+    },
+    "tests/test_recorded_training.py": {
+      "bytes": 19361,
+      "sha256": "91e4e31b5bc32efbc8698c80c09dae660522de02d9081203442dd8d298d50382"
+    }
+  },
+  "static_checks": {
+    "compile_new_module_cli_tests": "passed",
+    "diff_whitespace": "Source, configuration and documentation pass; the retained raw pytest failure log preserves three original trailing-whitespace lines.",
+    "isolated_ruff": "passed: E4,E7,E9,F,I",
+    "new_file_format": "passed:4files",
+    "workflow_yaml_and_shell_syntax": "passed:2workflows,8shell steps"
+  },
+  "status": "LOCAL_AND_INDEPENDENT_VERIFICATION_PASSED",
+  "verified_utc": "2026-10-10T06:23:04Z"
+}

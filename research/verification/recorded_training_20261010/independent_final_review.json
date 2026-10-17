@@ -1,0 +1,57 @@
+{
+  "additional_probes": "independent_first_corrections.json confirms the actual output validator returns hashes for the bytes it loaded, rejects the subsequent replacement at finalization, retains both identities, and still accepts a symlink to a regular input file.",
+  "date_utc": "2026-10-10",
+  "decision": "NO_REMAINING_CONCRETE_BLOCKER_IN_DECLARED_DEVELOPMENT_SCOPE",
+  "environment": {
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONPATH": "/workspace/scratch/686cff45990b/deps/torch-cpu:src",
+    "python": "3.12.14"
+  },
+  "final_subset_raw_log": "independent_affected_tests.log",
+  "independent_tests": [
+    {
+      "command": "python -m pytest -q tests/test_recorded_training.py",
+      "module_source_sha256": "23c081812fda96afa3100a6d1fd7e8080b1754ad22151afba726897e6f5fdab3",
+      "result": "31 passed, 1 warning in 82.34s (0:01:22)",
+      "scope": "FIFO and same-snapshot output corrections, before the isolated process-group correction",
+      "warning": "Inherited torch.cuda.amp.GradScaler FutureWarning in the legacy-constructor witness"
+    },
+    {
+      "command": "python -m pytest -q tests/test_recorded_process_group.py tests/test_recorded_training.py -k 'timeout_stops or cancellation_stops or cli_sigterm or fifo_input or replaced_output'",
+      "module_source_sha256": "f4d7820a08871be89a852d675b69629d782b99b1fdf6a9347c18ba141468d1aa",
+      "result": "7 passed, 25 deselected in 22.80s",
+      "scope": "Final exact source and test hashes: live descendant, ordinary timeout, API cancellation, CLI SIGTERM, config/data FIFO admission and post-validation output replacement. Six of these cases overlap the earlier 31; this is not an additional 7 unique feature cases."
+    }
+  ],
+  "limits": [
+    "The author still owns the full final integrated suite gate; the reviewer does not claim that all inherited tests were rerun against the final module hash.",
+    "The wall-time budget covers preparation and child execution; the documented termination grace and output verification/hashing follow it.",
+    "The process guarantee is POSIX process-group signaling and direct-child reaping, with direct-child cleanup on other platforms. This is not adversarial process isolation or general descendant reaping.",
+    "The helper requires the repository checkout, as does the unchanged legacy training script.",
+    "These are execution and development correctness checks. They neither reopen the closed NEGATIVE / BOUNDARY v1 study nor establish a new scientific outcome or exact checkpoint resume."
+  ],
+  "resolved_findings": [
+    "A FIFO configuration could block beyond the attempt budget before a deadline check. Regular-file descriptor admission and POSIX O_NONBLOCK now reject it before reading.",
+    "A successful output validation could be followed by a replacement that the terminal receipt hashed as COMPLETED. The actual validation-byte identities now have to match terminal inventory.",
+    "A SIGTERM-ignoring worker survived when its leader exited promptly. POSIX cleanup now always sends SIGKILL to the owned group after the leader wait. The dedicated Linux subreaper regression verifies and reaps signal termination without mistaking zombies for live workers."
+  ],
+  "retained_initial_failures": [
+    "independent_initial_review.json",
+    "independent_descendant_failure.json"
+  ],
+  "reviewed_source": {
+    "scripts/train_recorded.py": "e7a809c8c5ec7c2e241c5015a03da4f42723347e1230f19431302e8a1ee06873",
+    "src/fijepa/recorded_training.py": "f4d7820a08871be89a852d675b69629d782b99b1fdf6a9347c18ba141468d1aa",
+    "tests/test_recorded_process_group.py": "f3d365a51b9f6ba4f80b434a54b78b60a69773491654d798630b46d79a5c3476",
+    "tests/test_recorded_training.py": "91e4e31b5bc32efbc8698c80c09dae660522de02d9081203442dd8d298d50382"
+  },
+  "reviewer": "/root/wave3_methods",
+  "static_verification": {
+    "initial_lint_observation": "Two BLE001 catch-all warnings in the new supervisor test were resolved with documented local suppressions: all child and cleanup exceptions must be transported as test failures, including BaseException subclasses. No runtime behavior changed.",
+    "ruff_check_new_test": "passed",
+    "ruff_format_new_test": "passed"
+  },
+  "test_ownership": "At the author's explicit request, the reviewer added only tests/test_recorded_process_group.py. The author retained ownership of implementation and documentation changes."
+}

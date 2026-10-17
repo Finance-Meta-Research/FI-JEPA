@@ -1,0 +1,33 @@
+{
+  "schema": "fijepa.checkpoint-structure-hosted.v1",
+  "date": "2026-10-10",
+  "validated_source_commit": "18f96ad4849b7e7dbc1593513ab64c0e733b284f",
+  "validated_tree": "701a2f4cc45f3166e018f51f5883e84bc8745c5a",
+  "python": "3.11.17",
+  "evaluation_correctness": {
+    "run": 38044282075,
+    "job": 114190548470,
+    "url": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38044282075",
+    "status": "success",
+    "passed": 193,
+    "warnings": 10,
+    "seconds": 44.82,
+    "lint": "both declared isolated checks passed"
+  },
+  "temporal_integrity": {
+    "run": 38044282072,
+    "job": 114190548394,
+    "url": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38044282072",
+    "status": "success",
+    "passed": 57,
+    "warnings": 3,
+    "seconds": 3.72,
+    "counting": "overlapping subset of full suite, not additional unique tests"
+  },
+  "source_binding": "Both workflows checked out and asserted the exact PR source SHA; decoded job logs inspected.",
+  "local_budget_note": "The first interrupted full command had no external timeout and its exact duration was not retained; compliance with the planned 120-second limit cannot be asserted for that attempt. The final complete command enforced 120 seconds and passed in112.59 seconds. This is disclosed as an execution-record limitation, not a passing run.",
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "scientific_outcomes_created": false,
+  "protected_evaluation_opened": false,
+  "metadata_followup": "This receipt and canonical/documentation additions do not alter the verified implementation or tests."
+}

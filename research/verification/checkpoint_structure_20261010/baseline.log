@@ -1,0 +1,484 @@
+......FFFFFFFFFFFFFFFFF                                                  [100%]
+=================================== FAILURES ===================================
+____ test_finite_but_incompatible_checkpoint_cannot_complete[unrelated-mlp] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c0')
+backbone = 'mlp', tamper = 'unrelated'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+___ test_finite_but_incompatible_checkpoint_cannot_complete[unrelated-conv] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c1')
+backbone = 'conv', tamper = 'unrelated'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+_ test_finite_but_incompatible_checkpoint_cannot_complete[unrelated-transformer] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c2')
+backbone = 'transformer', tamper = 'unrelated'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+_____ test_finite_but_incompatible_checkpoint_cannot_complete[missing-mlp] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c3')
+backbone = 'mlp', tamper = 'missing'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+____ test_finite_but_incompatible_checkpoint_cannot_complete[missing-conv] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c4')
+backbone = 'conv', tamper = 'missing'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+_ test_finite_but_incompatible_checkpoint_cannot_complete[missing-transformer] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c5')
+backbone = 'transformer', tamper = 'missing'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+___ test_finite_but_incompatible_checkpoint_cannot_complete[unexpected-mlp] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c6')
+backbone = 'mlp', tamper = 'unexpected'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+___ test_finite_but_incompatible_checkpoint_cannot_complete[unexpected-conv] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c7')
+backbone = 'conv', tamper = 'unexpected'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+_ test_finite_but_incompatible_checkpoint_cannot_complete[unexpected-transformer] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c8')
+backbone = 'transformer', tamper = 'unexpected'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+______ test_finite_but_incompatible_checkpoint_cannot_complete[shape-mlp] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c9')
+backbone = 'mlp', tamper = 'shape'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+_____ test_finite_but_incompatible_checkpoint_cannot_complete[shape-conv] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c10')
+backbone = 'conv', tamper = 'shape'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+__ test_finite_but_incompatible_checkpoint_cannot_complete[shape-transformer] __
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c11')
+backbone = 'transformer', tamper = 'shape'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+______ test_finite_but_incompatible_checkpoint_cannot_complete[dtype-mlp] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c12')
+backbone = 'mlp', tamper = 'dtype'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+_____ test_finite_but_incompatible_checkpoint_cannot_complete[dtype-conv] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c13')
+backbone = 'conv', tamper = 'dtype'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+__ test_finite_but_incompatible_checkpoint_cannot_complete[dtype-transformer] __
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_finite_but_incompatible_c14')
+backbone = 'transformer', tamper = 'dtype'
+
+    @pytest.mark.parametrize("backbone", ["mlp", "conv", "transformer"])
+    @pytest.mark.parametrize("tamper", ["unrelated", "missing", "unexpected", "shape", "dtype"])
+    def test_finite_but_incompatible_checkpoint_cannot_complete(tmp_path, backbone, tamper):
+        config = fixture_run(tmp_path, backbone)
+        path = tmp_path / "last.pt"
+        checkpoint = torch.load(path, weights_only=True)
+        state = checkpoint["model"]
+        key = next(iter(state))
+        if tamper == "unrelated":
+            checkpoint["model"] = {"unrelated": torch.ones(1)}
+        elif tamper == "missing":
+            del state[key]
+        elif tamper == "unexpected":
+            state["unexpected"] = torch.ones(1)
+        elif tamper == "shape":
+            state[key] = state[key][:-1]
+        else:
+            state[key] = state[key].to(torch.float16)
+        torch.save(checkpoint, path)
+>       with pytest.raises(ValueError, match="model (keys|structure)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:78: Failed
+______________ test_automatic_width_is_shared_by_both_checkpoints ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_automatic_width_is_shared0')
+
+    def test_automatic_width_is_shared_by_both_checkpoints(tmp_path):
+        config = fixture_run(tmp_path, "conv", infer_features=True, last_width=3)
+>       with pytest.raises(ValueError, match="model structure"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:84: Failed
+_______ test_declared_feature_width_is_not_replaced_by_checkpoint_width ________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-448/test_declared_feature_width_is0')
+
+    def test_declared_feature_width_is_not_replaced_by_checkpoint_width(tmp_path):
+        config = fixture_run(tmp_path, "mlp")
+        config["data"]["feature_cols"] = ["one_declared_feature"]
+        (tmp_path / "config.json").write_text(json.dumps(config), encoding="utf-8")
+        for name in ("best.pt", "last.pt"):
+            checkpoint = torch.load(tmp_path / name, weights_only=True)
+            checkpoint["config"] = config
+            torch.save(checkpoint, tmp_path / name)
+>       with pytest.raises(ValueError, match="model structure"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_recorded_checkpoint_structure.py:96: Failed
+=========================== short test summary info ============================
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[unrelated-mlp]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[unrelated-conv]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[unrelated-transformer]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[missing-mlp]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[missing-conv]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[missing-transformer]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[unexpected-mlp]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[unexpected-conv]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[unexpected-transformer]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[shape-mlp]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[shape-conv]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[shape-transformer]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[dtype-mlp]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[dtype-conv]
+FAILED tests/test_recorded_checkpoint_structure.py::test_finite_but_incompatible_checkpoint_cannot_complete[dtype-transformer]
+FAILED tests/test_recorded_checkpoint_structure.py::test_automatic_width_is_shared_by_both_checkpoints
+FAILED tests/test_recorded_checkpoint_structure.py::test_declared_feature_width_is_not_replaced_by_checkpoint_width
+17 failed, 6 passed in 15.35s

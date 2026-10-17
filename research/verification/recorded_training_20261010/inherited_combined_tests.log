@@ -1,0 +1,14 @@
+........................................................................ [ 52%]
+.................................................................        [100%]
+=============================== warnings summary ===============================
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes0-3]
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes1-4]
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes2-3]
+tests/test_gradient_accumulation.py::test_accumulated_update_equals_actual_concatenated_group[sizes3-1]
+tests/test_gradient_failure_atomicity.py::test_nonfinite_gradient_never_changes_parameters_or_target[None]
+tests/test_gradient_failure_atomicity.py::test_nonfinite_gradient_never_changes_parameters_or_target[1.0]
+  /workspace/scratch/686cff45990b/work/wave3-fi-jepa/src/fijepa/trainer.py:65: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+    self.scaler = GradScaler(enabled=config.train.amp and self.device.type == "cuda")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+137 passed, 6 warnings in 61.84s (0:01:01)

@@ -1,0 +1,552 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-17",
+  "kind": "ENGINEERING_STACK_INTEGRATION_RECONCILIATION",
+  "repository": "Finance-Meta-Research/FI-JEPA",
+  "pr": 12,
+  "parents": [
+    "3b476ecb54476b1f13c98c2ddcf75a4c84d49a1c",
+    "34705e5668882983869474bd88795a49d758bb60"
+  ],
+  "change": "Clean local Git merge integrates the #9 reader and ablation-test corrections into the fully reviewed #12-#14 stack; no runtime or test semantics are rewritten. Canonical history and read indexes are preserved, and this append-only review record is added.",
+  "original_states": [
+    {
+      "source_commit": "3b476ecb54476b1f13c98c2ddcf75a4c84d49a1c",
+      "state": {
+        "schema_version": 1,
+        "project": "FI-JEPA",
+        "updated_utc": "2026-10-10",
+        "repository_base_commit": "20a1fc3f533b484e6ed88f7180c38b340378755f",
+        "scientific_question": "Does the learned representation improve a fixed GDP-growth Ridge probe over raw context in the bounded macrodata study?",
+        "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+        "current_phase": "DEVELOPMENT_ENGINEERING_CLOSED_PENDING_DRAFT_REVIEW",
+        "current_hypothesis_change": false,
+        "protected_evaluation_opened": false,
+        "scientific_runs_this_revision": 0,
+        "execution_budget": {
+          "scope": "Bounded generated-data regression and existing correctness tests only",
+          "paid_compute": false,
+          "training_campaigns": 0,
+          "protected_runs": 0
+        },
+        "current_change": "Repair active-prototype matching and make memory batch writes atomic for invalid shapes/numerics; preserve the existing architecture, ordinary float32 update equations, frozen v1 evidence and all earlier budgets.",
+        "required_session_reads": [
+          "FINAL_STATUS_2026-09-30.md",
+          "research/PAPER_PROTOCOL_V1.md",
+          "audit/FIJEPA_V1_POSTRUN_VALIDITY_AUDIT.md",
+          "research/DEVELOPMENT_GRADIENT_ACCUMULATION_20261010.md",
+          "research/ENGINEERING_NUMERICAL_INTEGRITY_20261010.json",
+          "research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md",
+          "research/DEVELOPMENT_ACTIVE_PROTOTYPE_WRITES_20261010.md",
+          "docs/development/active-prototype-writes-20261010.md",
+          "research/DEVELOPMENT_CHECKPOINT_STRUCTURE_20261010.md",
+          "research/verification/checkpoint_structure_20261010/receipt.json",
+          "research/verification/checkpoint_structure_20261010/hosted_verification.json"
+        ],
+        "preserved_history_index": [
+          "experiments/paper_results.json",
+          "experiments/PAPER_RUN_RECEIPT.txt",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/8",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/9",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/10",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/11",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/12",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/13"
+        ],
+        "history_index_scope": "Entry points to retained repository history and existing PRs; this is not a claim to have re-audited all historical evidence.",
+        "pending_gates": [
+          "GitHub integration of the separate development PRs.",
+          "Any outcome-generating successor requires its own hypothesis, data/splits, baselines, source commit, budget and protected evaluation freeze."
+        ],
+        "history": [
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_revision",
+            "record": "research/DEVELOPMENT_GRADIENT_ACCUMULATION_20261010.md",
+            "status": "implemented; 23 tests passed; independent source review passed; integration pending",
+            "scientific_outcomes_created": false
+          },
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_revision",
+            "record": "research/ENGINEERING_NUMERICAL_INTEGRITY_20261010.json",
+            "status": "implemented; 25 bounded tests passed; integration pending",
+            "scientific_outcomes_created": false
+          },
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_revision",
+            "record": "research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md",
+            "status": "implemented; 60 new tests and all 25 newest-parent tests passed locally (85 total); independent source review and unchanged ablation audit passed; hosted checks pending",
+            "scientific_outcomes_created": false
+          },
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_compatibility_revision",
+            "record": "research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md#hosted-failure-and-pandas-compatibility-correction",
+            "status": "first hosted run retained: 80 pass / 5 setup failures; dtype repair independently reviewed; full local pandas 3 suite 86 passed, prior-pandas temporal/dtype subset 7 passed; hosted follow-up pending",
+            "scientific_outcomes_created": false
+          },
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_hosted_verification",
+            "record": "research/DEVELOPMENT_PAIRED_EVALUATION_20261010.md#completed-hosted-verification",
+            "source_commit": "f873f1f50740ff49f6b4eb252bcef7cb953e581f",
+            "status": "exact-commit hosted evaluation: 86 passed and isolated lint passed; temporal-integrity and ablation-identifiability workflows passed; draft PR #12 remains pending integration",
+            "scientific_outcomes_created": false
+          },
+          {
+            "date": "2026-10-10",
+            "recorded_utc": "2026-10-10 09:57:23 UTC",
+            "kind": "new_bounded_engineering_session_opened",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "record": "research/DEVELOPMENT_ACTIVE_PROTOTYPE_WRITES_20261010.md",
+            "previous_current_change": "Preserve observation pairing in regression metrics and add the explicit sample-mean latent evaluator v2 with real checkpoint/configuration validation and traceable output. The legacy evaluator, training/validation checkpoint selection, accumulated optimizer change and frozen v1 evidence remain unchanged. The hosted pandas 3 dtype-assignment failure is repaired by installing the already-converted feature columns; causal fill and float32 normalization semantics remain unchanged.",
+            "previous_active_development_revision": "recorded-training-20261010-hosted",
+            "scientific_outcomes_created": false
+          },
+          {
+            "event": "bounded_baseline_defect_reproduced",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "recorded_utc": "2026-10-10T09:59:58Z",
+            "receipt": "research/verification/active_prototype_writes_20261010/attempt_01_baseline/receipt.json",
+            "expected_exit_code": 1,
+            "actual_exit_code": 1,
+            "wall_seconds": 20.203256885011797,
+            "scope": "Generated engineering witnesses only; no scientific outcome or predecessor reclassification.",
+            "observation": "All four declared active-slot, shape rollback, NaN rejection and aliased batch witnesses fail on the parent.",
+            "budget_consumed": {
+              "local_test_or_probe_commands": 1,
+              "cumulative_test_command_wall_seconds": 20.203256885011797,
+              "retained_demo_attempts": 0,
+              "review_repair_cycles": 0
+            }
+          },
+          {
+            "event": "bounded_candidate_and_independent_review_passed",
+            "recorded_utc": "2026-10-10T10:14:16.698535+00:00",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "candidate_receipt": "research/verification/active_prototype_writes_20261010/attempt_02_candidate/receipt.json",
+            "tests_passed": 58,
+            "new_tests_passed": 42,
+            "reviewer": "/root",
+            "review_commands": 0,
+            "demo_attempt_reserved": 1,
+            "budget_consumed": {
+              "local_test_or_probe_commands": 2,
+              "cumulative_test_command_wall_seconds": 42.415561104004155,
+              "retained_demo_attempts": 1,
+              "review_repair_cycles": 0
+            },
+            "scientific_completion": false
+          },
+          {
+            "event": "single_retained_demo_completed",
+            "recorded_utc": "2026-10-10T10:14:32Z",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "receipt": "research/verification/active_prototype_writes_20261010/demo_attempt_01/receipt.json",
+            "report": "research/verification/active_prototype_writes_20261010/demo/report.json",
+            "wall_seconds": 12.444040305999806,
+            "attempts": 1,
+            "new_scientific_evidence": false,
+            "conclusion": "Actual model/loss/optimizer/EMA/memory executes twice and saved checkpoint exactly replays; active-only falsifier passes.",
+            "budget_consumed": {
+              "local_test_or_probe_commands": 2,
+              "cumulative_test_command_wall_seconds": 42.415561104004155,
+              "retained_demo_attempts": 1,
+              "review_repair_cycles": 0,
+              "retained_demo_wall_seconds": 12.444040305999806
+            }
+          },
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_checkpoint_structure",
+            "record": "research/DEVELOPMENT_CHECKPOINT_STRUCTURE_20261010.md",
+            "status": "17 pre-fix fixture failures plus 1 review-discovered compatibility failure retained. Final193 local tests pass (24 new), with 13 warnings; first interrupted full run retained and not counted as a pass. Hosted exact-source checks pending.",
+            "scientific_outcomes_created": false
+          },
+          {
+            "event": "concurrent_parent_integrated_before_bounded_gate",
+            "recorded_utc": "2026-10-10T10:19:12.908437+00:00",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "integration_record": "research/verification/active_prototype_writes_20261010/integration_parent.json",
+            "new_parent": "18f96ad4849b7e7dbc1593513ab64c0e733b284f",
+            "parent_active_development_revision": "checkpoint-structure-20261010-verified",
+            "source_conflicts": [],
+            "state_conflicts_resolved_by": "Preserve both append-only histories and every concurrent development revision.",
+            "planned_test_command_number": 3,
+            "planned_cases": 82,
+            "demos_to_rerun": 0
+          },
+          {
+            "event": "engineering_execution_budget_closed",
+            "recorded_utc": "2026-10-10T10:20:50.913130+00:00",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "final_gate_receipt": "research/verification/active_prototype_writes_20261010/attempt_03_integration/receipt.json",
+            "final_local_tests_passed": 82,
+            "budget_consumed": {
+              "local_test_or_probe_commands": 3,
+              "cumulative_test_command_wall_seconds": 68.8579060970078,
+              "retained_demo_attempts": 1,
+              "review_repair_cycles": 0,
+              "retained_demo_wall_seconds": 12.444040305999806
+            },
+            "unused_execution_budget_closed": true,
+            "scientific_completion": false,
+            "remaining_scientific_boundary": "Any scientific successor requires a separately versioned frozen study; historical closed adverse findings and protected outcomes remain preserved."
+          },
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_checkpoint_structure_hosted",
+            "record": "research/verification/checkpoint_structure_20261010/hosted_verification.json",
+            "status": "Exact-source hosted full correctness passed193 tests and lint; temporal subset57passed. New record contains first-interrupted-command timeout/duration limitation. This follow-up changes no verified implementation or tests.",
+            "scientific_outcomes_created": false
+          },
+          {
+            "event": "concurrent_parent_hosted_metadata_preserved",
+            "recorded_utc": "2026-10-10T10:25:58.192251+00:00",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "old_parent": "18f96ad4849b7e7dbc1593513ab64c0e733b284f",
+            "new_publication_parent": "be41043d041e61ce54d7e75c66165e9dd21407c0",
+            "changed_parent_files": [
+              "RESEARCH_STATE.json",
+              "research/DEVELOPMENT_CHECKPOINT_STRUCTURE_20261010.md",
+              "research/verification/checkpoint_structure_20261010/hosted_verification.json"
+            ],
+            "implementation_and_tests_unchanged": true,
+            "additional_execution_commands": 0,
+            "budget_remains_closed": true,
+            "prior_gates_and_demo_are_historical_source_bound_receipts": true
+          },
+          {
+            "event": "reviewed_development_draft_published",
+            "session_id": "20261010-0945-active-prototype-writes",
+            "pull_request": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/14",
+            "implementation_commit": "99f711fd2987563e30c6ce052e442e3790099554",
+            "implementation_tree": "0255fe0d2f21c8c3487cb97f266f2aa0567100af",
+            "ordered_parents": [
+              "be41043d041e61ce54d7e75c66165e9dd21407c0"
+            ],
+            "all_tree_leaves_verified": 170,
+            "changed_files_verified": 36,
+            "metadata_only_closure": true,
+            "execution_budget_stays_closed": true,
+            "scientific_completion": false
+          }
+        ],
+        "active_development_revision": "20261010-0945-active-prototype-writes",
+        "development_revisions": [
+          {
+            "id": "recorded-training-20261010",
+            "phase": "SPECIFIED_BEFORE_IMPLEMENTATION",
+            "specification": "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md",
+            "dependency_commits": [
+              "578cabafb02368985f73765c741bce46aedf11d7",
+              "fb3f950414cc1c965702a4b83001dbc91624b44e"
+            ],
+            "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+            "development_budget": "Generated local fixtures and CPU correctness checks only; bounded child processes, no scientific campaign",
+            "protected_evaluation_opened": false,
+            "planned_change": "Integrate the existing data, optimizer and evaluation corrections; add explicit attempt directories, finite runtime budgets, retained inputs and logs, and terminal execution receipts around the unchanged training command."
+          },
+          {
+            "id": "recorded-training-20261010-verification",
+            "parent_revision": "recorded-training-20261010",
+            "phase": "VERIFIED_PENDING_INTEGRATION",
+            "specification": "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md",
+            "verification": "research/verification/recorded_training_20261010/receipt.json",
+            "change": "Integrate calendar, finite normalization, accumulated training and paired evaluation repairs; add explicitly selected retained bounded training attempts around the unchanged trainer.",
+            "local_tests": {
+              "passed": 169,
+              "inherited": 137,
+              "new": 32,
+              "warnings": 10
+            },
+            "independent_review": "passed within declared development scope",
+            "preserved_scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+            "protected_evaluation_opened": false,
+            "scientific_outcomes_created": false,
+            "pending_gates": [
+              "Hosted verification of the published exact commit.",
+              "Review and integration of the draft development branch.",
+              "A scientific successor still requires its own prospective protocol, frozen evaluations and empirical evidence."
+            ]
+          },
+          {
+            "id": "recorded-training-20261010-hosted",
+            "parent_revision": "recorded-training-20261010-verification",
+            "phase": "LOCALLY_AND_HOSTED_VERIFIED_PENDING_INTEGRATION",
+            "source_commit": "b8ba7644fd8e706b6b941f9a6d61dcb4c97d1232",
+            "pull_request": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/13",
+            "hosted_record": "research/verification/recorded_training_20261010/hosted_verification.json",
+            "local_full_tests_passed": 169,
+            "hosted_full_tests_passed": 169,
+            "hosted_temporal_subset_passed": 57,
+            "independent_source_and_publication_review": "passed within declared development scope",
+            "scientific_outcomes_created": false,
+            "protected_evaluation_opened": false,
+            "preserved_scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+            "pending_gates": [
+              "Review and integration of the draft development branch.",
+              "Any scientific successor requires its own prospective frozen study and empirical evidence."
+            ]
+          },
+          {
+            "id": "checkpoint-structure-20261010",
+            "parent_revision": "recorded-training-20261010-hosted",
+            "phase": "SPECIFIED_BEFORE_IMPLEMENTATION",
+            "parent_commit": "950bbed595e750498e7f8360720eff0ec703aa78",
+            "specification": "research/DEVELOPMENT_CHECKPOINT_STRUCTURE_20261010.md",
+            "planned_change": "Require complete model keys, tensor shapes and dtypes before completing a recorded attempt, using configured meta-device model structure; preserve training and scientific history.",
+            "protected_evaluation_opened": false,
+            "scientific_outcomes_created": false,
+            "new_fixture_budget": 24,
+            "full_suite_budget": 2
+          },
+          {
+            "id": "checkpoint-structure-20261010-verified",
+            "parent_revision": "checkpoint-structure-20261010",
+            "phase": "LOCALLY_VERIFIED_PENDING_HOSTED_REVIEW",
+            "verification": "research/verification/checkpoint_structure_20261010/receipt.json",
+            "local_full_suite_passed": 193,
+            "new_regression_tests": 24,
+            "independent_source_review": "passed after empty-backbone compatibility correction; no independent rerun",
+            "scientific_outcomes_created": false,
+            "protected_evaluation_opened": false,
+            "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+            "pending_gates": [
+              "Exact published-source hosted full correctness suite",
+              "Review and default-branch integration",
+              "Any scientific successor requires its own prospective frozen study"
+            ]
+          },
+          {
+            "id": "20261010-0945-active-prototype-writes",
+            "parent_revision": "checkpoint-structure-20261010-verified",
+            "phase": "ENGINEERING_CLOSED_VERIFIED",
+            "parent_commit": "18f96ad4849b7e7dbc1593513ab64c0e733b284f",
+            "initial_contract_parent": "950bbed595e750498e7f8360720eff0ec703aa78",
+            "specification": "research/DEVELOPMENT_ACTIVE_PROTOTYPE_WRITES_20261010.md",
+            "verification": "research/verification/active_prototype_writes_20261010/summary.json",
+            "local_tests_passed": 82,
+            "new_tests": 42,
+            "demo_attempts": 1,
+            "scientific_outcomes_created": false,
+            "protected_evaluation_opened": false,
+            "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED"
+          },
+          {
+            "id": "checkpoint-structure-20261010-hosted",
+            "parent_revision": "checkpoint-structure-20261010-verified",
+            "phase": "LOCALLY_AND_HOSTED_VERIFIED_PENDING_INTEGRATION",
+            "validated_source_commit": "18f96ad4849b7e7dbc1593513ab64c0e733b284f",
+            "verification": "research/verification/checkpoint_structure_20261010/hosted_verification.json",
+            "local_full_tests_passed": 193,
+            "hosted_full_tests_passed": 193,
+            "hosted_temporal_subset_passed": 57,
+            "independent_review": "source-only passed; no independent rerun",
+            "scientific_outcomes_created": false,
+            "protected_evaluation_opened": false,
+            "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+            "pending_gates": [
+              "Review and default-branch integration",
+              "Any scientific successor requires its own prospective frozen study"
+            ]
+          }
+        ],
+        "verification": {
+          "local_full_suite": {
+            "passed": 86,
+            "python": "3.12.14",
+            "pandas": "3.0.6",
+            "torch": "2.14.1+cpu"
+          },
+          "prior_pandas_temporal_and_dtype_tests": {
+            "passed": 7
+          },
+          "independent_source_review": "passed for paired metrics/evaluator and subsequent dtype compatibility fix",
+          "initial_hosted_failure": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38025913766",
+          "initial_ablation_pass": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38025913625",
+          "hosted": {
+            "source_commit": "f873f1f50740ff49f6b4eb252bcef7cb953e581f",
+            "source_tree": "73f0db485e0be94fd69aa5f7541a2ff0bbe9eccd",
+            "evaluation_correctness": {
+              "status": "passed",
+              "tests_passed": 86,
+              "warnings": 7,
+              "isolated_lint": "passed",
+              "run": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38026420985"
+            },
+            "temporal_integrity": {
+              "status": "passed",
+              "run": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38026420848"
+            },
+            "ablation_identifiability": {
+              "status": "passed",
+              "run": "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38026420850"
+            }
+          },
+          "scientific_runs": 0
+        },
+        "development_required_session_reads": [
+          "research/DEVELOPMENT_CALENDAR_SPLIT_20261010.md",
+          "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md",
+          "research/verification/recorded_training_20261010/receipt.json",
+          "research/verification/recorded_training_20261010/hosted_verification.json"
+        ],
+        "active_session": {
+          "id": "20261010-0945-active-prototype-writes",
+          "opened_before_implementation": true,
+          "recorded_utc": "2026-10-10 09:57:23 UTC",
+          "parent_commit": "950bbed595e750498e7f8360720eff0ec703aa78",
+          "status": "ENGINEERING_CLOSED_PUBLISHED_DRAFT",
+          "contract": "research/DEVELOPMENT_ACTIVE_PROTOTYPE_WRITES_20261010.md",
+          "budget": {
+            "local_test_or_probe_commands": 5,
+            "cumulative_test_command_wall_seconds": 360,
+            "review_repair_cycles": 2,
+            "independent_review_commands": 1,
+            "independent_review_wall_seconds": 90,
+            "retained_demo_attempts": 1,
+            "retained_demo_wall_seconds": 60,
+            "cpu_threads": 1,
+            "protected_runs": 0,
+            "paid_compute": 0,
+            "scientific_campaigns": 0
+          },
+          "consumed": {
+            "local_test_or_probe_commands": 3,
+            "cumulative_test_command_wall_seconds": 68.8579060970078,
+            "retained_demo_attempts": 1,
+            "review_repair_cycles": 0,
+            "retained_demo_wall_seconds": 12.444040305999806
+          },
+          "verification_receipts": [
+            "research/verification/active_prototype_writes_20261010/attempt_01_baseline/receipt.json",
+            "research/verification/active_prototype_writes_20261010/attempt_02_candidate/receipt.json",
+            "research/verification/active_prototype_writes_20261010/attempt_03_integration/receipt.json",
+            "research/verification/active_prototype_writes_20261010/demo_attempt_01/receipt.json"
+          ],
+          "independent_review": {
+            "reviewer": "/root",
+            "outcome": "PASS_NO_BLOCKER",
+            "scope": "Source-only review of runtime, tests, prospective contract, legacy boundary; no independent execution.",
+            "reviewed_source_sha256": {
+              "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+              "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+              "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+              "tests/test_active_prototype_writes.py": "cdc7a3baf0f36b8a08adf2ecb47b1b754af177dc7475dae649655744934f3bd4",
+              "tests/test_gradient_accumulation.py": "1ea10264e9ccb3b00a54b1e00bc7d12970312d75c00296ebe483a048bb31d483",
+              "tests/test_gradient_failure_atomicity.py": "081587094ddd3459bd187851c687eac5f676b7decaa292b94481dd60a3c6cbf5",
+              "tests/test_model_smoke.py": "38a7b30aed4e59bbcf0ecf8be64564474c04a5b0a3268c56cc36cab1f1b997a7"
+            },
+            "execution_commands": 0,
+            "repair_cycles": 0
+          },
+          "demo_attempt": {
+            "number": 1,
+            "status": "PASSED",
+            "command_receipt": "research/verification/active_prototype_writes_20261010/demo_attempt_01/receipt.json",
+            "max_wall_seconds": 60,
+            "output_directory": "research/verification/active_prototype_writes_20261010/demo",
+            "wall_seconds": 12.444040305999806,
+            "exit_code": 0,
+            "report": "research/verification/active_prototype_writes_20261010/demo/report.json"
+          },
+          "closed_utc": "2026-10-10T10:20:50.913130+00:00",
+          "unused_execution_budget_closed": true,
+          "publication_parent_commit": "be41043d041e61ce54d7e75c66165e9dd21407c0",
+          "final_local_tests_passed": 82,
+          "protected_runs": 0,
+          "scientific_campaigns": 0,
+          "paid_compute": 0,
+          "publication": {
+            "branch": "codex/active-prototype-writes-20261010-0945",
+            "base_branch": "codex/fijepa-recorded-training-20261010",
+            "status": "PUBLISHED_DRAFT",
+            "hosted_verification": "Pending at this metadata-only closure; current-head observations are recorded in the PR body and coordinator receipt.",
+            "parent_metadata_refresh": "be41043d041e61ce54d7e75c66165e9dd21407c0",
+            "pull_request": 14,
+            "url": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/14",
+            "implementation_commit": "99f711fd2987563e30c6ce052e442e3790099554",
+            "implementation_tree": "0255fe0d2f21c8c3487cb97f266f2aa0567100af",
+            "head_reference": "refs/heads/codex/active-prototype-writes-20261010-0945"
+          },
+          "integration_verification": "research/verification/active_prototype_writes_20261010/integration_parent.json"
+        }
+      }
+    },
+    {
+      "source_commit": "34705e5668882983869474bd88795a49d758bb60",
+      "state": {
+        "schema_version": 1,
+        "project": "FI-JEPA",
+        "updated_utc": "2026-10-10",
+        "repository_base_commit": "c94e1616eba1b2a7415ead4695def1d3b93094db",
+        "scientific_question": "Does the learned representation improve a fixed GDP-growth Ridge probe over raw context in the bounded macrodata study?",
+        "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+        "current_phase": "ENGINEERING_DEVELOPMENT_REVIEW",
+        "current_hypothesis_change": false,
+        "protected_evaluation_opened": false,
+        "scientific_runs_this_revision": 0,
+        "execution_budget": {
+          "scope": "Bounded generated-data regression and existing correctness tests only",
+          "paid_compute": false,
+          "training_campaigns": 0,
+          "protected_runs": 0
+        },
+        "current_change": "Unscale once, inspect every dense/sparse gradient before the optimizer step, and reject invalid gradients before parameter or target updates. Add the regression to optimizer CI.",
+        "required_session_reads": [
+          "FINAL_STATUS_2026-09-30.md",
+          "research/PAPER_PROTOCOL_V1.md",
+          "audit/FIJEPA_V1_POSTRUN_VALIDITY_AUDIT.md",
+          "research/DEVELOPMENT_GRADIENT_ACCUMULATION_20261010.md",
+          "research/ENGINEERING_NUMERICAL_INTEGRITY_20261010.json"
+        ],
+        "preserved_history_index": [
+          "experiments/paper_results.json",
+          "experiments/PAPER_RUN_RECEIPT.txt",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/8",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/9",
+          "https://github.com/Finance-Meta-Research/FI-JEPA/pull/10"
+        ],
+        "history_index_scope": "Entry points to retained repository history and existing PRs; this is not a claim to have re-audited all historical evidence.",
+        "pending_gates": [
+          "GitHub review and integration of this independently reviewed code change.",
+          "Any outcome-generating successor requires its own hypothesis, data/splits, baselines, source commit, budget and protected evaluation freeze."
+        ],
+        "history": [
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_revision",
+            "record": "research/DEVELOPMENT_GRADIENT_ACCUMULATION_20261010.md",
+            "status": "implemented; 23 tests passed; independent source review passed; integration pending",
+            "scientific_outcomes_created": false
+          },
+          {
+            "date": "2026-10-10",
+            "kind": "engineering_revision",
+            "record": "research/ENGINEERING_NUMERICAL_INTEGRITY_20261010.json",
+            "status": "implemented; 25 bounded tests passed; integration pending",
+            "scientific_outcomes_created": false
+          }
+        ]
+      }
+    }
+  ],
+  "validation": {
+    "existing_head_ci": [
+      "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38045004343",
+      "https://github.com/Finance-Meta-Research/FI-JEPA/actions/runs/38045004305"
+    ],
+    "existing_exact_source_counts": "235 full generated correctness cases plus an overlapping 82-case targeted subset passed on reviewed #14.",
+    "local_status": "Retained canonical paper evidence gate passed; runtime/test blob identities match a reviewed parent; complete original state snapshots and unioned histories verified; git diff --check passed.",
+    "local_numerical_tests": "Not rerun for this clean integration. PyTorch is unavailable locally; exact integrated-head hosted CI remains required.",
+    "new_head_ci": "Required after publication before merging into main."
+  },
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "scientific_runs": 0,
+  "protected_evaluation_opened": false,
+  "paid_compute": false,
+  "scientific_result_changed": false
+}

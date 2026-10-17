@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python",
+    "research/verification/active_prototype_writes_20261010/baseline_probe.py"
+  ],
+  "cwd": "/workspace/scratch/2a0c1e6ddd92/finance-worktrees-20261010-0945/FI-JEPA",
+  "timeout_seconds": 45.0,
+  "python": "3.12.14",
+  "started_utc": "2026-10-10T09:59:58Z",
+  "environment": {
+    "PYTHONPATH": "/workspace/scratch/2a0c1e6ddd92/torch-deps:src",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "source_sha256_before": {
+    "src/fijepa/memory.py": "f0c7904b80373e4180c79d53ea35061efaa5e55adf3226b77a42cb7c127b6cd1",
+    "research/verification/active_prototype_writes_20261010/baseline_probe.py": "711293080553ab35e2b41be713504cd4dd0fdc69619396ec406d47eed50a991e"
+  },
+  "scientific_outcomes": false
+}

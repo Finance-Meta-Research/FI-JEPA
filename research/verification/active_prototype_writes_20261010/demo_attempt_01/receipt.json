@@ -1,0 +1,59 @@
+{
+  "command": [
+    "python",
+    "scripts/demo_active_prototype_writes.py",
+    "--output",
+    "research/verification/active_prototype_writes_20261010/demo"
+  ],
+  "cwd": "/workspace/scratch/2a0c1e6ddd92/finance-worktrees-20261010-0945/FI-JEPA",
+  "timeout_seconds": 60.0,
+  "python": "3.12.14",
+  "started_utc": "2026-10-10T10:14:32Z",
+  "environment": {
+    "PYTHONPATH": "/workspace/scratch/2a0c1e6ddd92/torch-deps:src",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "source_sha256_before": {
+    "scripts/demo_active_prototype_writes.py": "25da891df304132bf134935f990f483624e26bf2baf95c63aa829a793dec91bf",
+    "research/verification/active_prototype_writes_20261010/bounded_command.py": "4890dca1e6c0d2d79992c0a70601850eb653c553708073e544d9078a95eacdde",
+    "src/fijepa/__init__.py": "6a10bbefb82fcc1e25fcc5e2033b5eadb6d20d541fef8a40171584e9a969b079",
+    "src/fijepa/config.py": "ee905a35def32ee38c596a4e16d95f75b01bce61a42e13ff0eda4c9a6e38a211",
+    "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+    "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+    "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+    "src/fijepa/data.py": "98a6dff99effa31ce7d58c75117d92394927604a6f6d95676526d452801fdfce",
+    "src/fijepa/trainer.py": "86d8a29e1cce2e6989d9489280e345922d1e6e00af715d2f479ec8f116fd2708",
+    "src/fijepa/metrics.py": "8ec17f4d09816383d49559d12b20e1cd4766495fbf252fa112383099a4248d61",
+    "src/fijepa/evaluation.py": "605523341c12551f2d3ff352c4a1508684567dc61adc58336c43989f34a3c34f",
+    "src/fijepa/benchmark.py": "782b60bc1ee36375d82dbd4636fda163a5d2e999dc5e09a8ff0762c06ac519b6",
+    "src/fijepa/recorded_training.py": "f4d7820a08871be89a852d675b69629d782b99b1fdf6a9347c18ba141468d1aa"
+  },
+  "scientific_outcomes": false,
+  "wall_seconds": 12.444040305999806,
+  "exit_code": 0,
+  "timed_out": false,
+  "source_sha256_after": {
+    "scripts/demo_active_prototype_writes.py": "25da891df304132bf134935f990f483624e26bf2baf95c63aa829a793dec91bf",
+    "research/verification/active_prototype_writes_20261010/bounded_command.py": "4890dca1e6c0d2d79992c0a70601850eb653c553708073e544d9078a95eacdde",
+    "src/fijepa/__init__.py": "6a10bbefb82fcc1e25fcc5e2033b5eadb6d20d541fef8a40171584e9a969b079",
+    "src/fijepa/config.py": "ee905a35def32ee38c596a4e16d95f75b01bce61a42e13ff0eda4c9a6e38a211",
+    "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+    "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+    "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+    "src/fijepa/data.py": "98a6dff99effa31ce7d58c75117d92394927604a6f6d95676526d452801fdfce",
+    "src/fijepa/trainer.py": "86d8a29e1cce2e6989d9489280e345922d1e6e00af715d2f479ec8f116fd2708",
+    "src/fijepa/metrics.py": "8ec17f4d09816383d49559d12b20e1cd4766495fbf252fa112383099a4248d61",
+    "src/fijepa/evaluation.py": "605523341c12551f2d3ff352c4a1508684567dc61adc58336c43989f34a3c34f",
+    "src/fijepa/benchmark.py": "782b60bc1ee36375d82dbd4636fda163a5d2e999dc5e09a8ff0762c06ac519b6",
+    "src/fijepa/recorded_training.py": "f4d7820a08871be89a852d675b69629d782b99b1fdf6a9347c18ba141468d1aa"
+  },
+  "child_peak_rss_bytes": 443834368,
+  "source_unchanged": true,
+  "output_sha256": {
+    "stdout.log": "db0064481fc07a3cd201786aef2576314e534be01bc6fadee5ba3225011e3d4d",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
