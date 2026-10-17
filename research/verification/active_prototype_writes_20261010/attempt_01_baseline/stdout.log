@@ -1,0 +1,68 @@
+{
+  "scope": "generated implementation witnesses only",
+  "torch": "2.14.1+cpu",
+  "cases": [
+    {
+      "case": "inactive_slot_must_not_win_merge",
+      "filled": 1.0,
+      "keys": [
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.5,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "values": [
+        [
+          2.0
+        ],
+        [
+          2.0
+        ],
+        [
+          0.0
+        ]
+      ],
+      "expected_filled": 2,
+      "contract_passed": false
+    },
+    {
+      "case": "shape_failure_must_roll_back",
+      "exception": "IndexError",
+      "contract_passed": false
+    },
+    {
+      "case": "nonfinite_later_row_must_roll_back",
+      "exception": null,
+      "contract_passed": false
+    },
+    {
+      "case": "aliased_values_use_pre_call_snapshot",
+      "values": [
+        [
+          4.0
+        ],
+        [
+          6.0
+        ]
+      ],
+      "expected_values": [
+        [
+          6.0
+        ],
+        [
+          6.0
+        ]
+      ],
+      "contract_passed": false
+    }
+  ],
+  "contract_failures": 4
+}

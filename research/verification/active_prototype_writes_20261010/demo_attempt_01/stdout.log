@@ -1,0 +1,80 @@
+{
+  "schema": "fijepa.generated_active_write_demo.v1",
+  "scope": "Engineering execution only; v1 remains CLOSED NEGATIVE/BOUNDARY",
+  "torch": "2.14.1+cpu",
+  "seed": 94502,
+  "threads": 1,
+  "examples": 2,
+  "context_length": 6,
+  "latent_dim": 8,
+  "optimizer_updates": 2,
+  "initial_model_tensor_sha256": "dd57cf6dffef077b08a44306b6ad1343c1660565751dd16b1cf0c4236725ac28",
+  "input_tensor_sha256": "ecbb188d6f5fb2eb6de599da9ff4a8d1ca92a4380e4f4fbb69c7799d8e2ff954",
+  "model_config": {
+    "d_model": 8,
+    "latent_dim": 8,
+    "num_assets": 8,
+    "num_layers": 1,
+    "num_heads": 4,
+    "dropout": 0.0,
+    "backbone": "mlp",
+    "predictor_hidden": 8,
+    "stochastic": false,
+    "ema_decay": 0.996,
+    "use_target_ema": true,
+    "predictor_mode": "split",
+    "stage_names": [
+      "h1"
+    ],
+    "use_memory": true,
+    "memory_size": 3,
+    "memory_topk": 2,
+    "memory_temperature": 0.2,
+    "memory_decay": 0.99,
+    "memory_write_threshold": 0.0,
+    "memory_merge_threshold": 0.9,
+    "use_reconstruction_head": true,
+    "use_operator_gate": true
+  },
+  "steps": [
+    {
+      "step": 0,
+      "loss": 1.2769389152526855,
+      "gradient_tensor_sha256": "88a658d8d56a82d1daa1eed07a2b86994291e45b09e6fe048381ce248b67611a",
+      "model_tensor_sha256": "9ba3f5f68a92c9018e16fed75905410079bcdf068f6abcd2d3169e8cdecdbca8",
+      "filled": 2.0,
+      "memory_tensor_sha256": "449ab08f323f2145c6355ac1afbbe94189c534f92768461c8f6b0195d3d81bc3"
+    },
+    {
+      "step": 1,
+      "loss": 1.2847827672958374,
+      "gradient_tensor_sha256": "c2f0cf7fad8512bffc3bbda16fc8af7deefd8dd984e590581a5fc7f59618597b",
+      "model_tensor_sha256": "5c65dd02233cf812867489cfe9d6edb0ff6c507da884999f4add13bba1893768",
+      "filled": 2.0,
+      "memory_tensor_sha256": "5ebabd56d49a048104c7b45355f030dad3bb18ff78cbd8e131d56e6ce94701c4"
+    }
+  ],
+  "checkpoint_replay_exact": true,
+  "active_slot_witness": {
+    "filled": 2.0,
+    "values": [
+      [
+        2.0
+      ],
+      [
+        4.0
+      ],
+      [
+        0.0
+      ]
+    ]
+  },
+  "artifact_sha256": {
+    "active_slot_witness.pt": "31d406b0793384c7d00d96a90fe4ca374eace087e49834919abb93c0442a0c06",
+    "final_checkpoint.pt": "19892f918f9bf520246b7080e5754c6e70984bc014ba2c124582dea37b7b60d3",
+    "generated_inputs.pt": "52deaf933db8e1c28060de66009f329bea6c3f7a7b1ca6cca9344925fb258336",
+    "gradients_step_0.pt": "719b4aaa60679eda15ccf78017e955db9493b1a3ba3c2d5c0d2aefd61611280c",
+    "gradients_step_1.pt": "1afe8c846534cc7e6136a540a36c56061839cbc033d3c859763cd335997ab9f4",
+    "initial_model.pt": "59b2f17670071b81a62f1d70acd06a8487d2ba4ef9ead40f987cb1d2273911d5"
+  }
+}
