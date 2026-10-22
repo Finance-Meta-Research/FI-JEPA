@@ -19,12 +19,14 @@
     "seconds": 1.296,
     "result": "PASS",
     "python": "3.12.14",
-    "numpy": "2.3.5"
+    "numpy": "2.3.5",
+    "fixture_materialization_note": "The partial local fixture initially had one additional trailing newline from file materialization. Its parsed saved values and rendered outputs were unchanged; before final publication it was corrected and verified against exact Git blob b48c01e794796e63588a74903e04eabbbcee44e8. The repository artifact was never modified.",
+    "initial_fixture_sha256": "bb14979044b4b085ec2d5dd00bdeb255ce94a947b1d74b195845d61dfb131dd6"
   },
   "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
   "scientific_runs": 0,
   "protected_evaluation_opened": false,
-  "retained_artifact_sha256": "bb14979044b4b085ec2d5dd00bdeb255ce94a947b1d74b195845d61dfb131dd6",
+  "retained_artifact_sha256": "525fe5f141bba765b3346c1aca3b327303703e5f98142b0f25d664211e10f7c8",
   "source_sha256": {
     "PAPER_EVIDENCE_GATE.md": "d0365016789d8e2c6b30314f8d3c314e4838afca6ac59dc1ddc7da9811eb8906",
     "README.md": "49696331ebb7f402ba1f125de2ed99e074f981135d0164514f42977cd4a421eb",
