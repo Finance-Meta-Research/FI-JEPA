@@ -1,0 +1,10 @@
+{
+  "different_validated_and_terminal_hashes_retained": true,
+  "kind": "INDEPENDENT_OFFLINE_REVIEW_PROBES",
+  "replacement_inventory_error": "trainer outputs changed after their completion validation",
+  "replacement_terminal_status": "FAILED",
+  "source_sha256": "23c081812fda96afa3100a6d1fd7e8080b1754ad22151afba726897e6f5fdab3",
+  "symlink_to_regular_input_copies_exactly": true,
+  "terminal_receipt_matches_returned_failure": true,
+  "validation_snapshot_count": 4
+}

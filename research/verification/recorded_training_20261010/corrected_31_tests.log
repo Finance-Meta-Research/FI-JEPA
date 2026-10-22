@@ -1,0 +1,8 @@
+...............................                                          [100%]
+=============================== warnings summary ===============================
+tests/test_recorded_training.py::test_legacy_constructor_reproduces_original_config_replacement
+  /workspace/scratch/686cff45990b/work/wave3-fi-jepa/src/fijepa/trainer.py:65: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+    self.scaler = GradScaler(enabled=config.train.amp and self.device.type == "cuda")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+31 passed, 1 warning in 83.03s (0:01:23)

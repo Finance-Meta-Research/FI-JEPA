@@ -1,0 +1,78 @@
+............................F..                                          [100%]
+=================================== FAILURES ===================================
+_________ test_fifo_input_is_rejected_before_any_blocking_read[config] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-355/test_fifo_input_is_rejected_be0')
+which = 'config'
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX FIFO admission")
+    @pytest.mark.parametrize("which", ["config", "csv"])
+    def test_fifo_input_is_rejected_before_any_blocking_read(tmp_path, which):
+        path = tmp_path / "config.yaml"
+        if which == "config":
+            os.mkfifo(path)
+        else:
+            fifo = tmp_path / "source.csv"
+            os.mkfifo(fifo)
+            cfg = small_config(tmp_path / "unused")
+            cfg.data.source = "csv"
+            cfg.data.csv_path = str(fifo)
+            save_config(path, cfg)
+        # A subprocess timeout keeps this regression itself bounded on the broken
+        # predecessor, where open(FIFO) blocks before the deadline is examined.
+>       result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/train_recorded.py"),
+                "--config",
+                str(path),
+                "--attempt-root",
+                str(tmp_path / "attempts"),
+                "--max-seconds",
+                "1",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            timeout=30,
+            check=False,
+        )
+
+tests/test_recorded_training.py:460: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py:550: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['/opt/codex/runtimes/codex-primary-runtime/dep...>
+endtime = 73898.525853888, orig_timeout = 30
+stdout_seq = [b'{\n  "schema": "fijepa_recorded_training_v1",\n  "status": "FAILED",\n  "attempt_directory": "/tmp/pytest-of-root/p...   "sha256": "0001b728b9386f60e52b94baa7488a58e5ccbf1762a1acba3f64aec770a85c40",\n      "bytes": 608\n    }\n  }\n}\n']
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python', '/workspace/scratch/686cff45990b/work/wave3-fi-jepa/scripts/train_recorded.py', '--config', '/tmp/pytest-of-root/pytest-355/test_fifo_input_is_rejected_be0/config.yaml', '--attempt-root', '/tmp/pytest-of-root/pytest-355/test_fifo_input_is_rejected_be0/attempts', '--max-seconds', '1']' timed out after 30 seconds
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py:1253: TimeoutExpired
+=============================== warnings summary ===============================
+tests/test_recorded_training.py::test_legacy_constructor_reproduces_original_config_replacement
+  /workspace/scratch/686cff45990b/work/wave3-fi-jepa/src/fijepa/trainer.py:65: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+    self.scaler = GradScaler(enabled=config.train.amp and self.device.type == "cuda")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_recorded_training.py::test_fifo_input_is_rejected_before_any_blocking_read[config]
+1 failed, 30 passed, 1 warning in 130.31s (0:02:10)

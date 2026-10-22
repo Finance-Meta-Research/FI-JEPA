@@ -70,3 +70,4 @@ The post-run identifiability audit is additionally authoritative for interpretat
 Older result files are not deleted merely because they are adverse or inconsistent. The manuscript must not hand-pick historical numbers. Generated result assets live under `paper/generated/` and are derived only from the retained `paper_results.json`.
 
 Positive, null, mixed, and negative outcomes are all admissible. Do not change seeds, metrics, model conditions, or training budget after observing the canonical result and call it the same protocol.
+

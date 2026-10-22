@@ -1,0 +1,52 @@
+{
+  "reviewer": "/root/wave3_methods",
+  "date_utc": "2026-10-10",
+  "scope": "Read-only local final candidate comparison before publication",
+  "review_status": "PASS",
+  "integration_commit": "b06ec9940f3fb5726c69408168f28f65496b0e3e",
+  "integration_parents": [
+    "578cabafb02368985f73765c741bce46aedf11d7",
+    "fb3f950414cc1c965702a4b83001dbc91624b44e"
+  ],
+  "integration_review": "The only source difference from the calendar/normalizer parent in src/fijepa/data.py is the reviewed pandas dtype repair from the evaluation parent. Relative to the latest evaluation parent, the integration adds the existing calendar/normalizer source, tests, specification and temporal workflow changes.",
+  "inherited_test_files_compared": 10,
+  "inherited_test_parent_content_conflicts": [],
+  "inherited_test_git_blob_mismatches": [],
+  "protected_files_compared_to_latest_pr12": 64,
+  "protected_path_selection": [
+    "all tracked paths under paper/",
+    "all tracked paths under experiments/",
+    "all tracked paths under audit/",
+    "all tracked paths under configs/",
+    "research/PAPER_PROTOCOL_V1.md",
+    "FINAL_STATUS_2026-09-30.md",
+    "PAPER_EVIDENCE_GATE.md",
+    ".github/workflows/canonical-paper-suite.yml",
+    ".github/workflows/regenerate-evidence-preprint.yml"
+  ],
+  "protected_git_blob_mismatches": [],
+  "existing_script_files_compared_to_integration": 11,
+  "existing_script_git_blob_mismatches": [],
+  "legacy_training_script_git_blob": "74c3aa25f10e54f8cd497c10ca72510e00a1c88c",
+  "old_canonical_fields_compared_to_latest_pr12": 18,
+  "old_canonical_fields_changed": [],
+  "current_tracked_changes_from_integration": [
+    ".github/workflows/evaluation-correctness.yml",
+    ".github/workflows/temporal-integrity.yml",
+    "README.md",
+    "RESEARCH_STATE.json",
+    "research/DEVELOPMENT_RECORDED_TRAINING_20261010.md"
+  ],
+  "unexpected_tracked_changes": [],
+  "allowed_new_implementation_paths": [
+    "scripts/train_recorded.py",
+    "src/fijepa/recorded_training.py",
+    "tests/test_recorded_training.py",
+    "tests/test_recorded_process_group.py"
+  ],
+  "allowed_new_evidence_prefix": "research/verification/recorded_training_20261010/",
+  "new_files_outside_authorized_scope": [],
+  "workflow_scope": "The temporal workflow adopts the evaluation workflow's observed pinned actions, explicit CPU dependencies, source-commit check and bounded numerical threads. Evaluation adds the new command/specification paths and lint checks. Scientific workflow files and outcome artifacts are unchanged.",
+  "method": "Inspect git integration parents and diffs. Compare SHA-1 Git blob identities computed from current file bytes against both parent trees for inherited tests, the latest evaluation tree for protected files, and the integration tree for pre-existing scripts. Compare each old canonical JSON value structurally. Enumerate tracked modifications and untracked files against the declared scope.",
+  "limits": "This verifies the local candidate snapshot. It is not the final remote tree verification, hosted CI evidence, or an independent rerun of a scientific protocol. Subsequent author additions of final verification and canonical evidence still require their final publication checks."
+}

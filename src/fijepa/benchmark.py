@@ -7,10 +7,14 @@ from typing import Dict, List, Sequence
 
 import numpy as np
 import torch
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from .data import build_datasets, make_loader
-from .metrics import linear_probe_classification, linear_probe_regression, flatten_context_windows
+from .metrics import (
+    flatten_context_windows,
+    linear_probe_classification,
+    linear_probe_regression,
+    regression_report,
+)
 from .model import FIJEPA
 from .trainer import Trainer
 
@@ -94,11 +98,7 @@ def collect_embeddings(model: FIJEPA, loader, device: torch.device):
 
 
 def _metrics_from_scores(y_true, y_pred):
-    return {
-        "mse": float(mean_squared_error(y_true, y_pred)),
-        "mae": float(mean_absolute_error(y_true, y_pred)),
-        "directional_acc": float(np.mean((np.asarray(y_true) >= 0) == (np.asarray(y_pred) >= 0))),
-    }
+    return regression_report(y_true, y_pred)
 
 
 def benchmark_fijepa(

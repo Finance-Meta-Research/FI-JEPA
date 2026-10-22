@@ -62,3 +62,4 @@ That differs from the current retained artifact. This historical discrepancy is 
 3. No new outcome generation is required to close v1. Any v2 work needs separate protocol/code review and explicit execution authorization; this patch grants none.
 
 No publication-readiness or independently reproduced scientific-result claim follows from these checks.
+

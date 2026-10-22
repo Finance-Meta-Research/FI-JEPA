@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-10",
+  "kind": "ENGINEERING_CORRECTNESS_REVISION",
+  "repository": "Finance-Meta-Research/FI-JEPA",
+  "parent_commit": "853dbb4649281920f8ca412e663f9e3eb797da62",
+  "existing_draft_pr": 11,
+  "title": "Reject non-finite derivatives before optimizer or target mutation",
+  "observation": "A finite sqrt(0) loss with infinite derivative updated parameters when gradient clipping was disabled.",
+  "cause": "Finite-loss admission was independent of derivative validity; gradient validation only occurred inside the optional clipping branch.",
+  "severity": "incorrect arithmetic, state or evidence admission on valid/ambiguous boundary inputs",
+  "implemented_change": "Unscale once, inspect every dense/sparse gradient before the optimizer step, and reject invalid gradients before parameter or target updates. Add the regression to optimizer CI.",
+  "predicted_consequence": "New constructed regressions fail on the recorded parent and pass after the repair while the existing bounded suite passes.",
+  "evidence": {
+    "pre_fix_new_tests_failed": 1,
+    "pre_fix_control_tests_passed": 1,
+    "post_fix_suite_tests_passed": 25,
+    "command": "PYTHONPATH=src OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python -m pytest -q tests/test_gradient_failure_atomicity.py tests/test_gradient_accumulation.py tests/test_model_smoke.py tests/test_temporal_integrity.py tests/test_paper_protocol.py",
+    "environment": {
+      "python": "3.12.14",
+      "numpy": "2.3.5",
+      "torch": "2.14.1+cpu",
+      "pytest": "9.1.1",
+      "device": "CPU"
+    },
+    "critical_static_checks": "Ruff E9,F821,F822,F823 passed for all changed Python files",
+    "compilation": "All changed Python sources compiled",
+    "whitespace": "git diff --check passed"
+  },
+  "changed_python_sha256": {
+    "src/fijepa/trainer.py": "86d8a29e1cce2e6989d9489280e345922d1e6e00af715d2f479ec8f116fd2708",
+    "tests/test_gradient_failure_atomicity.py": "081587094ddd3459bd187851c687eac5f676b7decaa292b94481dd60a3c6cbf5"
+  },
+  "scientific_runs": 0,
+  "scientific_result_changed": false,
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "protected_boundary": "No v1 scientific outcome changes; any successor needs independent hypothesis/source/data/budget/protocol freeze.",
+  "research_complete": false,
+  "independent_review": "pending",
+  "integration": "draft pull request; not merged",
+  "release_gate": "Review/integrate the implementation and retain source identities; scientific successors remain separately gated."
+}
