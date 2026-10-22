@@ -467,5 +467,16 @@
       "head_reference": "refs/heads/codex/active-prototype-writes-20261010-0945"
     },
     "integration_verification": "research/verification/active_prototype_writes_20261010/integration_parent.json"
-  }
+  },
+  "github_integration_reviews": [
+    {
+      "date": "2026-10-22",
+      "record": "research/GITHUB_READER_INTEGRATION_20261022.json",
+      "scope": "Saved-evidence reader integration with current main",
+      "local_tests_passed": 11,
+      "scientific_outcomes_created": false,
+      "hosted_ci": "pending",
+      "merge": "pending"
+    }
+  ]
 }

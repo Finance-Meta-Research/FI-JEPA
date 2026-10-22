@@ -1,0 +1,42 @@
+{
+  "schema": "fijepa.github-reader-integration.v1",
+  "date": "2026-10-22",
+  "parents": [
+    "e02892061b3647f7a4084e765d7494cdd769b8b5",
+    "a7029a7bbc1d8e232749df7ac784feb5284e0a08"
+  ],
+  "scope": "Integrate the frozen saved-evidence reader with current main. No training, checkpoint inference, protected outcomes, protocol changes or new scientific evidence.",
+  "conflict_resolution": {
+    "README.md": "Retain strict reader-first status and saved-evidence instructions; append current main prospective evaluation and recorded-training documentation.",
+    "scripts/check_paper_evidence_gate.py": "Retain complete PR8 strict report admission, six paired-summary verification and explicit non-identifying control boundary.",
+    "tests/test_paper_protocol.py": "Preserve current main effective-signature structural regressions byte-for-byte, including stage-label invariance."
+  },
+  "local_verification": {
+    "command": "python -m unittest discover -s tests -p test_paper_evidence_gate.py -v",
+    "first_attempt": "10 passed, 1 error: partial local checkout lacked retained canonical_results_table.tex; no implementation defect or scientific result.",
+    "resolution": "Fetched both retained generated assets from exact current main without changing their bytes.",
+    "final_tests": 11,
+    "seconds": 1.296,
+    "result": "PASS",
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "fixture_materialization_note": "The partial local fixture initially had one additional trailing newline from file materialization. Its parsed saved values and rendered outputs were unchanged; before final publication it was corrected and verified against exact Git blob b48c01e794796e63588a74903e04eabbbcee44e8. The repository artifact was never modified.",
+    "initial_fixture_sha256": "bb14979044b4b085ec2d5dd00bdeb255ce94a947b1d74b195845d61dfb131dd6"
+  },
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "scientific_runs": 0,
+  "protected_evaluation_opened": false,
+  "retained_artifact_sha256": "525fe5f141bba765b3346c1aca3b327303703e5f98142b0f25d664211e10f7c8",
+  "source_sha256": {
+    "PAPER_EVIDENCE_GATE.md": "d0365016789d8e2c6b30314f8d3c314e4838afca6ac59dc1ddc7da9811eb8906",
+    "README.md": "49696331ebb7f402ba1f125de2ed99e074f981135d0164514f42977cd4a421eb",
+    "audit/FIJEPA_V1_READER_CLOSEOUT.md": "3a8bee1cbc9b8d373128691e1a85369681dbec5c89748cf76b8d318005d84fe6",
+    "scripts/check_paper_evidence_gate.py": "07c1bce8c5c66cfccdecf0809c5659970314893ae9d388166b49502d0aa0457e",
+    "scripts/make_canonical_paper_assets.py": "373fb6fbd78c9bcb947cd4aff8d960168adca84ede877e57678af3fd38f85d45",
+    "tests/test_paper_evidence_gate.py": "aa5622d06805034b6f43928dbea6d1fbcee80f77b6d8605c6ac820b5f78c6a5b",
+    "tests/test_paper_protocol.py": "593235520544e11eb8d474e5a177eb852550e42a99643002becf3424b10ab732"
+  },
+  "workflow_review": "Only existing bounded generated evaluation/ablation engineering gates are eligible. Canonical scientific runner and report-building writer remain limited to their separate research branch; no workflow dispatch is requested.",
+  "hosted_verification": "Pending publication; inspect exact integrated source CI before merge. Existing full suite includes small generated engineering fixtures, not a new macrodata study.",
+  "remaining_boundary": "Historical preprint-receipt discrepancy is retained; no fresh PDF build/visual certification or positive financial claim. Any successor requires its own source-bound pre-outcome study."
+}
