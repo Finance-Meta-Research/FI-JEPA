@@ -24,7 +24,9 @@ LABELS = {
 
 
 def fmt(mean: float, std: float) -> str:
-    return f"{mean:.6f} $\\pm$ {std:.6f}"
+    # Stack the uncertainty below its mean so all six decimal places remain
+    # readable within the manuscript text width without scaling the table.
+    return f"\\shortstack{{{mean:.6f}\\\\$\\pm$ {std:.6f}}}"
 
 
 def metric_vector(rows):
@@ -80,15 +82,18 @@ def main() -> None:
         "\\centering",
         "\\caption{Canonical three-seed macrodata study. Mean $\\pm$ sample standard deviation across predeclared seeds. Regression MSE/MAE are lower-is-better; directional/classification accuracy are higher-is-better. The monolithic row is retained for provenance but is non-identifying because the frozen full macro configuration contains only one executed predictor stage.}",
         "\\label{tab:canonical_macro}",
-        "\\begin{tabular}{lcccc}",
+        "\\small",
+        "\\setlength{\\tabcolsep}{5pt}",
+        "\\renewcommand{\\arraystretch}{1.25}",
+        "\\begin{tabular}{@{}p{0.29\\linewidth}cccc@{}}",
         "\\toprule",
-        "Condition & Regression MSE & Regression MAE & Directional acc. & Classification acc. \\\\",
+        "Condition & \\shortstack{Regression\\\\MSE} & \\shortstack{Regression\\\\MAE} & \\shortstack{Directional\\\\accuracy} & \\shortstack{Classification\\\\accuracy} \\\\",
         "\\midrule",
     ]
     for variant in order:
         s = stats[variant]
         tex_lines.append(
-            f"{LABELS.get(variant, variant)} & {fmt(*s['mse'])} & {fmt(*s['mae'])} & {fmt(*s['direction'])} & {fmt(*s['accuracy'])} \\\\" 
+            f"{LABELS.get(variant, variant)} & {fmt(*s['mse'])} & {fmt(*s['mae'])} & {fmt(*s['direction'])} & {fmt(*s['accuracy'])} \\\\[2pt]"
         )
     tex_lines += ["\\bottomrule", "\\end{tabular}", "\\end{table}"]
 

@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-08",
+  "kind": "SAVED_EVIDENCE_REPORTING_REPAIR",
+  "repository": "Finance-Meta-Research/FI-JEPA",
+  "source_base_commit": "b996820307885aee324e0eb53ccab01be21e3029",
+  "session_contract": {
+    "id": "20261108-finance-retained-evidence-closeout",
+    "scope": "Saved-evidence arithmetic verification and manuscript rebuild; no new scientific outcomes.",
+    "source_heads": {
+      "FI_JEPA": "b996820307885aee324e0eb53ccab01be21e3029",
+      "Eigen_JEPA": "3e62ec8d02dda1d6926d6724ba5fc271edea403d"
+    },
+    "work": [
+      "Verify source snapshots and retained artifact hashes",
+      "Run current saved-data gates",
+      "Rebuild retained tables and manuscripts",
+      "Reproduce and repair concrete saved-data or layout defects on copies",
+      "Record tests and remaining publication requirements"
+    ],
+    "budget": {
+      "max_local_commands": 35,
+      "max_total_cpu_seconds": 600,
+      "paid_compute": false,
+      "training_runs": 0,
+      "protected_outcome_access": false,
+      "extension_reason": "Initial builds exposed a 126.61429pt table overflow; existing Eigen gate permits aggregate arithmetic drift. Bounded reporting fixes plus corruption tests require additional local verifier/build invocations, no scientific execution."
+    },
+    "scientific_boundaries": [
+      "FI-JEPA v1 remains closed negative/boundary",
+      "Eigen-JEPA v2 remains closed mixed/boundary",
+      "No inference about successors or external validation"
+    ]
+  },
+  "scientific_disposition": "NEGATIVE / BOUNDARY; v1 CLOSED",
+  "scientific_runs": 0,
+  "training_campaigns": 0,
+  "paid_compute": false,
+  "protected_evaluation_opened": false,
+  "scientific_result_changed": false,
+  "research_complete": false,
+  "prior_active_session": {
+    "id": "20261010-0945-active-prototype-writes",
+    "opened_before_implementation": true,
+    "recorded_utc": "2026-10-10 09:57:23 UTC",
+    "parent_commit": "950bbed595e750498e7f8360720eff0ec703aa78",
+    "status": "ENGINEERING_CLOSED_PUBLISHED_DRAFT",
+    "contract": "research/DEVELOPMENT_ACTIVE_PROTOTYPE_WRITES_20261010.md",
+    "budget": {
+      "local_test_or_probe_commands": 5,
+      "cumulative_test_command_wall_seconds": 360,
+      "review_repair_cycles": 2,
+      "independent_review_commands": 1,
+      "independent_review_wall_seconds": 90,
+      "retained_demo_attempts": 1,
+      "retained_demo_wall_seconds": 60,
+      "cpu_threads": 1,
+      "protected_runs": 0,
+      "paid_compute": 0,
+      "scientific_campaigns": 0
+    },
+    "consumed": {
+      "local_test_or_probe_commands": 3,
+      "cumulative_test_command_wall_seconds": 68.8579060970078,
+      "retained_demo_attempts": 1,
+      "review_repair_cycles": 0,
+      "retained_demo_wall_seconds": 12.444040305999806
+    },
+    "verification_receipts": [
+      "research/verification/active_prototype_writes_20261010/attempt_01_baseline/receipt.json",
+      "research/verification/active_prototype_writes_20261010/attempt_02_candidate/receipt.json",
+      "research/verification/active_prototype_writes_20261010/attempt_03_integration/receipt.json",
+      "research/verification/active_prototype_writes_20261010/demo_attempt_01/receipt.json"
+    ],
+    "independent_review": {
+      "reviewer": "/root",
+      "outcome": "PASS_NO_BLOCKER",
+      "scope": "Source-only review of runtime, tests, prospective contract, legacy boundary; no independent execution.",
+      "reviewed_source_sha256": {
+        "src/fijepa/memory.py": "abc7530f6b83cf6c1fe3d555e5c7cf6b95257d48a4928e86dc349cdc4d683ead",
+        "src/fijepa/model.py": "17b6da202316320a20cba1f52bd43deafbfe19ab8127150668122916ea98c2e3",
+        "src/fijepa/losses.py": "17a997243b7b5ae3e8881634f4b434b38e89598e4710f4a15205214d793afed0",
+        "tests/test_active_prototype_writes.py": "cdc7a3baf0f36b8a08adf2ecb47b1b754af177dc7475dae649655744934f3bd4",
+        "tests/test_gradient_accumulation.py": "1ea10264e9ccb3b00a54b1e00bc7d12970312d75c00296ebe483a048bb31d483",
+        "tests/test_gradient_failure_atomicity.py": "081587094ddd3459bd187851c687eac5f676b7decaa292b94481dd60a3c6cbf5",
+        "tests/test_model_smoke.py": "38a7b30aed4e59bbcf0ecf8be64564474c04a5b0a3268c56cc36cab1f1b997a7"
+      },
+      "execution_commands": 0,
+      "repair_cycles": 0
+    },
+    "demo_attempt": {
+      "number": 1,
+      "status": "PASSED",
+      "command_receipt": "research/verification/active_prototype_writes_20261010/demo_attempt_01/receipt.json",
+      "max_wall_seconds": 60,
+      "output_directory": "research/verification/active_prototype_writes_20261010/demo",
+      "wall_seconds": 12.444040305999806,
+      "exit_code": 0,
+      "report": "research/verification/active_prototype_writes_20261010/demo/report.json"
+    },
+    "closed_utc": "2026-10-10T10:20:50.913130+00:00",
+    "unused_execution_budget_closed": true,
+    "publication_parent_commit": "be41043d041e61ce54d7e75c66165e9dd21407c0",
+    "final_local_tests_passed": 82,
+    "protected_runs": 0,
+    "scientific_campaigns": 0,
+    "paid_compute": 0,
+    "publication": {
+      "branch": "codex/active-prototype-writes-20261010-0945",
+      "base_branch": "codex/fijepa-recorded-training-20261010",
+      "status": "PUBLISHED_DRAFT",
+      "hosted_verification": "Pending at this metadata-only closure; current-head observations are recorded in the PR body and coordinator receipt.",
+      "parent_metadata_refresh": "be41043d041e61ce54d7e75c66165e9dd21407c0",
+      "pull_request": 14,
+      "url": "https://github.com/Finance-Meta-Research/FI-JEPA/pull/14",
+      "implementation_commit": "99f711fd2987563e30c6ce052e442e3790099554",
+      "implementation_tree": "0255fe0d2f21c8c3487cb97f266f2aa0567100af",
+      "head_reference": "refs/heads/codex/active-prototype-writes-20261010-0945"
+    },
+    "integration_verification": "research/verification/active_prototype_writes_20261010/integration_parent.json"
+  },
+  "prior_current_phase": "ENGINEERING_INTEGRATION_REVIEW",
+  "prior_current_change": "Integrate reviewed paired evaluation, recorded training and active-memory writes with current main. Preserve both complete canonical histories, the updated v1 reader boundary and ablation interpretation, all runtime semantics from their reviewed parents, and the closed negative v1 disposition.",
+  "prior_pending_gates": [
+    "GitHub integration of the separate development PRs.",
+    "Any outcome-generating successor requires its own hypothesis, data/splits, baselines, source commit, budget and protected evaluation freeze."
+  ],
+  "current_main_observation": {
+    "open_pull_requests_before_changes": 0,
+    "source_head": "b996820307885aee324e0eb53ccab01be21e3029",
+    "observed_20261108": true
+  },
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "torch_available": false,
+    "pytest_available": false,
+    "device": "CPU"
+  },
+  "pdf_build": {
+    "source_base_commit": "b996820307885aee324e0eb53ccab01be21e3029",
+    "pdf_sha256": "2ee8272d76256596094061eb6b05cc5ab3bde02e05fd7ad772eb56e36f879c65",
+    "pages": 5,
+    "undefined_references_or_citations": false,
+    "overfull_boxes": 0,
+    "duplicate_pdf_destinations": false,
+    "visual_review": "All five pages inspected; table page reviewed at enlarged resolution.",
+    "source_sha256": {
+      "paper/arxivrefined.sty": "29c00a3c3089d48542a00bf144f1475981e63996003ed832dc0d5071c5ecb493",
+      "paper/main.tex": "c4738a88025f54bebdcb0d7764aa5ada660987edee422789cbe88559352ee1ce",
+      "paper/generated/canonical_results_table.tex": "465d6722d137ea06f37b3e82ff0abdb0bd95047334cd66f83c5eb0d54c0a4edf"
+    },
+    "environment": {
+      "python": "3.12.14",
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+      "pdflatex": "pdfTeX 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian)"
+    },
+    "scope": "Saved evidence and manuscript rendering; no training, protected data or new outcomes."
+  },
+  "hosted_verification": "Pending draft publication; do not infer hosted success from local checks.",
+  "observation": "Canonical table compiles but overflows by 126.61429pt in the retained main source.",
+  "change": "Render mean and sample SD on two readable lines, wrap the non-identifying label, retain six decimals and all wording; add reporting-only PR build verification.",
+  "validation": {
+    "paper_evidence_gate": "PASS; retained raw/report metrics and all six paired summaries agree.",
+    "reader_regressions": "11 unittest cases passed, including deterministic regeneration, provenance and corruption tests.",
+    "table_numerics_unchanged": true,
+    "canonical_markdown_unchanged": true,
+    "initial_pdf_overfull_width_pt": 126.61429,
+    "final_pdf_overfull_boxes": 0,
+    "final_pdf_undefined_references": false,
+    "final_pdf_pages": 5,
+    "full_model_tests": "Not rerun; no model/runtime changes. Existing correctness workflow will run on the draft because RESEARCH_STATE.json changes."
+  },
+  "commands": [
+    "python scripts/check_paper_evidence_gate.py",
+    "python -m unittest discover -s tests -p test_paper_evidence_gate.py -v",
+    "python scripts/make_canonical_paper_assets.py",
+    "pdflatex -interaction=nonstopmode -halt-on-error -file-line-error main.tex (repeat to resolve references)"
+  ],
+  "ci_trigger_review": {
+    "will_run": [
+      "Retained FI-JEPA paper build: saved evidence, generator tests and LaTeX only",
+      "Evaluation correctness: generated fixture regression tests"
+    ],
+    "will_not_run": [
+      "canonical-paper-suite.yml: push-only on research/fijepa-paper-evidence-20260909",
+      "regenerate-evidence-preprint.yml: push-only on that historical branch"
+    ]
+  }
+}
